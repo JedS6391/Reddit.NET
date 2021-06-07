@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
@@ -27,6 +29,11 @@ namespace Reddit.NET.Core.Client.Interactions
             var result = await getUserCommand.ExecuteAsync(authenticationContext, new GetUserDetailsCommand.Parameters());
 
             return result.Details;
+        }
+
+        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync()
+        {
+            return new UserSubredditsListingGenerator(_commandFactory, _authenticator);            
         }
     }
 }

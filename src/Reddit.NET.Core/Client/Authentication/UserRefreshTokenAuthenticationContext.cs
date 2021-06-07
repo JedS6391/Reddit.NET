@@ -10,7 +10,8 @@ namespace Reddit.NET.Core.Client
         private static readonly string[] _supportedCommandIds = new string[]
         {
             nameof(GetSubredditDetailsCommand),
-            nameof(GetUserDetailsCommand)
+            nameof(GetUserDetailsCommand),
+            nameof(GetUserSubredditsCommand)
         };
 
         public override string Id => "User Refresh Token";

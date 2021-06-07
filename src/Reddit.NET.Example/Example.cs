@@ -47,6 +47,11 @@ namespace Reddit.NET.Example
             var meDetails = await me.GetDetailsAsync();
 
             Console.WriteLine($"User [Name = {meDetails.Name}]" );
+
+            await foreach (var subreddit in me.GetSubredditsAsync())
+            {
+                Console.WriteLine($"Subreddit [Name = {subreddit.Name}, Title = {subreddit.Title}]" );
+            }
         }
 
         public Task StopAsync(CancellationToken cancellationToken)

@@ -39,9 +39,7 @@ namespace Reddit.NET.Core.Client.Command.Abstract
 
                 // TODO: Exception type
                 throw new Exception();
-            }
-
-            var content = await response.Content.ReadAsStringAsync();            
+            }                     
 
             return await response
                 .Content

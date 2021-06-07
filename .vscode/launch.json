@@ -2,11 +2,23 @@
     "version": "0.2.0",
     "configurations": [        
         {
-            "name": ".NET Core Launch (console)",
+            "name": ".NET Core Launch (console) - Client Example",
             "type": "coreclr",
             "request": "launch",
             "preLaunchTask": "build",
             "program": "${workspaceFolder}/src/Reddit.NET.Example/bin/Debug/net5.0/Reddit.NET.Example.dll",
+            "args": [],
+            "envFile": "${workspaceFolder}/.env",
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"
+        },
+        {
+            "name": ".NET Core Launch (console) - Authorization Code Example",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/src/Reddit.NET.AuthorizationCodeExample/bin/Debug/net5.0/Reddit.NET.AuthorizationCodeExample.dll",
             "args": [],
             "envFile": "${workspaceFolder}/.env",
             "cwd": "${workspaceFolder}",

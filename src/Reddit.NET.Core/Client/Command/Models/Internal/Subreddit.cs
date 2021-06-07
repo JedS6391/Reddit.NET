@@ -16,5 +16,9 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("display_name")]
             public string DisplayName { get; set; }
         }
+
+        public class Listing : Listing<Subreddit.Details> 
+        {
+        }
     }
 }

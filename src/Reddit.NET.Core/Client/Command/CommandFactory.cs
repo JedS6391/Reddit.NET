@@ -51,7 +51,8 @@ namespace Reddit.NET.Core.Client.Command
                 { typeof(AuthenticateWithClientCredentialsCommand), () => new AuthenticateWithClientCredentialsCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(AuthenticateWithRefreshTokenCommand), () => new AuthenticateWithRefreshTokenCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(GetSubredditDetailsCommand), () => new GetSubredditDetailsCommand(_httpClientFactory, _loggerFactory) },
-                { typeof(GetUserDetailsCommand), () => new GetUserDetailsCommand(_httpClientFactory, _loggerFactory) }            
+                { typeof(GetUserDetailsCommand), () => new GetUserDetailsCommand(_httpClientFactory, _loggerFactory) },
+                { typeof(GetUserSubredditsCommand), () => new GetUserSubredditsCommand(_httpClientFactory, _loggerFactory) }
             };
         }
     }
