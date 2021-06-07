@@ -2,7 +2,7 @@
 
 ## About
 
-Provides a .NET client for consuming and interacting with [reddit](https://www.reddit.com).
+Provides a .NET client for interacting with [reddit](https://www.reddit.com).
 
 ## Build
 

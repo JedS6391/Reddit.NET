@@ -24,7 +24,7 @@ namespace Reddit.NET.Core.Client.Authentication
 
         protected abstract Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext);
 
-        public async Task<AuthenticationContext> AuthenticateAsync()
+        public async Task<AuthenticationContext> GetAuthenticationContextAsync()
         {
             if (ShouldCreateContext())
             {

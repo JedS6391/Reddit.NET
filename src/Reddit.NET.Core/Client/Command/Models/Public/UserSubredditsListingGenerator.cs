@@ -30,7 +30,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public
 
         private async Task<Subreddit.Listing> GetListingAsync(string after = null)
         {
-            var authenticationContext = await _authenticator.AuthenticateAsync().ConfigureAwait(false);
+            var authenticationContext = await _authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
 
             var getUserSubredditsCommand = _commandFactory.Create<GetUserSubredditsCommand>();
 

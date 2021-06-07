@@ -21,7 +21,7 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://oauth.reddit.com/r/{parameters.DisplayName}/about")
+                RequestUri = new Uri($"https://oauth.reddit.com/r/{parameters.SubredditName}/about")
             };
 
             return request;
@@ -38,7 +38,7 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
 
         public class Parameters 
         {
-            public string DisplayName { get; set; }
+            public string SubredditName { get; set; }
         }
 
         public class Result 
