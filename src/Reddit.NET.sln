@@ -5,9 +5,9 @@ VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Core", "Reddit.NET.Core\Reddit.NET.Core.csproj", "{EFA68DC6-A9D5-49C4-BCC2-69783793EEF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Example", "Reddit.NET.Example\Reddit.NET.Example.csproj", "{5A72B17C-C081-4548-AE1F-FFD405A6621C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Example", "Examples\Reddit.NET.Example\Reddit.NET.Example.csproj", "{5A72B17C-C081-4548-AE1F-FFD405A6621C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.AuthorizationCodeExample", "Reddit.NET.AuthorizationCodeExample\Reddit.NET.AuthorizationCodeExample.csproj", "{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.AuthorizationCodeExample", "Examples/Reddit.NET.AuthorizationCodeExample\Reddit.NET.AuthorizationCodeExample.csproj", "{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

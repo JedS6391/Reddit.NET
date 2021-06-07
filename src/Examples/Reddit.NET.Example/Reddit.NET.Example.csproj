@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Reddit.NET.Core\Reddit.NET.Core.csproj" />
+    <ProjectReference Include="..\..\Reddit.NET.Core\Reddit.NET.Core.csproj" />
   </ItemGroup>
   <ItemGroup>
     <None Remove="Microsoft.Extensions.DependencyInjection" />
