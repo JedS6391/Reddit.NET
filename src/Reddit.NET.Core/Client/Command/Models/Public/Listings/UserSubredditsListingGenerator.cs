@@ -1,11 +1,15 @@
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
+using Reddit.NET.Core.Client.Command.Models.Internal.Base;
+using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
+using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 using Reddit.NET.Core.Client.Command.Users;
 
-namespace Reddit.NET.Core.Client.Command.Models.Public
+namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
-    public class UserSubredditsListingGenerator : ListingGenerator<Subreddit.Listing, Subreddit.Details, SubredditDetails>
+    public class UserSubredditsListingGenerator 
+        : ListingGenerator<Subreddit.Listing, Subreddit.Details, SubredditDetails>
     {
         private readonly CommandFactory _commandFactory;
         private readonly IAuthenticator _authenticator;
@@ -44,10 +48,10 @@ namespace Reddit.NET.Core.Client.Command.Models.Public
             return result.Listing;
         }
 
-        internal override SubredditDetails MapData(Subreddit.Details data) => new SubredditDetails()
+        internal override SubredditDetails MapThing(Thing<Subreddit.Details> thing) => new SubredditDetails()
         {
-            Name = data.DisplayName,
-            Title = data.Title
+            Name = thing.Data.DisplayName,
+            Title = thing.Data.Title,            
         };
     }
 }

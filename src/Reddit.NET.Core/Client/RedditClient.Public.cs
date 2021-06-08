@@ -10,7 +10,7 @@ namespace Reddit.NET.Core.Client
     /// <remarks>
     /// <see cref="RedditClient" /> cannot be directly instantiated and should instead be created via the <see cref="Builder.RedditClientBuilder" /> class.
     /// </remarks>
-    public sealed class RedditClient
+    public sealed partial class RedditClient
     {
         private readonly CommandFactory _commandFactory;
         private readonly IAuthenticator _authenticator;        
@@ -37,7 +37,6 @@ namespace Reddit.NET.Core.Client
         /// </summary>
         /// <param name="name">The name of the subreddit to interact with.</param>
         /// <returns>A <see cref="SubredditInteractor" /> instance that provides mechanisms for interacting with the requested subreddit.</returns>
-        public SubredditInteractor Subreddit(string name) => 
-            new SubredditInteractor(_commandFactory, _authenticator, name);
+        public SubredditInteractor Subreddit(string name) => new SubredditInteractor(_commandFactory, _authenticator, name);        
     }
 }

@@ -4,7 +4,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 
-namespace Reddit.NET.Core.Client.Authentication
+namespace Reddit.NET.Core.Client.Authentication.Abstract
 {
     public abstract class AutoRefreshAuthenticator : IAuthenticator
     {    

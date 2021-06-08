@@ -1,8 +1,9 @@
-using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
-using Reddit.NET.Core.Client.Command.Models.Public;
+using Reddit.NET.Core.Client.Command.Models.Public.Listings;
+using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 using Reddit.NET.Core.Client.Command.Subreddits;
 using Reddit.NET.Core.Client.Interactions.Abstract;
 
@@ -15,7 +16,7 @@ namespace Reddit.NET.Core.Client.Interactions
     {                 
         private readonly CommandFactory _commandFactory; 
         private readonly IAuthenticator _authenticator;
-        private readonly GetSubredditDetailsCommand.Parameters _parameters;
+        private readonly string _subredditName;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditInteractor" /> class.
@@ -30,10 +31,7 @@ namespace Reddit.NET.Core.Client.Interactions
         {
             _commandFactory = commandFactory;
             _authenticator = authenticator;
-            _parameters = new GetSubredditDetailsCommand.Parameters()
-            {
-                SubredditName = subredditName
-            };
+            _subredditName = subredditName;
         }
 
         /// <summary>
@@ -46,9 +44,28 @@ namespace Reddit.NET.Core.Client.Interactions
 
             var getSubredditCommand = _commandFactory.Create<GetSubredditDetailsCommand>();
 
-            var result = await getSubredditCommand.ExecuteAsync(authenticationContext, _parameters);
+            var result = await getSubredditCommand.ExecuteAsync(
+                authenticationContext, 
+                new GetSubredditDetailsCommand.Parameters()
+                {
+                    SubredditName = _subredditName
+                })
+                .ConfigureAwait(false);
 
             return result.Details;
         }
+
+        /// <summary>
+        /// Gets the 'hot' submissions of the subreddit.
+        /// </summary>
+        /// <returns>An asynchronous enumerator over the 'hot' submissions of the subreddit.</returns>
+        public IAsyncEnumerable<SubmissionDetails> GetHotSubmissionsAsync() => 
+            new HotSubredditSubmissionsListingGenerator(
+                _commandFactory, 
+                _authenticator,
+                new SubredditSubmissionsListingGenerator.ListingParameters()
+                {
+                    SubredditName = _subredditName
+                });
     }
 }

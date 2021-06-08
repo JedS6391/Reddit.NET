@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,24 +33,34 @@ namespace Reddit.NET.Example
                 .WithLoggerFactory(_loggerFactory)
                 .WithUserRefreshTokenAuthentication(GetUserRefreshTokenAuthenticationDetails())
                 // .WithUsernamePasswordAuthentication(GetUsernamePasswordAuthenticationDetails())
-                // .WithClientCredentialsAuthentication(GetClientCredentialsAuthenticationDetails())
-            
+                // .WithClientCredentialsAuthentication(GetClientCredentialsAuthenticationDetails())            
                 .Build();
 
             var askReddit = client.Subreddit("askreddit");
 
-            var askRedditDetails = await askReddit.GetDetailsAsync();
+            var askRedditDetails = await askReddit.GetDetailsAsync();            
 
             Console.WriteLine($"Subreddit [Name = {askRedditDetails.Name}, Title = {askRedditDetails.Title}]" );
 
-            var me = client.Me();
+            var topTenHotSubmissions = askReddit.GetHotSubmissionsAsync().Take(10);
+
+            await foreach (var submission in topTenHotSubmissions)
+            {
+                Console.WriteLine($"Submission [Subreddit = {submission.Subreddit}, Title = {submission.Title}, Permalink = {submission.Permalink}]" );
+
+                var interactor = submission.Interact(client);
+
+                await interactor.UpvoteAsync();
+            }
+
+            var me = client.Me(); 
 
             var meDetails = await me.GetDetailsAsync();
 
             Console.WriteLine($"User [Name = {meDetails.Name}]" );
 
             await foreach (var subreddit in me.GetSubredditsAsync())
-            {
+            {            
                 Console.WriteLine($"Subreddit [Name = {subreddit.Name}, Title = {subreddit.Title}]" );
             }
         }

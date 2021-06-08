@@ -4,7 +4,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 
-namespace Reddit.NET.Core.Client.Command.Models.Public
+namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
 {
     public abstract class ListingGenerator<TListing, TData, TMapped> : IAsyncEnumerable<TMapped>
         where TListing : Listing<TData>
@@ -17,12 +17,12 @@ namespace Reddit.NET.Core.Client.Command.Models.Public
 
         internal abstract Task<TListing> GetNextListingAsync(TListing currentListing);
 
-        internal abstract TMapped MapData(TData data);
+        internal abstract TMapped MapThing(Thing<TData> data);
 
 
         public IAsyncEnumerator<TMapped> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
-            return new ListingEnumerator(GetInitialListingAsync, GetNextListingAsync, MapData);
+            return new ListingEnumerator(GetInitialListingAsync, GetNextListingAsync, MapThing);
         }
 
         public class ListingEnumerator : IAsyncEnumerator<TMapped>
@@ -32,7 +32,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public
             public ListingEnumerator(
                 Func<Task<TListing>> initialListingProvider,
                 Func<TListing, Task<TListing>> nextListingProvider,
-                Func<TData, TMapped> mapper)
+                Func<Thing<TData>, TMapped> mapper)
             {
                 _context = new ListingEnumeratorContext
                 {
@@ -49,7 +49,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public
             {
                 get 
                 {
-                    return _context.Mapper.Invoke(_context.CurrentListing.Data.Children[_context.Position].Data);
+                    return _context.Mapper.Invoke(_context.CurrentListing.Data.Children[_context.Position]);
                 }          
             }
 
@@ -109,7 +109,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public
                 public TListing CurrentListing { get; set; }
                 public Func<Task<TListing>> InitialListingProvider { get; set; }
                 public Func<TListing, Task<TListing>> NextListingProvider { get; set; }
-                public Func<TData, TMapped> Mapper { get;set; }
+                public Func<Thing<TData>, TMapped> Mapper { get;set; }
                 public int Position { get; set; }
                 public bool Exhausted { get; set; }
             }

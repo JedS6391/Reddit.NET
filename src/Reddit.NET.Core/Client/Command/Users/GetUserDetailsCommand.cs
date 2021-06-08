@@ -3,7 +3,7 @@ using System.Net.Http;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Command.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
-using Reddit.NET.Core.Client.Command.Models.Public;
+using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 
 namespace Reddit.NET.Core.Client.Command.Users
 {

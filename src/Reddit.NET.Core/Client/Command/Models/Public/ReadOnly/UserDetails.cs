@@ -1,4 +1,4 @@
-namespace Reddit.NET.Core.Client.Command.Models.Public
+namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
 {
     public class UserDetails
     {

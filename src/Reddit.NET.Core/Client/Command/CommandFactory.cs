@@ -5,6 +5,7 @@ using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Command.Abstract;
 using Reddit.NET.Core.Client.Command.Authentication;
 using Reddit.NET.Core.Client.Command.Exceptions;
+using Reddit.NET.Core.Client.Command.Submissions;
 using Reddit.NET.Core.Client.Command.Subreddits;
 using Reddit.NET.Core.Client.Command.Users;
 
@@ -65,8 +66,10 @@ namespace Reddit.NET.Core.Client.Command
                 { typeof(AuthenticateWithClientCredentialsCommand), () => new AuthenticateWithClientCredentialsCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(AuthenticateWithRefreshTokenCommand), () => new AuthenticateWithRefreshTokenCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(GetSubredditDetailsCommand), () => new GetSubredditDetailsCommand(_httpClientFactory, _loggerFactory) },
+                { typeof(GetHotSubredditSubmissionsCommand), () => new GetHotSubredditSubmissionsCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(GetUserDetailsCommand), () => new GetUserDetailsCommand(_httpClientFactory, _loggerFactory) },
-                { typeof(GetUserSubredditsCommand), () => new GetUserSubredditsCommand(_httpClientFactory, _loggerFactory) }
+                { typeof(GetUserSubredditsCommand), () => new GetUserSubredditsCommand(_httpClientFactory, _loggerFactory) },
+                { typeof(ApplyVoteToSubmissionCommand), () => new ApplyVoteToSubmissionCommand(_httpClientFactory, _loggerFactory) }
             };
         }
     }

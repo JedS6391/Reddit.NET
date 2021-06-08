@@ -2,7 +2,8 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
-using Reddit.NET.Core.Client.Command.Models.Public;
+using Reddit.NET.Core.Client.Command.Models.Public.Listings;
+using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 using Reddit.NET.Core.Client.Command.Users;
 using Reddit.NET.Core.Client.Interactions.Abstract;
 
@@ -46,7 +47,6 @@ namespace Reddit.NET.Core.Client.Interactions
         /// Gets the subreddits the authenticated user is subscribed to.
         /// </summary>
         /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
-        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync() =>
-            new UserSubredditsListingGenerator(_commandFactory, _authenticator); 
+        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync() => new UserSubredditsListingGenerator(_commandFactory, _authenticator); 
     }
 }

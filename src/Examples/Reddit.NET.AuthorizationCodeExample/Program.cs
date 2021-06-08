@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
 using System.Text;
+using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.AuthorizationCodeExample
 {
@@ -35,12 +37,14 @@ namespace Reddit.NET.AuthorizationCodeExample
 
             var code = PromptForValue("Code");
 
-            var response = RedeemCode(clientId, clientSecret, code);
+            var token = RedeemCode(clientId, clientSecret, code);
 
-            Console.WriteLine(response);
+            Console.WriteLine();            
+            Console.WriteLine($"Access token: {token.AccessToken}");
+            Console.WriteLine($"Refresh token: {token.RefreshToken}");            
         }
 
-        private static string RedeemCode(string clientId, string clientSecret, string code)
+        private static Token RedeemCode(string clientId, string clientSecret, string code)
         {
             var requestParameters = new Dictionary<string, string>()
             {
@@ -68,7 +72,11 @@ namespace Reddit.NET.AuthorizationCodeExample
                 throw new Exception("Request failed.");
             }
 
-            return response.Content.ReadAsStringAsync().GetAwaiter().GetResult();
+            return response
+                .Content
+                .ReadFromJsonAsync<Token>()
+                .GetAwaiter()
+                .GetResult();
         }
 
 
