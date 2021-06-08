@@ -37,7 +37,7 @@ namespace Reddit.NET.Core.Client.Command.Abstract
         /// </summary>
         /// <param name="response">The response of the HTTP request this command represents.</param>
         /// <returns>The mapped response type.</returns>
-        protected abstract TResult MapResponse(TResponse response);
+        protected abstract TResult MapToResult(TResponse response);
 
         /// <summary>
         /// Executes the command.
@@ -50,7 +50,7 @@ namespace Reddit.NET.Core.Client.Command.Abstract
 
             var response = await ExecuteRequest(request).ConfigureAwait(false);
 
-            return MapResponse(response);
+            return MapToResult(response);
         }
     }
 }

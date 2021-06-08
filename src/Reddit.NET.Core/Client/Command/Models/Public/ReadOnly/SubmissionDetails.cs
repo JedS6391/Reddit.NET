@@ -7,13 +7,13 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
     /// Defines a read-only view of a submission.
     /// </summary>
     public class SubmissionDetails : IToInteractor<SubmissionInteractor>
-    {
-        public string Id { get; internal set; }        
+    {   
         public string Title { get; internal set; }        
         public string Subreddit { get; internal set; }            
         public string Permalink { get; internal set; }
+        internal string Id { get; set; }     
         internal string Kind { get; set; }
 
-        public SubmissionInteractor Interact(RedditClient client) => client.Submission(Kind, Id);
+        public SubmissionInteractor Interact(RedditClient client) => client.Submission(this);
     }
 }

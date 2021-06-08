@@ -33,7 +33,7 @@ namespace Reddit.NET.Core.Client.Command.Users
             return request;
         }
 
-        protected override Result MapResponse(Subreddit.Listing response) => new Result()
+        protected override Result MapToResult(Subreddit.Listing response) => new Result()
         {
             Listing = response
         };

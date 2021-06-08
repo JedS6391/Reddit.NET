@@ -69,7 +69,8 @@ namespace Reddit.NET.Core.Client.Command
                 { typeof(GetHotSubredditSubmissionsCommand), () => new GetHotSubredditSubmissionsCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(GetUserDetailsCommand), () => new GetUserDetailsCommand(_httpClientFactory, _loggerFactory) },
                 { typeof(GetUserSubredditsCommand), () => new GetUserSubredditsCommand(_httpClientFactory, _loggerFactory) },
-                { typeof(ApplyVoteToSubmissionCommand), () => new ApplyVoteToSubmissionCommand(_httpClientFactory, _loggerFactory) }
+                { typeof(ApplyVoteToSubmissionCommand), () => new ApplyVoteToSubmissionCommand(_httpClientFactory, _loggerFactory) },
+                { typeof(GetSubmissionCommentsCommand), () => new GetSubmissionCommentsCommand(_httpClientFactory, _loggerFactory) }
             };
         }
     }

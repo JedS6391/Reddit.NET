@@ -17,12 +17,23 @@ namespace Reddit.NET.Core.Client.Command.Abstract
     public abstract class AuthenticatedCommand<TParameters, TResult, TResponse> : BaseCommand<TResponse>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthenticatedCommand{TParameters, TResult, TResponse}" /> class.
+        /// Initializes a new instance of the <see cref="AuthenticatedCommand{TParameters, TResult, TResponse}" /> class with the default response mapper.
         /// </summary>
         /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients when executing requests</param>
         /// <param name="loggerFactory">An <see cref="ILoggerFactory" /> instance used create a logger for writing log messages.</param>
         protected AuthenticatedCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
             : base(httpClientFactory, loggerFactory)
+        {                    
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticatedCommand{TParameters, TResult, TResponse}" /> class with the specified response mapper.
+        /// </summary>
+        /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients when executing requests</param>
+        /// <param name="loggerFactory">An <see cref="ILoggerFactory" /> instance used create a logger for writing log messages.</param>
+        /// <param name="responseMapper">A mapping function used to process the HTTP content.</param>
+        protected AuthenticatedCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, Func<HttpContent, Task<TResponse>> responseMapper)
+            : base(httpClientFactory, loggerFactory, responseMapper)
         {                    
         }
 
@@ -41,7 +52,7 @@ namespace Reddit.NET.Core.Client.Command.Abstract
         /// </summary>
         /// <param name="response">The response of the HTTP request this command represents.</param>
         /// <returns>The mapped response type.</returns>
-        protected abstract TResult MapResponse(TResponse response);
+        protected abstract TResult MapToResult(TResponse response);
 
         /// <summary>
         /// Executes the command in the provided <see cref="AuthenticationContext" />.
@@ -67,7 +78,7 @@ namespace Reddit.NET.Core.Client.Command.Abstract
 
             var response = await ExecuteRequest(request).ConfigureAwait(false);
 
-            return MapResponse(response);
+            return MapToResult(response);
         }
 
         private static void AddAuthorizationHeader(HttpRequestMessage request, AuthenticationContext authenticationContext)

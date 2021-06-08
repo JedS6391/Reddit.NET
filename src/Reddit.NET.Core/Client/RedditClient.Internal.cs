@@ -1,3 +1,4 @@
+using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 using Reddit.NET.Core.Client.Interactions;
 
 namespace Reddit.NET.Core.Client
@@ -15,8 +16,9 @@ namespace Reddit.NET.Core.Client
         /// </summary>
         /// <param name="type">The type of the submission to interact with.</param>
         /// <param name="id">The ID of the submission to interact with.</param>
-                /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the requested submission.</returns>
-        internal SubmissionInteractor Submission(string type, string id) => 
-            new SubmissionInteractor(_commandFactory, _authenticator, type, id);
+        /// <param name="subreddit">The name of the subreddit the submission is in.</param>
+        /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the requested submission.</returns>
+        internal SubmissionInteractor Submission(SubmissionDetails submission) => 
+            new SubmissionInteractor(_commandFactory, _authenticator, submission);
     }
 }

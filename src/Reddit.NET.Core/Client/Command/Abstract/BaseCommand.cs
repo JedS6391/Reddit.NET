@@ -1,6 +1,5 @@
 using System;
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Command.Exceptions;
@@ -24,20 +23,39 @@ namespace Reddit.NET.Core.Client.Command.Abstract
         /// Gets an <see cref="ILogger" /> instance used to write log messages.
         /// </summary>
         protected ILogger<BaseCommand<TResponse>> Logger { get; }
-        
+
+        /// <summary>
+        /// Gets the mapping function used to process the HTTP content into an instance of type <typeparamref name="TResponse" />.
+        /// </summary>
+        /// <remarks>Useful when the response requires custom processing logic.</remarks>
+        protected Func<HttpContent, Task<TResponse>> ResponseMapper { get; }
+
         /// <inheritdoc />
         public abstract string Id { get; }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="BaseCommand{TResponse}" /> class.
+        /// Initializes a new instance of the <see cref="BaseCommand{TResponse}" /> class with the default response mapper.
         /// </summary>
         /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients when executing requests</param>
         /// <param name="loggerFactory">An <see cref="ILoggerFactory" /> instance used create a logger for writing log messages.</param>
         protected BaseCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
+            : this(httpClientFactory, loggerFactory, ResponseMappers.DefaultResponseMapper<TResponse>())
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BaseCommand{TResponse}" /> class with the specified response mapper.
+        /// </summary>
+        /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients when executing requests</param>
+        /// <param name="loggerFactory">An <see cref="ILoggerFactory" /> instance used create a logger for writing log messages.</param>
+        /// <param name="responseMapper">A mapping function used to process the HTTP content.</param>
+        protected BaseCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory, Func<HttpContent, Task<TResponse>> responseMapper)
         {
             HttpClientFactory = httpClientFactory;
             Logger = loggerFactory.CreateLogger<BaseCommand<TResponse>>();
+            ResponseMapper = responseMapper;
         }
+
 
         /// <summary>
         /// Executes the provided HTTP request.
@@ -62,11 +80,10 @@ namespace Reddit.NET.Core.Client.Command.Abstract
                 Logger.LogError("'{Id}' command request failed [{StatusCode}]", Id, response.StatusCode);
                 
                 throw new CommandExecutionFailedException($"'{Id}' command request failed [{response.StatusCode}]");
-            }                     
+            }
 
-            return await response
-                .Content
-                .ReadFromJsonAsync<TResponse>()
+            return await ResponseMapper
+                .Invoke(response.Content)
                 .ConfigureAwait(false);
         }
 

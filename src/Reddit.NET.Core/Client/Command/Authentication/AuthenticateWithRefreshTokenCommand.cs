@@ -43,7 +43,7 @@ namespace Reddit.NET.Core.Client.Command.Authentication
             return request;            
         }
 
-        protected override Result MapResponse(Token response) => new Result() 
+        protected override Result MapToResult(Token response) => new Result() 
         {
             Token = response
         };

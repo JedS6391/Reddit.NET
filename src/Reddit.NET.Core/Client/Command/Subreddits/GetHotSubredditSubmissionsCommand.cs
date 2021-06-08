@@ -34,7 +34,7 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             return request;
         }
 
-        protected override Result MapResponse(Submission.Listing response) => new Result()
+        protected override Result MapToResult(Submission.Listing response) => new Result()
         {
             Listing = response
         };

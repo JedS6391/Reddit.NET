@@ -14,7 +14,8 @@ namespace Reddit.NET.Core.Client
             nameof(GetHotSubredditSubmissionsCommand),
             nameof(GetUserDetailsCommand),
             nameof(GetUserSubredditsCommand),
-            nameof(ApplyVoteToSubmissionCommand)
+            nameof(ApplyVoteToSubmissionCommand),
+            nameof(GetSubmissionCommentsCommand)
         };
 
         public override string Id => "User Refresh Token";

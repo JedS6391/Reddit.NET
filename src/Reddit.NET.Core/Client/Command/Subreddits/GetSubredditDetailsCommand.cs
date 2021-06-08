@@ -28,7 +28,7 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             return request;
         }
 
-        protected override Result MapResponse(Subreddit response) => new Result()
+        protected override Result MapToResult(Subreddit response) => new Result()
         {
             Details = new SubredditDetails()
             {

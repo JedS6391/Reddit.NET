@@ -50,7 +50,12 @@ namespace Reddit.NET.Example
 
                 var interactor = submission.Interact(client);
 
-                await interactor.UpvoteAsync();
+                // await interactor.UpvoteAsync();
+
+                await foreach (var comment in interactor.GetCommentsAsync())
+                {
+                    Console.WriteLine($"Comment [Body = {comment.Body}]");
+                }
             }
 
             var me = client.Me(); 

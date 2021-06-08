@@ -35,7 +35,7 @@ namespace Reddit.NET.Core.Client.Command.Submissions
             return request;
         }
 
-        protected override Result MapResponse(Subreddit response) => new Result();
+        protected override Result MapToResult(Subreddit response) => new Result();
 
         public class Parameters 
         {

@@ -27,7 +27,7 @@ namespace Reddit.NET.Core.Client.Command.Users
             return request;
         }
 
-        protected override Result MapResponse(User response) => new Result()
+        protected override Result MapToResult(User response) => new Result()
         {
             Details = new UserDetails()
             {                
