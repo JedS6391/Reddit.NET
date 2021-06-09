@@ -27,13 +27,14 @@ namespace Reddit.NET.Example
         {
             _logger.LogTrace("StartAsync");
 
+            // var credentials = await GetInteractiveCredentialsAsync();
+            var credentials = GetUsernamePasswordCredentials();
+
             var client = RedditClientBuilder
                 .New
                 .WithHttpClientFactory(_httpClientFactory)
                 .WithLoggerFactory(_loggerFactory)
-                .WithUserRefreshTokenAuthentication(GetUserRefreshTokenAuthenticationDetails())
-                // .WithUsernamePasswordAuthentication(GetUsernamePasswordAuthenticationDetails())
-                // .WithClientCredentialsAuthentication(GetClientCredentialsAuthenticationDetails())            
+                .WithCredentials(credentials)        
                 .Build();
 
             var askReddit = client.Subreddit("askreddit");
@@ -77,49 +78,47 @@ namespace Reddit.NET.Example
             return Task.CompletedTask;
         }
 
-        private UserRefreshTokenAuthenticator.AuthenticationDetails GetUserRefreshTokenAuthenticationDetails()
+        private async Task<InteractiveCredentials> GetInteractiveCredentialsAsync()
         {
             var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
             var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
+            var redirectUri = Environment.GetEnvironmentVariable("REDDIT_CLIENT_REDIRECT_URI");
 
-            var refreshToken = PromptForValue("Refresh Token");
+            var credentialsBuilder = InteractiveCredentials.WebApp(
+                clientId,
+                clientSecret,
+                new Uri(redirectUri));
 
-            return new UserRefreshTokenAuthenticator.AuthenticationDetails()
-            {
-                RefreshToken = refreshToken,
-                ClientId = clientId,
-                ClientSecret = clientSecret
-            };
+            Console.WriteLine("Please follow the steps to retrieve an access token and refresh token you can use with the Reddit.NET client.");
+            Console.WriteLine();
+             
+            Console.WriteLine("1. Open the following link in your browser to complete the authorization process.");
+            Console.WriteLine();
+            Console.WriteLine($"{credentialsBuilder.AuthorizationUri}");
+            Console.WriteLine();
+
+            Console.WriteLine("2. Once you've completed authorization in the browser, copy the final redirect URI and enter it below.");
+            Console.WriteLine();
+
+            var finalRedirectUri = PromptForValue("Final Redirect URI");
+
+            return await credentialsBuilder.AuthorizeAsync(new Uri(finalRedirectUri));
         }
 
-        private UsernamePasswordAuthenticator.AuthenticationDetails GetUsernamePasswordAuthenticationDetails()
-        {
-            var username = Environment.GetEnvironmentVariable("REDDIT_USERNAME");
-            var password = Environment.GetEnvironmentVariable("REDDIT_PASSWORD");            
+        private NonInteractiveCredentials GetUsernamePasswordCredentials()
+        {          
             var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
             var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
+            var username = Environment.GetEnvironmentVariable("REDDIT_USERNAME");
+            var password = Environment.GetEnvironmentVariable("REDDIT_PASSWORD");  
 
             var code = PromptForValue("2FA Code");
 
-            return new UsernamePasswordAuthenticator.AuthenticationDetails
-            {
-                Username = username,
-                Password = $"{password}:{code}",
-                ClientId = clientId,
-                ClientSecret = clientSecret
-            };
-        }
-
-        private ClientCredentialsAuthenticator.AuthenticationDetails GetClientAuthenticationDetails()
-        {
-            var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
-            var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
-
-            return new ClientCredentialsAuthenticator.AuthenticationDetails
-            {
-                ClientId = clientId,
-                ClientSecret = clientSecret
-            };
+            return NonInteractiveCredentials.Script(
+                clientId,
+                clientSecret,
+                username,
+                $"{password}:{code}");
         }
 
         private string PromptForValue(string valueName)

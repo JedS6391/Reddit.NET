@@ -3,33 +3,28 @@ using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Authentication;
+using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Authentication
 {
-    public class ClientCredentialsAuthenticator : AutoRefreshAuthenticator
+    public class UserTokenAuthenticator : AutoRefreshAuthenticator
     {
-        private readonly CommandFactory _commandFactory;        
+        private readonly CommandFactory _commandFactory;
+        private readonly Token _token;
 
-        public ClientCredentialsAuthenticator(
-            ILogger<ClientCredentialsAuthenticator> logger,
+        public UserTokenAuthenticator(
+            ILogger<UserTokenAuthenticator> logger,
             CommandFactory commandFactory, 
-            Credentials credentials)
+            InteractiveCredentials credentials)
             : base(logger, credentials)
         {
-            _commandFactory = commandFactory;            
+            _commandFactory = commandFactory;
+            _token = credentials.Token;
         }
 
-        protected override async Task<AuthenticationContext> DoAuthenticateAsync()
+        protected override Task<AuthenticationContext> DoAuthenticateAsync()
         {
-            var authenticateCommand = _commandFactory.Create<AuthenticateWithClientCredentialsCommand>();
-
-            var result = await authenticateCommand.ExecuteAsync(new AuthenticateWithClientCredentialsCommand.Parameters()
-            {
-                ClientId = Credentials.ClientId,
-                ClientSecret = Credentials.ClientSecret
-            });
-
-            return new ClientCredentialsAuthenticationContext(result.Token); 
+            return Task.FromResult<AuthenticationContext>(new UserTokenAuthenticationContext(_token)); 
         }
 
         protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)
@@ -43,7 +38,14 @@ namespace Reddit.NET.Core.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            return new ClientCredentialsAuthenticationContext(result.Token);
+            return new UserTokenAuthenticationContext(result.Token);
+        }
+
+        public class AuthenticationDetails 
+        {
+            public string RefreshToken { get; set; }
+            public string ClientId { get; set; }
+            public string ClientSecret { get; set; }
         }
     }
 }

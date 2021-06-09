@@ -14,9 +14,7 @@ namespace Reddit.NET.Core.Client.Builder
     {
         private IHttpClientFactory _httpClientFactory;
         private ILoggerFactory _loggerFactory;
-        private UserRefreshTokenAuthenticator.AuthenticationDetails _userRefreshTokenAuthenticationDetails;
-        private UsernamePasswordAuthenticator.AuthenticationDetails  _usernamePasswordAuthenticationDetails;
-        private ClientCredentialsAuthenticator.AuthenticationDetails _clientCredentialsAuthenticationDetails;
+        private Credentials _credentials;
 
         /// <summary>
         /// Creates a new <see cref="RedditClientBuilder" /> instance to start the build process.
@@ -54,41 +52,48 @@ namespace Reddit.NET.Core.Client.Builder
             return this;
         }
 
-        /// <summary>
-        /// Configures the builder to use <see cref="UserRefreshTokenAuthenticator" /> for authentication.
-        /// </summary>
-        /// <param name="authenticationDetails">A <see cref="UserRefreshTokenAuthenticator.AuthenticationDetails" /> instance.</param>
-        /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithUserRefreshTokenAuthentication(UserRefreshTokenAuthenticator.AuthenticationDetails authenticationDetails)
+        public RedditClientBuilder WithCredentials(Credentials credentials)
         {
-            _userRefreshTokenAuthenticationDetails = authenticationDetails;
+            _credentials = credentials;
+
+            return this;
+        }
+
+        // /// <summary>
+        // /// Configures the builder to use <see cref="UserRefreshTokenAuthenticator" /> for authentication.
+        // /// </summary>
+        // /// <param name="authenticationDetails">A <see cref="UserRefreshTokenAuthenticator.AuthenticationDetails" /> instance.</param>
+        // /// <returns>The updated builder.</returns>
+        // public RedditClientBuilder WithUserRefreshTokenAuthentication(UserRefreshTokenAuthenticator.AuthenticationDetails authenticationDetails)
+        // {
+        //     _userRefreshTokenAuthenticationDetails = authenticationDetails;
             
-            return this;
-        }
+        //     return this;
+        // }
 
-        /// <summary>
-        /// Configures the builder to use <see cref="UsernamePasswordAuthenticator" /> for authentication.
-        /// </summary>
-        /// <param name="authenticationDetails">A <see cref="UsernamePasswordAuthenticator.AuthenticationDetails" /> instance.</param>
-        /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithUsernamePasswordAuthentication(UsernamePasswordAuthenticator.AuthenticationDetails authenticationDetails)
-        {
-            _usernamePasswordAuthenticationDetails = authenticationDetails;
+        // /// <summary>
+        // /// Configures the builder to use <see cref="UsernamePasswordAuthenticator" /> for authentication.
+        // /// </summary>
+        // /// <param name="authenticationDetails">A <see cref="UsernamePasswordAuthenticator.AuthenticationDetails" /> instance.</param>
+        // /// <returns>The updated builder.</returns>
+        // public RedditClientBuilder WithUsernamePasswordAuthentication(UsernamePasswordAuthenticator.AuthenticationDetails authenticationDetails)
+        // {
+        //     _usernamePasswordAuthenticationDetails = authenticationDetails;
 
-            return this;
-        }
+        //     return this;
+        // }
 
-        /// <summary>
-        /// Configures the builder to use <see cref="ClientCredentialsAuthenticator" /> for authentication.
-        /// </summary>
-        /// <param name="authenticationDetails">A <see cref="ClientCredentialsAuthenticator.AuthenticationDetails" /> instance.</param>
-        /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithClientCredentialsAuthentication(ClientCredentialsAuthenticator.AuthenticationDetails authenticationDetails)
-        {
-            _clientCredentialsAuthenticationDetails = authenticationDetails;
+        // /// <summary>
+        // /// Configures the builder to use <see cref="ClientCredentialsAuthenticator" /> for authentication.
+        // /// </summary>
+        // /// <param name="authenticationDetails">A <see cref="ClientCredentialsAuthenticator.AuthenticationDetails" /> instance.</param>
+        // /// <returns>The updated builder.</returns>
+        // public RedditClientBuilder WithClientCredentialsAuthentication(ClientCredentialsAuthenticator.AuthenticationDetails authenticationDetails)
+        // {
+        //     _clientCredentialsAuthenticationDetails = authenticationDetails;
             
-            return this;
-        }
+        //     return this;
+        // }
 
         /// <summary>
         /// Creates a <see cref="RedditClient" /> instance based on the builder configuration.
@@ -99,7 +104,8 @@ namespace Reddit.NET.Core.Client.Builder
             CheckValidity();
 
             var commandFactory = new CommandFactory(_httpClientFactory, _loggerFactory);
-            IAuthenticator authenticator = DetermineAuthenticator(commandFactory);
+            var authenticatorFactory = new AuthenticatorFactory(_loggerFactory, commandFactory);
+            var authenticator = authenticatorFactory.GetAuthenticator(_credentials);
 
             return new RedditClient(commandFactory, authenticator);
         }
@@ -116,37 +122,10 @@ namespace Reddit.NET.Core.Client.Builder
                 throw new RedditClientBuilderException("No logger factory configured.");
             }
 
-            if (_usernamePasswordAuthenticationDetails == null && 
-                _clientCredentialsAuthenticationDetails == null &&
-                _userRefreshTokenAuthenticationDetails == null)
+            if (_credentials == null)
             {
-                throw new RedditClientBuilderException("No authentication details configured.");
+                throw new RedditClientBuilderException("No credentials configured.");
             }
-        }
-
-        private IAuthenticator DetermineAuthenticator(CommandFactory commandFactory) 
-        {
-            if (_userRefreshTokenAuthenticationDetails != null) 
-            {
-                return new UserRefreshTokenAuthenticator(
-                    _loggerFactory.CreateLogger<UserRefreshTokenAuthenticator>(),
-                    commandFactory,
-                    _userRefreshTokenAuthenticationDetails
-                );
-            }
-
-            if (_usernamePasswordAuthenticationDetails != null)
-            {
-                return new UsernamePasswordAuthenticator(
-                    _loggerFactory.CreateLogger<UsernamePasswordAuthenticator>(),
-                    commandFactory, 
-                    _usernamePasswordAuthenticationDetails);
-            }
-
-            return new ClientCredentialsAuthenticator(
-                _loggerFactory.CreateLogger<ClientCredentialsAuthenticator>(),
-                commandFactory, 
-                _clientCredentialsAuthenticationDetails);
         }
     }
 }

@@ -6,7 +6,7 @@ using Reddit.NET.Core.Client.Command.Users;
 
 namespace Reddit.NET.Core.Client
 {
-    public class UserRefreshTokenAuthenticationContext : AuthenticationContext
+    public class UserTokenAuthenticationContext : AuthenticationContext
     {
         private static readonly string[] _supportedCommandIds = new string[]
         {
@@ -22,7 +22,7 @@ namespace Reddit.NET.Core.Client
 
         public override Token Token { get; }
 
-        public UserRefreshTokenAuthenticationContext(Token token)
+        public UserTokenAuthenticationContext(Token token)
             : base(_supportedCommandIds)
         {
             Token = token;

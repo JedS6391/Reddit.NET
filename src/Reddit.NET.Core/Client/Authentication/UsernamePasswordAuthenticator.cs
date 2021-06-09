@@ -8,17 +8,15 @@ namespace Reddit.NET.Core.Client.Authentication
 {
     public class UsernamePasswordAuthenticator : AutoRefreshAuthenticator
     {
-        private readonly CommandFactory _commandFactory;
-        private readonly UsernamePasswordAuthenticator.AuthenticationDetails _authenticationDetails;
+        private readonly CommandFactory _commandFactory;        
 
         public UsernamePasswordAuthenticator(
             ILogger<UsernamePasswordAuthenticator> logger,
             CommandFactory commandFactory, 
-            UsernamePasswordAuthenticator.AuthenticationDetails authenticationDetails)
-            : base(logger)
+            Credentials credentials)
+            : base(logger, credentials)
         {
             _commandFactory = commandFactory;
-            _authenticationDetails = authenticationDetails;
         }
 
         protected override async Task<AuthenticationContext> DoAuthenticateAsync()
@@ -27,10 +25,10 @@ namespace Reddit.NET.Core.Client.Authentication
 
             var result = await authenticateCommand.ExecuteAsync(new AuthenticateWithUsernamePasswordCommand.Parameters
             {
-                Username = _authenticationDetails.Username,
-                Password = _authenticationDetails.Password,
-                ClientId = _authenticationDetails.ClientId,
-                ClientSecret = _authenticationDetails.ClientSecret
+                Username = Credentials.Username,
+                Password = Credentials.Password,
+                ClientId = Credentials.ClientId,
+                ClientSecret = Credentials.ClientSecret
             });
 
             return new UsernamePasswordAuthenticationContext(result.Token); 
@@ -41,14 +39,6 @@ namespace Reddit.NET.Core.Client.Authentication
             // Username + password authentication does not support refresh tokens, so we need to completely re-authenticate.        
             // TODO: Find a better way to support 2-FA, as the 2-FA code will have expired by the point we need to refresh.
             return await DoAuthenticateAsync().ConfigureAwait(false);
-        }
-
-        public class AuthenticationDetails 
-        {
-            public string Username { get; set; }
-            public string Password { get; set; }
-            public string ClientId { get; set; }
-            public string ClientSecret { get; set; }
         }
     }
 }
