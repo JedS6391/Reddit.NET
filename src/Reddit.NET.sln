@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Core", "Reddit.N
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Example", "Examples\Reddit.NET.Example\Reddit.NET.Example.csproj", "{5A72B17C-C081-4548-AE1F-FFD405A6621C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.AuthorizationCodeExample", "Examples/Reddit.NET.AuthorizationCodeExample\Reddit.NET.AuthorizationCodeExample.csproj", "{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}"
-EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -46,17 +44,5 @@ Global
 		{5A72B17C-C081-4548-AE1F-FFD405A6621C}.Release|x64.Build.0 = Release|Any CPU
 		{5A72B17C-C081-4548-AE1F-FFD405A6621C}.Release|x86.ActiveCfg = Release|Any CPU
 		{5A72B17C-C081-4548-AE1F-FFD405A6621C}.Release|x86.Build.0 = Release|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Debug|x64.Build.0 = Debug|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Debug|x86.ActiveCfg = Debug|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Debug|x86.Build.0 = Debug|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Release|x64.ActiveCfg = Release|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Release|x64.Build.0 = Release|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Release|x86.ActiveCfg = Release|Any CPU
-		{D447860C-8EF0-4EA7-848C-0D29C1F7D37A}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
