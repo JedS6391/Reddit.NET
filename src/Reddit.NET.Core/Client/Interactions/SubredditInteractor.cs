@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Public.Listings;
 using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
@@ -20,8 +19,7 @@ namespace Reddit.NET.Core.Client.Interactions
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditInteractor" /> class.
         /// </summary>
-        /// <param name="commandFactory">A <see cref="CommandFactory" /> instance used for creating commands for interactions with reddit.</param>
-        /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to authenticate with reddit.</param>
+        /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>        
         /// <param name="subredditName">The name of the subreddit to interact with.</param>
         public SubredditInteractor(
             RedditClient client,

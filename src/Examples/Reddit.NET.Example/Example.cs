@@ -7,7 +7,6 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Authentication;
 using Reddit.NET.Core.Client.Builder;
 
 namespace Reddit.NET.Example
@@ -33,10 +32,10 @@ namespace Reddit.NET.Example
                 .New
                 .WithHttpClientFactory(_httpClientFactory)
                 .WithLoggerFactory(_loggerFactory)                
-                .WithCredentials(configuration => 
+                .WithCredentialsConfiguration(credentialsBuilder => 
                 {
-                    //ConfigureScriptCredentials(configuration);
-                    ConfigureWebAppCredentials(configuration);
+                    //ConfigureScriptCredentials(credentialsBuilder);
+                    ConfigureWebAppCredentials(credentialsBuilder);
                 })     
                 .BuildAsync();
 
@@ -81,14 +80,14 @@ namespace Reddit.NET.Example
             return Task.CompletedTask;
         }
 
-        private void ConfigureWebAppCredentials(RedditClientBuilder.CredentialsConfiguration credentialsConfiguration)
+        private void ConfigureWebAppCredentials(CredentialsBuilder credentialsBuilder)
         {
             var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
             var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
             var redirectUri = new Uri(Environment.GetEnvironmentVariable("REDDIT_CLIENT_REDIRECT_URI"));
             var state = GetRandomState();
             
-            var interactiveCredentialsBuilder = credentialsConfiguration.WebApp(
+            var interactiveCredentialsBuilder = credentialsBuilder.WebApp(
                 clientId,
                 clientSecret,
                 redirectUri,
@@ -125,7 +124,7 @@ namespace Reddit.NET.Example
             interactiveCredentialsBuilder.Authorize(codeParameter);
         }
 
-        private void ConfigureScriptCredentials(RedditClientBuilder.CredentialsConfiguration credentialsConfiguration)
+        private void ConfigureScriptCredentials(CredentialsBuilder credentialsBuilder)
         {          
             var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
             var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
@@ -134,7 +133,7 @@ namespace Reddit.NET.Example
 
             var code = PromptForValue("2FA Code");
 
-            credentialsConfiguration.Script(
+            credentialsBuilder.Script(
                 clientId,
                 clientSecret,
                 username,

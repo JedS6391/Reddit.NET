@@ -1,4 +1,4 @@
-using System.Net.Http;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
@@ -21,17 +21,17 @@ namespace Reddit.NET.Core.Client
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClient" /> class.
         /// </summary>
-        /// <param name="loggerFactory">An <see cref="ILoggerFactory" /> instance used create a logger for writing log messages.</param>
-        /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients when executing requests</param>
+        /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
+        /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to authenticate with reddit.</param>
         internal RedditClient(
             ILogger<RedditClient> logger,
             CommandExecutor commandExecutor,
             IAuthenticator authenticator)
         {
-            _logger = logger;
-            _commandExecutor = commandExecutor;
-            _authenticator = authenticator;
+            _logger = Requires.NotNull(logger, nameof(logger));
+            _commandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
+            _authenticator = Requires.NotNull(authenticator, nameof(authenticator));
         }
 
         /// <summary>

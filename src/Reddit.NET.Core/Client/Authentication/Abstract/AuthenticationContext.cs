@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 
@@ -25,10 +26,10 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationContext" /> class.
         /// </summary>
-        /// <param name="supportedCommandIds">A list of <see cref="ICommand" /> identifiers that are supported by this context.</param>
+        /// <param name="supportedCommandIds">A list of <see cref="ClientCommand" /> identifiers that are supported by this context.</param>
         protected AuthenticationContext(string[] supportedCommandIds)
         {
-            _supportedCommandIds = supportedCommandIds;
+            _supportedCommandIds = Requires.NotNull(supportedCommandIds, nameof(supportedCommandIds));
         }
 
         /// <summary>

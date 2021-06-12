@@ -1,3 +1,4 @@
+using System.Net.Http;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
@@ -34,6 +35,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
         }
 
+        internal override CommentDetails MapThing(Thing<Comment.Details> thing) => new CommentDetails(thing);
+
         private async Task<Comment.Listing> GetListingAsync(string after = null)
         {
             var getSubmissionCommentsCommand = new GetSubmissionCommentsCommand(new GetSubmissionCommentsCommand.Parameters()
@@ -41,14 +44,20 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
                 SubredditName = _parameters.SubredditName,
                 SubmissionId = _parameters.SubmissionId
             });
+        
+            var response = await _client.ExecuteCommandAsync(getSubmissionCommentsCommand);
 
-            // TODO: I don't think this type is right.
-            var comments = await _client.ExecuteCommandAsync<Comment.Listing>(getSubmissionCommentsCommand);
+            var comments = ParseResponse(response);
 
             return comments;
-        }
+        }    
 
-        internal override CommentDetails MapThing(Thing<Comment.Details> thing) => new CommentDetails(thing);
+        private Comment.Listing ParseResponse(HttpResponseMessage response)
+        {
+            // TODO: Need a better way to handle custom response parsing.
+            // TODO: Implement parsing logic
+            return null;
+        }
 
         public class ListingParameters 
         {

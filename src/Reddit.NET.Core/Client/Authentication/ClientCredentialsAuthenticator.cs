@@ -1,14 +1,25 @@
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
+using Reddit.NET.Core.Client.Authentication.Context;
+using Reddit.NET.Core.Client.Authentication.Credential;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Authentication;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Authentication
 {
-    public class ClientCredentialsAuthenticator : AutoRefreshAuthenticator
+    /// <summary>
+    /// An <see cref="IAuthenticator" /> implementation that uses the <c>client_credentials</c> grant type to authenticate.
+    /// </summary>
+    public sealed class ClientCredentialsAuthenticator : AutoRefreshAuthenticator
     {        
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClientCredentialsAuthenticator" /> class.
+        /// </summary>
+        /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
+        /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
+        /// <param name="credentials">A <see cref="Credentials" /> instance describing the credentials to use for authentication.</param>
         public ClientCredentialsAuthenticator(
             ILogger<ClientCredentialsAuthenticator> logger,
             CommandExecutor commandExecutor, 
@@ -17,6 +28,7 @@ namespace Reddit.NET.Core.Client.Authentication
         {          
         }
 
+        /// <inheritdoc />
         protected override async Task<AuthenticationContext> DoAuthenticateAsync()
         {
             var authenticateCommand = new AuthenticateWithClientCredentialsCommand(new AuthenticateWithClientCredentialsCommand.Parameters()
@@ -30,6 +42,7 @@ namespace Reddit.NET.Core.Client.Authentication
             return new ClientCredentialsAuthenticationContext(token);
         }
 
+        /// <inheritdoc />
         protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)
         {
             var refreshTokenCommand = new AuthenticateWithRefreshTokenCommand(new AuthenticateWithRefreshTokenCommand.Parameters()
