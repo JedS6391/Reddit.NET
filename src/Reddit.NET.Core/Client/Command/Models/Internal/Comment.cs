@@ -16,7 +16,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("replies")]
             public object Replies { get; set; }
         }
-
+        
         public class Listing : Listing<Comment.Details> 
         {
         }        

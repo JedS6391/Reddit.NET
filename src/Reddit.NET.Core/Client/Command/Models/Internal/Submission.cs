@@ -1,5 +1,6 @@
 using System.Text.Json.Serialization;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
+using Reddit.NET.Core.Client.Command.Models.Internal.Json;
 
 namespace Reddit.NET.Core.Client.Command.Models.Internal
 {
@@ -22,6 +23,13 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
 
         public class Listing : Listing<Submission.Details> 
         {
+        }
+
+        [JsonConverter(typeof(SubmissionCommentsJsonConverter))]
+        internal class SubmissionComments
+        {
+            public Submission.Listing Submissions { get; set;}
+            public Comment.Listing Comments { get; set;}
         }
     }
 }

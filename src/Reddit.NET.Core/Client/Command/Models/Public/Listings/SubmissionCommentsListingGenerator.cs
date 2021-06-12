@@ -1,6 +1,4 @@
-using System.Net.Http;
 using System.Threading.Tasks;
-using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
@@ -13,7 +11,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         : ListingGenerator<Comment.Listing, Comment.Details, CommentDetails>
     {
         private readonly RedditClient _client;
-        private readonly SubmissionCommentsListingGenerator.ListingParameters _parameters;
+        private readonly SubmissionCommentsListingGenerator.ListingParameters _parameters;        
 
         public SubmissionCommentsListingGenerator(
             RedditClient client,
@@ -45,19 +43,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
                 SubmissionId = _parameters.SubmissionId
             });
         
-            var response = await _client.ExecuteCommandAsync(getSubmissionCommentsCommand);
+            var submissionComments = await _client.ExecuteCommandAsync<Submission.SubmissionComments>(getSubmissionCommentsCommand);            
 
-            var comments = ParseResponse(response);
-
-            return comments;
+            // TODO: Would be nice to have the link between submission and comment.
+            return submissionComments.Comments;
         }    
-
-        private Comment.Listing ParseResponse(HttpResponseMessage response)
-        {
-            // TODO: Need a better way to handle custom response parsing.
-            // TODO: Implement parsing logic
-            return null;
-        }
 
         public class ListingParameters 
         {
