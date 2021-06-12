@@ -1,27 +1,27 @@
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Users
 {
-    public class GetUserSubredditsCommand : AuthenticatedCommand<GetUserSubredditsCommand.Parameters, GetUserSubredditsCommand.Result, Subreddit.Listing>
+    public class GetUserSubredditsCommand : ClientCommand
     {
-        public GetUserSubredditsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly GetUserSubredditsCommand.Parameters _parameters;
+
+        public GetUserSubredditsCommand(GetUserSubredditsCommand.Parameters parameters)
+            : base()
         {
+            _parameters = parameters;
         }
 
         public override string Id => nameof(GetUserSubredditsCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        public override HttpRequestMessage BuildRequest()
         {
             var uriBuilder = new UriBuilder("https://oauth.reddit.com/subreddits/mine/subscriber");
 
-            if (!string.IsNullOrEmpty(parameters.After))
+            if (!string.IsNullOrEmpty(_parameters.After))
             {
-                uriBuilder.Query = $"?after={parameters.After}";
+                uriBuilder.Query = $"?after={_parameters.After}";
             }
 
             var request = new HttpRequestMessage()
@@ -33,19 +33,9 @@ namespace Reddit.NET.Core.Client.Command.Users
             return request;
         }
 
-        protected override Result MapToResult(Subreddit.Listing response) => new Result()
-        {
-            Listing = response
-        };
-
         public class Parameters 
         {
             public string After { get; set; }
-        }
-
-        public class Result 
-        {
-            public Subreddit.Listing Listing { get; set; }
         }
     }
 }

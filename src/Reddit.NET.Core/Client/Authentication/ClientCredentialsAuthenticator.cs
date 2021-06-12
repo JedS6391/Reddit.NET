@@ -3,47 +3,45 @@ using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Authentication;
+using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Authentication
 {
     public class ClientCredentialsAuthenticator : AutoRefreshAuthenticator
-    {
-        private readonly CommandFactory _commandFactory;        
-
+    {        
         public ClientCredentialsAuthenticator(
             ILogger<ClientCredentialsAuthenticator> logger,
-            CommandFactory commandFactory, 
+            CommandExecutor commandExecutor, 
             Credentials credentials)
-            : base(logger, credentials)
-        {
-            _commandFactory = commandFactory;            
+            : base(logger, commandExecutor, credentials)
+        {          
         }
 
         protected override async Task<AuthenticationContext> DoAuthenticateAsync()
         {
-            var authenticateCommand = _commandFactory.Create<AuthenticateWithClientCredentialsCommand>();
-
-            var result = await authenticateCommand.ExecuteAsync(new AuthenticateWithClientCredentialsCommand.Parameters()
-            {
+            var authenticateCommand = new AuthenticateWithClientCredentialsCommand(new AuthenticateWithClientCredentialsCommand.Parameters()
+            {                
                 ClientId = Credentials.ClientId,
                 ClientSecret = Credentials.ClientSecret
             });
 
-            return new ClientCredentialsAuthenticationContext(result.Token); 
+            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+
+            return new ClientCredentialsAuthenticationContext(token);
         }
 
         protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)
         {
-            var refreshTokenCommand = _commandFactory.Create<AuthenticateWithRefreshTokenCommand>();
-
-            var result = await refreshTokenCommand.ExecuteAsync(new AuthenticateWithRefreshTokenCommand.Parameters()
+            var refreshTokenCommand = new AuthenticateWithRefreshTokenCommand(new AuthenticateWithRefreshTokenCommand.Parameters()
             {
                 RefreshToken = currentContext.Token.RefreshToken,
                 ClientId = Credentials.ClientId,
                 ClientSecret = Credentials.ClientSecret
             });
 
-            return new ClientCredentialsAuthenticationContext(result.Token);
+            var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
+
+            return new UserTokenAuthenticationContext(token);
         }
     }
 }

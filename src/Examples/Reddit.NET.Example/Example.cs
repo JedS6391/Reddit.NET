@@ -1,8 +1,10 @@
 using System;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication;
@@ -27,15 +29,16 @@ namespace Reddit.NET.Example
         {
             _logger.LogTrace("StartAsync");
 
-            // var credentials = await GetInteractiveCredentialsAsync();
-            var credentials = GetUsernamePasswordCredentials();
-
-            var client = RedditClientBuilder
+            var client = await RedditClientBuilder
                 .New
                 .WithHttpClientFactory(_httpClientFactory)
-                .WithLoggerFactory(_loggerFactory)
-                .WithCredentials(credentials)        
-                .Build();
+                .WithLoggerFactory(_loggerFactory)                
+                .WithCredentials(configuration => 
+                {
+                    //ConfigureScriptCredentials(configuration);
+                    ConfigureWebAppCredentials(configuration);
+                })     
+                .BuildAsync();
 
             var askReddit = client.Subreddit("askreddit");
 
@@ -78,23 +81,25 @@ namespace Reddit.NET.Example
             return Task.CompletedTask;
         }
 
-        private async Task<InteractiveCredentials> GetInteractiveCredentialsAsync()
+        private void ConfigureWebAppCredentials(RedditClientBuilder.CredentialsConfiguration credentialsConfiguration)
         {
             var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
             var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
-            var redirectUri = Environment.GetEnvironmentVariable("REDDIT_CLIENT_REDIRECT_URI");
-
-            var credentialsBuilder = InteractiveCredentials.WebApp(
+            var redirectUri = new Uri(Environment.GetEnvironmentVariable("REDDIT_CLIENT_REDIRECT_URI"));
+            var state = GetRandomState();
+            
+            var interactiveCredentialsBuilder = credentialsConfiguration.WebApp(
                 clientId,
                 clientSecret,
-                new Uri(redirectUri));
+                redirectUri,
+                state);                
 
             Console.WriteLine("Please follow the steps to retrieve an access token and refresh token you can use with the Reddit.NET client.");
             Console.WriteLine();
              
             Console.WriteLine("1. Open the following link in your browser to complete the authorization process.");
             Console.WriteLine();
-            Console.WriteLine($"{credentialsBuilder.AuthorizationUri}");
+            Console.WriteLine($"{interactiveCredentialsBuilder.AuthorizationUri}");
             Console.WriteLine();
 
             Console.WriteLine("2. Once you've completed authorization in the browser, copy the final redirect URI and enter it below.");
@@ -102,10 +107,25 @@ namespace Reddit.NET.Example
 
             var finalRedirectUri = PromptForValue("Final Redirect URI");
 
-            return await credentialsBuilder.AuthorizeAsync(new Uri(finalRedirectUri));
+            var queryString = HttpUtility.ParseQueryString(new Uri(finalRedirectUri).Query);
+
+            var stateParameter = queryString.Get("state");
+            var codeParameter = queryString.Get("code");
+
+            if (string.IsNullOrEmpty(stateParameter) || stateParameter != state)
+            {
+                throw new InvalidOperationException("State parameter not found or does not match.");
+            }
+
+            if (string.IsNullOrEmpty(codeParameter))
+            {
+                throw new InvalidOperationException("Code parameter not found.");
+            }
+
+            interactiveCredentialsBuilder.Authorize(codeParameter);
         }
 
-        private NonInteractiveCredentials GetUsernamePasswordCredentials()
+        private void ConfigureScriptCredentials(RedditClientBuilder.CredentialsConfiguration credentialsConfiguration)
         {          
             var clientId = Environment.GetEnvironmentVariable("REDDIT_CLIENT_ID");
             var clientSecret = Environment.GetEnvironmentVariable("REDDIT_CLIENT_SECRET");
@@ -114,18 +134,29 @@ namespace Reddit.NET.Example
 
             var code = PromptForValue("2FA Code");
 
-            return NonInteractiveCredentials.Script(
+            credentialsConfiguration.Script(
                 clientId,
                 clientSecret,
                 username,
                 $"{password}:{code}");
         }
 
-        private string PromptForValue(string valueName)
+        private static string PromptForValue(string valueName)
         {
             Console.Write($"Please enter your {valueName}: ");
 
             return Console.ReadLine();
         }
+
+        private static string GetRandomState() 
+        {
+            using var random = new RNGCryptoServiceProvider();
+
+            byte[] tokenData = new byte[32];
+            
+            random.GetBytes(tokenData);
+
+            return Convert.ToBase64String(tokenData);
+        } 
     }
 }

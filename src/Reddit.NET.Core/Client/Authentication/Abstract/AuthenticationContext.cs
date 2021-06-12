@@ -1,5 +1,5 @@
 using System.Linq;
-using Reddit.NET.Core.Client.Command.Abstract;
+using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Authentication.Abstract
@@ -36,6 +36,6 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
         /// </summary>
         /// <param name="command">A command to determine the execution rules for.</param>
         /// <returns><see langword="true" /> if the context supports the provided command; <see langword="false" /> otherwise.</returns>
-        public bool CanExecute(ICommand command) => _supportedCommandIds.Any(id => id == command.Id);
+        public bool CanExecute(ClientCommand command) => _supportedCommandIds.Any(id => id == command.Id);
     }
 }

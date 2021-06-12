@@ -1,28 +1,26 @@
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Subreddits
 {
-    public class GetHotSubredditSubmissionsCommand 
-        : AuthenticatedCommand<GetHotSubredditSubmissionsCommand.Parameters, GetHotSubredditSubmissionsCommand.Result, Submission.Listing>
+    public class GetHotSubredditSubmissionsCommand : ClientCommand
     {
-        public GetHotSubredditSubmissionsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly GetHotSubredditSubmissionsCommand.Parameters _parameters;
+
+        public GetHotSubredditSubmissionsCommand(GetHotSubredditSubmissionsCommand.Parameters parameters)
         {
+            _parameters = parameters;
         }
 
         public override string Id => nameof(GetHotSubredditSubmissionsCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        public override HttpRequestMessage BuildRequest()
         {
-            var uriBuilder = new UriBuilder($"https://oauth.reddit.com/r/{parameters.SubredditName}/hot");
+            var uriBuilder = new UriBuilder($"https://oauth.reddit.com/r/{_parameters.SubredditName}/hot");
 
-            if (!string.IsNullOrEmpty(parameters.After))
+            if (!string.IsNullOrEmpty(_parameters.After))
             {
-                uriBuilder.Query = $"?after={parameters.After}";
+                uriBuilder.Query = $"?after={_parameters.After}";
             }
 
             var request = new HttpRequestMessage()
@@ -34,20 +32,10 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             return request;
         }
 
-        protected override Result MapToResult(Submission.Listing response) => new Result()
-        {
-            Listing = response
-        };
-
         public class Parameters 
         {
             public string SubredditName { get; set; }
             public string After { get; set; }
-        }
-
-        public class Result 
-        {
-            public Submission.Listing Listing { get; set; }
         }
     }
 }

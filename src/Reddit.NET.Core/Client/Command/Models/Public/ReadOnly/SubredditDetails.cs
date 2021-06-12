@@ -1,3 +1,5 @@
+using Reddit.NET.Core.Client.Command.Models.Internal;
+using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
 using Reddit.NET.Core.Client.Interactions;
 
@@ -8,8 +10,14 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
     /// </summary>
     public class SubredditDetails : IToInteractor<SubredditInteractor>
     {
-        public string Name { get; internal set; }
-        public string Title { get; internal set; }
+        internal SubredditDetails(Thing<Subreddit.Details> subreddit)
+        {
+            Name = subreddit.Data.DisplayName;
+            Title = subreddit.Data.Title;
+        }
+
+        public string Name { get; }
+        public string Title { get; }
 
         public SubredditInteractor Interact(RedditClient client) => client.Subreddit(Name);
     }

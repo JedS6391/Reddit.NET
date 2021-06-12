@@ -1,5 +1,4 @@
 using System.Threading.Tasks;
-using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
@@ -11,13 +10,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
     public class UserSubredditsListingGenerator 
         : ListingGenerator<Subreddit.Listing, Subreddit.Details, SubredditDetails>
     {
-        private readonly CommandFactory _commandFactory;
-        private readonly IAuthenticator _authenticator;
+        private readonly RedditClient _client;
 
-        public UserSubredditsListingGenerator(CommandFactory commandFactory, IAuthenticator authenticator)
+        public UserSubredditsListingGenerator(RedditClient client)
         {
-            _commandFactory = commandFactory;
-            _authenticator = authenticator;
+            _client = client;
         }
 
         internal async override Task<Subreddit.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
@@ -34,24 +31,16 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 
         private async Task<Subreddit.Listing> GetListingAsync(string after = null)
         {
-            var authenticationContext = await _authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
+            var getUserSubredditsCommand = new GetUserSubredditsCommand(new GetUserSubredditsCommand.Parameters()
+            {
+                After = after
+            });
 
-            var getUserSubredditsCommand = _commandFactory.Create<GetUserSubredditsCommand>();
+            var subreddits = await _client.ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand);
 
-            var result = await getUserSubredditsCommand
-                .ExecuteAsync(authenticationContext, new GetUserSubredditsCommand.Parameters()
-                {
-                    After = after
-                })
-                .ConfigureAwait(false);
-
-            return result.Listing;
+            return subreddits;
         }
 
-        internal override SubredditDetails MapThing(Thing<Subreddit.Details> thing) => new SubredditDetails()
-        {
-            Name = thing.Data.DisplayName,
-            Title = thing.Data.Title,            
-        };
+        internal override SubredditDetails MapThing(Thing<Subreddit.Details> thing) => new SubredditDetails(thing);
     }
 }

@@ -3,28 +3,27 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Authentication
 {
-    public class AuthenticateWithRefreshTokenCommand 
-        : UnauthenticatedCommand<AuthenticateWithRefreshTokenCommand.Parameters, AuthenticateWithRefreshTokenCommand.Result, Token>
+    public class AuthenticateWithRefreshTokenCommand : ClientCommand        
     {
-        public AuthenticateWithRefreshTokenCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly AuthenticateWithRefreshTokenCommand.Parameters _parameters;
+
+        public AuthenticateWithRefreshTokenCommand(AuthenticateWithRefreshTokenCommand.Parameters parameters)
+            : base()
         {
+            _parameters = parameters;
         }
 
         public override string Id => nameof(AuthenticateWithUsernamePasswordCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        public override HttpRequestMessage BuildRequest()
         {
             var requestParameters = new Dictionary<string, string>()
             {
                 { "grant_type", "refresh_token" },
-                { "refresh_token", parameters.RefreshToken },                
+                { "refresh_token", _parameters.RefreshToken },                
                 { "duration", "permanent" }
             };
 
@@ -38,26 +37,16 @@ namespace Reddit.NET.Core.Client.Command.Authentication
             request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic",
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(
-                    $"{parameters.ClientId}:{parameters.ClientSecret}")));
+                    $"{_parameters.ClientId}:{_parameters.ClientSecret}")));
 
             return request;            
         }
-
-        protected override Result MapToResult(Token response) => new Result() 
-        {
-            Token = response
-        };
 
         public class Parameters 
         {
             public string RefreshToken { get; set; }            
             public string ClientId { get; set; }
             public string ClientSecret { get; set; }
-        }
-
-        public class Result 
-        {
-            public Token Token { get; internal set; }
         }
     }
 }

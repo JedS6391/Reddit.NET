@@ -3,27 +3,23 @@ using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Authentication;
+using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Authentication
 {
     public class UsernamePasswordAuthenticator : AutoRefreshAuthenticator
     {
-        private readonly CommandFactory _commandFactory;        
-
         public UsernamePasswordAuthenticator(
             ILogger<UsernamePasswordAuthenticator> logger,
-            CommandFactory commandFactory, 
+            CommandExecutor commandExecutor, 
             Credentials credentials)
-            : base(logger, credentials)
-        {
-            _commandFactory = commandFactory;
+            : base(logger, commandExecutor, credentials)
+        {            
         }
 
         protected override async Task<AuthenticationContext> DoAuthenticateAsync()
         {
-            var authenticateCommand = _commandFactory.Create<AuthenticateWithUsernamePasswordCommand>();
-
-            var result = await authenticateCommand.ExecuteAsync(new AuthenticateWithUsernamePasswordCommand.Parameters
+            var authenticateCommand = new AuthenticateWithUsernamePasswordCommand(new AuthenticateWithUsernamePasswordCommand.Parameters()
             {
                 Username = Credentials.Username,
                 Password = Credentials.Password,
@@ -31,7 +27,9 @@ namespace Reddit.NET.Core.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            return new UsernamePasswordAuthenticationContext(result.Token); 
+            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+
+            return new UsernamePasswordAuthenticationContext(token); 
         }
 
         protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)

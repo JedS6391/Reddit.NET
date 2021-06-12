@@ -11,17 +11,14 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
     public class SubmissionCommentsListingGenerator 
         : ListingGenerator<Comment.Listing, Comment.Details, CommentDetails>
     {
-        private readonly CommandFactory _commandFactory;
-        private readonly IAuthenticator _authenticator;
+        private readonly RedditClient _client;
         private readonly SubmissionCommentsListingGenerator.ListingParameters _parameters;
 
         public SubmissionCommentsListingGenerator(
-            CommandFactory commandFactory, 
-            IAuthenticator authenticator,
+            RedditClient client,
             SubmissionCommentsListingGenerator.ListingParameters parameters)
         {
-            _commandFactory = commandFactory;
-            _authenticator = authenticator;
+            _client = client;
             _parameters = parameters;
         }
 
@@ -39,25 +36,19 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 
         private async Task<Comment.Listing> GetListingAsync(string after = null)
         {
-            var authenticationContext = await _authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
+            var getSubmissionCommentsCommand = new GetSubmissionCommentsCommand(new GetSubmissionCommentsCommand.Parameters()
+            {
+                SubredditName = _parameters.SubredditName,
+                SubmissionId = _parameters.SubmissionId
+            });
 
-            var getSubmissionCommentsCommand = _commandFactory.Create<GetSubmissionCommentsCommand>();
+            // TODO: I don't think this type is right.
+            var comments = await _client.ExecuteCommandAsync<Comment.Listing>(getSubmissionCommentsCommand);
 
-            var result = await getSubmissionCommentsCommand
-                .ExecuteAsync(authenticationContext, new GetSubmissionCommentsCommand.Parameters()
-                {
-                    SubredditName = _parameters.SubredditName,
-                    SubmissionId = _parameters.SubmissionId
-                })
-                .ConfigureAwait(false);
-
-            return result.Listing;
+            return comments;
         }
 
-        internal override CommentDetails MapThing(Thing<Comment.Details> thing) => new CommentDetails()
-        {
-            Body = thing.Data.Body           
-        };
+        internal override CommentDetails MapThing(Thing<Comment.Details> thing) => new CommentDetails(thing);
 
         public class ListingParameters 
         {

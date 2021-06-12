@@ -2,10 +2,11 @@ using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Reddit.NET.Core.Client.Command;
 
 namespace Reddit.NET.Core.Client.Authentication.Abstract
 {
-    public abstract class AutoRefreshAuthenticator : IAuthenticator
+    public abstract class AutoRefreshAuthenticator : BaseAuthenticator
     {        
         private static readonly SemaphoreSlim AuthenticationContextCreationLock = new SemaphoreSlim(1, 1);        
 
@@ -15,7 +16,11 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
         protected ILogger<AutoRefreshAuthenticator> Logger;
         protected Credentials Credentials;
 
-        protected AutoRefreshAuthenticator(ILogger<AutoRefreshAuthenticator> logger, Credentials credentials)
+        protected AutoRefreshAuthenticator(
+            ILogger<AutoRefreshAuthenticator> logger, 
+            CommandExecutor commandExecutor,
+            Credentials credentials)
+            : base(commandExecutor)
         {                    
             Logger = logger;
             Credentials = credentials;
@@ -25,7 +30,7 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
 
         protected abstract Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext);
 
-        public async Task<AuthenticationContext> GetAuthenticationContextAsync()
+        public override async Task<AuthenticationContext> GetAuthenticationContextAsync()
         {
             if (ShouldCreateContext())
             {

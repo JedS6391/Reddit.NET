@@ -1,21 +1,19 @@
 using System;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
-using Reddit.NET.Core.Client.Command.Authentication;
 
 namespace Reddit.NET.Core.Client.Authentication
 {
     internal class AuthenticatorFactory
     {
         private readonly ILoggerFactory _loggerFactory;
-        private readonly CommandFactory _commandFactory;
+        private readonly CommandExecutor _commandExecutor;
 
-        public AuthenticatorFactory(ILoggerFactory loggerFactory, CommandFactory commandFactory)
+        public AuthenticatorFactory(ILoggerFactory loggerFactory, CommandExecutor commandExecutor)
         {
             _loggerFactory = loggerFactory;
-            _commandFactory = commandFactory;
+            _commandExecutor = commandExecutor;
         }
 
         public IAuthenticator GetAuthenticator(Credentials credentials)
@@ -35,13 +33,13 @@ namespace Reddit.NET.Core.Client.Authentication
                 AuthenticationMode.Script => 
                     new UsernamePasswordAuthenticator(
                         _loggerFactory.CreateLogger<UsernamePasswordAuthenticator>(),
-                        _commandFactory,
+                        _commandExecutor,                    
                         credentials),
 
                 AuthenticationMode.ReadOnly => 
                     new ClientCredentialsAuthenticator(
                         _loggerFactory.CreateLogger<ClientCredentialsAuthenticator>(),
-                        _commandFactory,
+                        _commandExecutor,
                         credentials),
 
                 AuthenticationMode.ReadOnlyInstalledApp => 
@@ -60,7 +58,7 @@ namespace Reddit.NET.Core.Client.Authentication
                 AuthenticationMode.WebApp or AuthenticationMode.WebApp => 
                     new UserTokenAuthenticator(
                         _loggerFactory.CreateLogger<UserTokenAuthenticator>(),
-                        _commandFactory,
+                        _commandExecutor,
                         credentials),
 
                 _ => throw new ArgumentException($"Mode '{credentials.Mode}' is not supported for interactive authentication.", nameof(credentials)),

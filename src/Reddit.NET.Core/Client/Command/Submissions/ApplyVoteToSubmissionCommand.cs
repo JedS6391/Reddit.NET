@@ -1,28 +1,28 @@
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Submissions
 {
-    public class ApplyVoteToSubmissionCommand 
-        : AuthenticatedCommand<ApplyVoteToSubmissionCommand.Parameters, ApplyVoteToSubmissionCommand.Result, Subreddit>
+    public class ApplyVoteToSubmissionCommand : ClientCommand
     {
-        public ApplyVoteToSubmissionCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly ApplyVoteToSubmissionCommand.Parameters _parameters;
+
+        public ApplyVoteToSubmissionCommand(ApplyVoteToSubmissionCommand.Parameters parameters)
+            : base()
         {
+            _parameters = parameters;
         }
 
         public override string Id => nameof(ApplyVoteToSubmissionCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        public override HttpRequestMessage BuildRequest()
         {
             var requestParameters = new Dictionary<string, string>()
             {
-                { "dir", ((int) parameters.Direction).ToString() },
-                { "id", parameters.Id }
+                { "dir", ((int) _parameters.Direction).ToString(CultureInfo.InvariantCulture) },
+                { "id", _parameters.Id }
             };
 
             var request = new HttpRequestMessage()
@@ -35,16 +35,10 @@ namespace Reddit.NET.Core.Client.Command.Submissions
             return request;
         }
 
-        protected override Result MapToResult(Subreddit response) => new Result();
-
         public class Parameters 
         {
             public string Id { get; set; }
             public VoteDirection Direction { get; set; }
-        }
-
-        public class Result 
-        {
         }
 
         public enum VoteDirection
