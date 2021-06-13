@@ -16,5 +16,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         }
 
         public string Name { get; }
+
+        public override string ToString() => $"User [Name = {Name}]";
     }
 }

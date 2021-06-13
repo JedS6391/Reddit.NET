@@ -26,5 +26,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         internal string Kind { get; set; }
 
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(this);
+
+        public override string ToString() => 
+            $"Submission [Subreddit = {Subreddit}, Title = {Title}, Permalink = {Permalink}]";
     }
 }

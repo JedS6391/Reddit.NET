@@ -101,14 +101,19 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
                 new Uri($"https://www.reddit.com/api/v1/authorize?client_id={_clientId}&response_type=code&state={_state}&redirect_uri={_redirectUri}&duration=permanent&scope={string.Join(' ', Scopes)}");
 
             /// <summary>
-            /// Completes 
+            /// Completes the interactive authentication flow.
             /// </summary>
-            /// <param name="code"></param>
+            /// <param name="code">The authorization code returned on completion of interactive authentication.</param>
             public void Authorize(string code) 
             {
                 _code = code;
             }
 
+            /// <summary>
+            /// Authenticates based on the builder configuration to obtain a token.
+            /// </summary>
+            /// <param name="commandExecutor">A <see cref="CommandExecutor" /> instance used for executing commands.</param>
+            /// <returns>A task representing the asynchronous operation.</returns>
             internal async Task AuthenticateAsync(CommandExecutor commandExecutor)
             {
                 if (_code == null)
@@ -128,7 +133,11 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
 
                 _token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);                
             }
-
+            
+            /// <summary>
+            /// Builds an <see cref="InteractiveCredentials" /> instance based on the builder configuration.
+            /// </summary>
+            /// <returns>An <see cref="InteractiveCredentials" /> instance representing the builder configuration.</returns>
             internal InteractiveCredentials Build()
             {
                 if (_token == null)

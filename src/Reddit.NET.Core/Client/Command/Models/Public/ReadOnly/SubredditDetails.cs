@@ -20,5 +20,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         public string Title { get; }
 
         public SubredditInteractor Interact(RedditClient client) => client.Subreddit(Name);
+
+        public override string ToString() => $"Subreddit [Name = {Name}, Title = {Title}]";
     }
 }
