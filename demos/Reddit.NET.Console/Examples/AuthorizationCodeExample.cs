@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Builder;
 
@@ -16,23 +17,23 @@ namespace Reddit.NET.Console.Examples
     internal class AuthorizationCodeExample : IExample
     {
         private readonly ILogger<AuthorizationCodeExample> _logger;
-        private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly IHttpClientFactory _httpClientFactory;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthorizationCodeExample" /> class.
         /// </summary>
         /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> used to write messages.</param>
-        /// <param name="httpClientFactory">A <see cref="IHttpClientFactory" /> used to create HTTP clients.</param>
         /// <param name="loggerFactory">An <see cref="ILoggerFactory" /> used to create logger instance.</param>
+        /// <param name="httpClientFactory">A <see cref="IHttpClientFactory" /> used to create HTTP clients.</param>
         public AuthorizationCodeExample(
             ILogger<AuthorizationCodeExample> logger, 
-            IHttpClientFactory httpClientFactory, 
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            IHttpClientFactory httpClientFactory)
         {
-            _logger = logger;
-            _httpClientFactory = httpClientFactory;
-            _loggerFactory = loggerFactory;
+            _logger = Requires.NotNull(logger, nameof(logger));
+            _loggerFactory = Requires.NotNull(loggerFactory, nameof(loggerFactory));
+            _httpClientFactory = Requires.NotNull(httpClientFactory, nameof(httpClientFactory));            
         }
 
         /// <inheritdoc />

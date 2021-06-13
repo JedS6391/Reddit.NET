@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CommandLine;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Console.Examples;
 
@@ -23,8 +24,8 @@ namespace Reddit.NET.Console
         /// <param name="examples">A collection containing the available examples.</param>
         public EntryPoint(ILogger<EntryPoint> logger, IEnumerable<IExample> examples)
         {
-            _logger = logger;
-            _examples = examples;
+            _logger = Requires.NotNull(logger, nameof(logger));
+            _examples = Requires.NotNull(examples, nameof(examples));
         }
 
         /// <summary>
@@ -35,7 +36,7 @@ namespace Reddit.NET.Console
         {
             _logger.LogTrace("RunAsync");
 
-            var args = System.Environment.GetCommandLineArgs();
+            var args = Environment.GetCommandLineArgs();
 
             var result = Parser
                 .Default
