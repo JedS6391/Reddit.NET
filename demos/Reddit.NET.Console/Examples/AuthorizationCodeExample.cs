@@ -101,9 +101,10 @@ namespace Reddit.NET.Console.Examples
             _logger.LogInformation($"{interactiveCredentialsBuilder.AuthorizationUri}\n");            
             _logger.LogInformation("2. Once you've completed authorization in the browser, copy the final redirect URI and enter it below.\n");            
 
-            var finalRedirectUri = PromptForValue("Final Redirect URI");
+            var finalRedirectUriString = PromptForValue("Final Redirect URI");
+            var finalRedirectUri = new Uri(finalRedirectUriString);
 
-            var queryString = HttpUtility.ParseQueryString(new Uri(finalRedirectUri).Query);
+            var queryString = HttpUtility.ParseQueryString(finalRedirectUri.Query);
 
             // Validate state and extract the code.
             var stateParameter = queryString.Get("state");

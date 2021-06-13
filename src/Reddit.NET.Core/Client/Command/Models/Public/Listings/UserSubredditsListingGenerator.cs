@@ -7,18 +7,27 @@ using Reddit.NET.Core.Client.Command.Users;
 
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
-    public class UserSubredditsListingGenerator 
+    /// <summary>
+    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the subreddits a user is subscribed to. 
+    /// </summary>
+    public sealed class UserSubredditsListingGenerator 
         : ListingGenerator<Subreddit.Listing, Subreddit.Details, SubredditDetails>
     {
         private readonly RedditClient _client;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserSubredditsListingGenerator" /> class.
+        /// </summary>
+        /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         public UserSubredditsListingGenerator(RedditClient client)
         {
             _client = client;
         }
 
+        /// <inheritdoc />
         internal async override Task<Subreddit.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
+        /// <inheritdoc />
         internal async override Task<Subreddit.Listing> GetNextListingAsync(Subreddit.Listing currentListing)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
@@ -28,6 +37,9 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 
             return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
         }
+        
+        /// <inheritdoc />
+        internal override SubredditDetails MapThing(Thing<Subreddit.Details> thing) => new SubredditDetails(thing);
 
         private async Task<Subreddit.Listing> GetListingAsync(string after = null)
         {
@@ -39,8 +51,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             var subreddits = await _client.ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand);
 
             return subreddits;
-        }
-
-        internal override SubredditDetails MapThing(Thing<Subreddit.Details> thing) => new SubredditDetails(thing);
+        } 
     }
 }

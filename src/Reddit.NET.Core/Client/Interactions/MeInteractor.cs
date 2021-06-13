@@ -30,9 +30,9 @@ namespace Reddit.NET.Core.Client.Interactions
         /// <returns>A task representing the asynchronous operation. The result contains the details of the authenticated user.</returns>
         public async Task<UserDetails> GetDetailsAsync()
         {
-            var getUserDetailsCommand = new GetUserDetailsCommand();
+            var getMyDetailsCommand = new GetMyDetailsCommand();
 
-            var user = await _client.ExecuteCommandAsync<User>(getUserDetailsCommand);
+            var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand);
 
             return new UserDetails(user);
         }

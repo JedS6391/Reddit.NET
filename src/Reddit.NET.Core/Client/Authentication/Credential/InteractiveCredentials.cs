@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using System.Web;
 using Microsoft;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Authentication;
@@ -100,7 +101,7 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
             /// Gets the URI the user should be sent to in order to start the interactive authentication flow.
             /// </summary>
             public Uri AuthorizationUri =>
-                new Uri($"https://www.reddit.com/api/v1/authorize?client_id={_clientId}&response_type=code&state={_state}&redirect_uri={_redirectUri}&duration=permanent&scope={string.Join(' ', Scopes)}");
+                new Uri($"https://www.reddit.com/api/v1/authorize?client_id={HttpUtility.UrlEncode(_clientId)}&response_type=code&state={HttpUtility.UrlEncode(_state)}&redirect_uri={HttpUtility.UrlEncode(_redirectUri.AbsoluteUri)}&duration=permanent&scope={HttpUtility.UrlEncode(string.Join(' ', Scopes))}");
 
             /// <summary>
             /// Completes the interactive authentication flow.

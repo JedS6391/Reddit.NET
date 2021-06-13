@@ -9,7 +9,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
     /// A <see cref="JsonConverter{T}" /> implementation for <see cref="Submission.SubmissionComments" /> instances.
     /// </summary>
     /// <remarks>
-    /// The GET /r/{subreddit}/comments/{article} endpoint returns an array with two elements:
+    /// A <c>GET /r/{subreddit}/comments/{article}</c> request returns an array with two elements:
     ///   
     ///   1. Listing of submission things (with a single child for the submission in question)
     ///   2. Listing of comment things

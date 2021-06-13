@@ -10,6 +10,11 @@ namespace Reddit.NET.Core.Client
     internal static class Constants
     {
         /// <summary>
+        /// The version of the client.
+        /// </summary>
+        public const string Version = "0.1.0";
+
+        /// <summary>
         /// Constants used in requests made to reddit.
         /// </summary>
         public static class Request 
@@ -17,7 +22,7 @@ namespace Reddit.NET.Core.Client
             /// <summary>
             /// The name the client will send in the <c>User-Agent</c> header when making HTTP requests.
             /// </summary>
-            public const string ClientName = "Reddit.NET client";
+            public static string ClientName = $"Reddit.NET.Core.Client v{Version} (by JedS6391)";
         }
 
         /// <summary>
@@ -42,7 +47,7 @@ namespace Reddit.NET.Core.Client
             {
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetHotSubredditSubmissionsCommand),
-                nameof(GetUserDetailsCommand),
+                nameof(GetMyDetailsCommand),
                 nameof(GetUserSubredditsCommand),
                 nameof(ApplyVoteToSubmissionCommand),
                 nameof(GetSubmissionCommentsCommand)

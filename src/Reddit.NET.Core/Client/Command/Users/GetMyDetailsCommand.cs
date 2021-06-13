@@ -3,14 +3,14 @@ using System.Net.Http;
 
 namespace Reddit.NET.Core.Client.Command.Users
 {
-    public sealed class GetUserDetailsCommand : ClientCommand
+    public sealed class GetMyDetailsCommand : ClientCommand
     {
-        public GetUserDetailsCommand()
+        public GetMyDetailsCommand()
             : base()
         {
         }
 
-        public override string Id => nameof(GetUserDetailsCommand);
+        public override string Id => nameof(GetMyDetailsCommand);
 
         public override HttpRequestMessage BuildRequest()
         {

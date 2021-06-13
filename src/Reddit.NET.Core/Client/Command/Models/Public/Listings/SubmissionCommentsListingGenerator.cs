@@ -7,12 +7,20 @@ using Reddit.NET.Core.Client.Command.Submissions;
 
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
+    /// <summary>
+    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the comments of a submission. 
+    /// </summary>
     public class SubmissionCommentsListingGenerator 
         : ListingGenerator<Comment.Listing, Comment.Details, CommentDetails>
     {
         private readonly RedditClient _client;
         private readonly SubmissionCommentsListingGenerator.ListingParameters _parameters;        
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserSubredditsListingGenerator" /> class.
+        /// </summary>
+        /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
+        /// /// <param name="parameters">Parameters used when loading the listing data.</param>
         public SubmissionCommentsListingGenerator(
             RedditClient client,
             SubmissionCommentsListingGenerator.ListingParameters parameters)
@@ -21,8 +29,10 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             _parameters = parameters;
         }
 
+        /// <inheritdoc />
         internal async override Task<Comment.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
+        /// <inheritdoc />
         internal async override Task<Comment.Listing> GetNextListingAsync(Comment.Listing currentListing)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
@@ -33,6 +43,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
         }
 
+        /// <inheritdoc />
         internal override CommentDetails MapThing(Thing<Comment.Details> thing) => new CommentDetails(thing);
 
         private async Task<Comment.Listing> GetListingAsync(string after = null)
@@ -49,9 +60,19 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             return submissionComments.Comments;
         }    
 
+        /// <summary>
+        /// Defines parameters used when loading the listing data
+        /// </summary>
         public class ListingParameters 
         {
+            /// <summary>
+            /// Gets or sets the name of the subreddit the submission belongs to
+            /// </summary>
             public string SubredditName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the identifier of the submission to load comments for.
+            /// </summary>
             public string SubmissionId { get; set; }
         }
     }
