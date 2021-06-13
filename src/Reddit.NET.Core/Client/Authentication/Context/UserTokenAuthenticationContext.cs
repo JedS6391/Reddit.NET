@@ -1,3 +1,4 @@
+using Microsoft;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 
@@ -10,12 +11,6 @@ namespace Reddit.NET.Core.Client.Authentication.Context
     {
         private static readonly string[] _supportedCommandIds = Constants.Command.UserCommandIds;
 
-        /// <inheritdoc />
-        public override string Id => "User Refresh Token";
-        
-        /// <inheritdoc />
-        public override Token Token { get; }
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UserTokenAuthenticationContext" /> class.
         /// </summary>
@@ -23,7 +18,13 @@ namespace Reddit.NET.Core.Client.Authentication.Context
         public UserTokenAuthenticationContext(Token token)
             : base(_supportedCommandIds)
         {
-            Token = token;
+            Token = Requires.NotNull(token, nameof(token));
         }
+
+        /// <inheritdoc />
+        public override string Id => "User Refresh Token";
+        
+        /// <inheritdoc />
+        public override Token Token { get; }
     }
 }

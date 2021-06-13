@@ -14,6 +14,9 @@ namespace Reddit.NET.Core.Client
         /// </summary>
         public static class Request 
         {
+            /// <summary>
+            /// The name the client will send in the <c>User-Agent</c> header when making HTTP requests.
+            /// </summary>
             public const string ClientName = "Reddit.NET client";
         }
 
@@ -22,6 +25,9 @@ namespace Reddit.NET.Core.Client
         /// </summary>
         public static class Command 
         {
+            /// <summary>
+            /// The supported commands when using a read-only authentication mode.
+            /// </summary>
             public static string[] ReadOnlyCommandIds = new string[]
             {
                 nameof(GetSubredditDetailsCommand),
@@ -29,6 +35,9 @@ namespace Reddit.NET.Core.Client
                 nameof(GetSubmissionCommentsCommand)
             };
 
+            /// <summary>
+            /// The supported commands when using a user authentication mode.
+            /// </summary>
             public static string[] UserCommandIds = new string[]
             {
                 nameof(GetSubredditDetailsCommand),

@@ -63,7 +63,7 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
                 "edit",
                 "history"
             };
-
+    
             private readonly AuthenticationMode _mode;
             private readonly string _clientId;
             private readonly string _clientSecret;
@@ -71,6 +71,7 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
             private readonly string _state;
             private string _code;
             private Token _token;
+            private Stage _stage;
 
             /// <summary>
             /// Initializes a new instance of the <see cref="InteractiveCredentials.Builder" /> class.
@@ -88,10 +89,11 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
                 string state)
             {
                 _mode = mode;
-                _clientId = clientId;
-                _clientSecret = clientSecret;
+                _clientId = Requires.NotNull(clientId, nameof(clientId));
+                _clientSecret = Requires.NotNull(clientSecret, nameof(clientSecret));
                 _redirectUri = redirectUri;
-                _state = state;
+                _state = Requires.NotNull(state, nameof(state));
+                _stage = Stage.Initialised;
             }
 
             /// <summary>
@@ -106,7 +108,10 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
             /// <param name="code">The authorization code returned on completion of interactive authentication.</param>
             public void Authorize(string code) 
             {
+                EnsureStage(Stage.Initialised, "Builder has already been authorized with a code.");
+
                 _code = code;
+                _stage = Stage.Authorized;
             }
 
             /// <summary>
@@ -116,10 +121,9 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
             /// <returns>A task representing the asynchronous operation.</returns>
             internal async Task AuthenticateAsync(CommandExecutor commandExecutor)
             {
-                if (_code == null)
-                {
-                    throw new InvalidOperationException("Authorization code must be set before authentication can be performed.");
-                }
+                EnsureStage(
+                    Stage.Authorized,
+                    message: "Builder must be authorized with a code before authentication can be performed.");
 
                 var parameters = new AuthenticateWithAuthorizationCodeCommand.Parameters()
                 {
@@ -131,7 +135,8 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
 
                 var authenticateCommand = new AuthenticateWithAuthorizationCodeCommand(parameters);
 
-                _token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);                
+                _token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+                _stage = Stage.Authenticated;
             }
             
             /// <summary>
@@ -140,10 +145,9 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
             /// <returns>An <see cref="InteractiveCredentials" /> instance representing the builder configuration.</returns>
             internal InteractiveCredentials Build()
             {
-                if (_token == null)
-                {
-                    throw new InvalidOperationException("Authentication must occur before credentials can be built.");
-                }
+                EnsureStage(
+                    Stage.Authenticated,
+                    message: "Builder must be authenticated before credentials can be built.");
 
                  return new InteractiveCredentials(
                     _mode,
@@ -152,6 +156,21 @@ namespace Reddit.NET.Core.Client.Authentication.Credential
                     _redirectUri,
                     _state,
                     _token);
+            }
+
+            private void EnsureStage(Stage expectedStage, string message) 
+            {
+                if (_stage != expectedStage)
+                {
+                    throw new InvalidOperationException(message);
+                }
+            }
+
+            private enum Stage 
+            {
+                Initialised,
+                Authorized,
+                Authenticated
             }
         }   
     }

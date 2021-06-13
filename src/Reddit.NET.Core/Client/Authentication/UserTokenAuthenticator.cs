@@ -1,4 +1,5 @@
 using System.Threading.Tasks;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Authentication.Context;
@@ -27,13 +28,13 @@ namespace Reddit.NET.Core.Client.Authentication
             CommandExecutor commandExecutor, 
             InteractiveCredentials credentials)
             : base(logger, commandExecutor, credentials)
-        {            
-            _token = credentials.Token;
+        {                    
+            _token = Requires.NotNull(credentials.Token, nameof(credentials.Token));
         }
 
         /// <inheritdoc />
         protected override Task<AuthenticationContext> DoAuthenticateAsync()
-        {
+        {            
             return Task.FromResult<AuthenticationContext>(new UserTokenAuthenticationContext(_token)); 
         }
 

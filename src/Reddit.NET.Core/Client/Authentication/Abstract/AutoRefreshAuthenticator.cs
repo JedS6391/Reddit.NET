@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Credential;
 using Reddit.NET.Core.Client.Command;
@@ -18,16 +19,6 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
         private DateTimeOffset? _authenticationContextCreatedAt;        
 
         /// <summary>
-        /// Gets the <see cref="ILogger{TCategoryName}" /> instance used by the authenticator.
-        /// </summary>
-        protected ILogger<AutoRefreshAuthenticator> Logger;
-
-        /// <summary>
-        /// Gets the <see cref="Credentials" /> instance used by the authenticator.
-        /// </summary>
-        protected Credentials Credentials;
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="AutoRefreshAuthenticator" /> class.
         /// </summary>
         /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
@@ -39,9 +30,19 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
             Credentials credentials)
             : base(commandExecutor)
         {                    
-            Logger = logger;
-            Credentials = credentials;
+            Logger = Requires.NotNull(logger, nameof(logger));
+            Credentials = Requires.NotNull(credentials, nameof(credentials));
         }
+
+        /// <summary>
+        /// Gets the <see cref="ILogger{TCategoryName}" /> instance used by the authenticator.
+        /// </summary>
+        protected ILogger<AutoRefreshAuthenticator> Logger;
+
+        /// <summary>
+        /// Gets the <see cref="Credentials" /> instance used by the authenticator.
+        /// </summary>
+        protected Credentials Credentials;
 
         /// <summary>
         /// Performs the initial authentication operation.

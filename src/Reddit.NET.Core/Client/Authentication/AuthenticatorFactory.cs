@@ -1,4 +1,5 @@
 using System;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Authentication.Credential;
@@ -24,8 +25,8 @@ namespace Reddit.NET.Core.Client.Authentication
         /// </param>
         public AuthenticatorFactory(ILoggerFactory loggerFactory, CommandExecutor commandExecutor)
         {
-            _loggerFactory = loggerFactory;
-            _commandExecutor = commandExecutor;
+            _loggerFactory = Requires.NotNull(loggerFactory, nameof(loggerFactory));
+            _commandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
         }
 
         /// <summary>

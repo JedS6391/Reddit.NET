@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication;
-using Reddit.NET.Core.Client.Builder.Exceptions;
 using Reddit.NET.Core.Client.Command;
 
 namespace Reddit.NET.Core.Client.Builder
@@ -75,13 +74,15 @@ namespace Reddit.NET.Core.Client.Builder
         /// <summary>
         /// Creates a <see cref="RedditClient" /> instance based on the builder configuration.
         /// </summary>
+        /// <remarks>
+        /// When using an interactive authentication mode, the builder will asynchronously complete the 
+        /// authentication flow to create the appropriate credentials.
+        /// </remarks>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains a <see cref="RedditClient" /> instance configured based on the builder.
         /// </returns>
         public async Task<RedditClient> BuildAsync() 
-        {
-            CheckValidity();
-
+        {            
             var commandExecutor = new CommandExecutor(
                 _loggerFactory.CreateLogger<CommandExecutor>(),
                 _httpClientFactory);
@@ -94,6 +95,7 @@ namespace Reddit.NET.Core.Client.Builder
 
             _credentialsBuilderConfigurationAction.Invoke(credentialsBuilder);
 
+            // Note that the credential builder may need to execute commands (e.g. for interactive credentials).            
             var credentials = await credentialsBuilder.BuildCredentialsAsync(commandExecutor).ConfigureAwait(false);
 
             var authenticator = authenticatorFactory.GetAuthenticator(credentials);
@@ -102,24 +104,6 @@ namespace Reddit.NET.Core.Client.Builder
                 _loggerFactory.CreateLogger<RedditClient>(), 
                 commandExecutor, 
                 authenticator);
-        }
-
-        private void CheckValidity()
-        {            
-            if (_httpClientFactory == null) 
-            {
-                throw new RedditClientBuilderException("No HTTP client factory configured.");
-            }
-
-            if (_loggerFactory == null) 
-            {
-                throw new RedditClientBuilderException("No logger factory configured.");
-            }
-
-            if (_credentialsBuilderConfigurationAction == null)
-            {
-                throw new RedditClientBuilderException("No credentials configured.");
-            }
         }
     }
 }

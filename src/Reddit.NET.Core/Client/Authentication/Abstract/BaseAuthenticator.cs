@@ -1,6 +1,7 @@
 using System.Net.Http;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Core.Client.Command;
 
 namespace Reddit.NET.Core.Client.Authentication.Abstract
@@ -18,7 +19,7 @@ namespace Reddit.NET.Core.Client.Authentication.Abstract
         /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         protected BaseAuthenticator(CommandExecutor commandExecutor)
         {        
-            _commandExecutor = commandExecutor;
+            _commandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
         }
 
         /// <inheritdoc />
