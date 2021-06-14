@@ -10,7 +10,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
     /// <remarks>
     /// This converter is only intended to be used with values where the epoch-second value represents a UTC time.
     /// </remarks>
-    public class EpochSecondJsonConverter : JsonConverter<DateTimeOffset>
+    internal class EpochSecondJsonConverter : JsonConverter<DateTimeOffset>
     {
         /// <inheritdoc />
         public override DateTimeOffset Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)

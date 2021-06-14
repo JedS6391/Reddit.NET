@@ -8,22 +8,22 @@ using Reddit.NET.Core.Client.Command.Submissions;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the comments of a submission. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped}" /> implementation over the comments of a submission. 
     /// </summary>
-    public class SubmissionCommentsListingGenerator 
-        : ListingGenerator<Comment.Listing, Comment.Details, CommentDetails>
+    public class SubmissionCommentsListingEnumerable
+        : ListingEnumerable<Comment.Listing, Comment.Details, CommentDetails>
     {
         private readonly RedditClient _client;
-        private readonly SubmissionCommentsListingGenerator.ListingParameters _parameters;        
+        private readonly SubmissionCommentsListingEnumerable.ListingParameters _parameters;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserSubredditsListingGenerator" /> class.
+        /// Initializes a new instance of the <see cref="UserSubredditsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         /// /// <param name="parameters">Parameters used when loading the listing data.</param>
-        public SubmissionCommentsListingGenerator(
+        public SubmissionCommentsListingEnumerable(
             RedditClient client,
-            SubmissionCommentsListingGenerator.ListingParameters parameters)
+            SubmissionCommentsListingEnumerable.ListingParameters parameters)
         {
             _client = client;
             _parameters = parameters;

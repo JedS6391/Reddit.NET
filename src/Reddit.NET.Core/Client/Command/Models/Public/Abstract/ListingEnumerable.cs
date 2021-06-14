@@ -13,24 +13,25 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
     /// <remarks>
     /// A <see cref="Listing{TData}" /> is how the reddit API supports pagination. 
     /// 
-    /// A listing generator wraps a reddit API call that returns a listing and provides the ability to 
+    /// A listing enumerable wraps a reddit API call that returns a listing and provides the ability to 
     /// move through the data in each listing.
     /// 
-    /// Listing generators operate in a lazy manner, meaning no API calls will be made until enumeration begins.
-    /// The generator will request a page of data at a time and returned each child in that page before fetching the next page.
+    /// Listing enumerables operate in a lazy manner, meaning no API calls will be made until enumeration begins.
+    /// The enumerator will request a page of data at a time and returned each child in that page before fetching the next page.
     /// </remarks>
-    /// <typeparam name="TListing">The type of listing the generator manages.</typeparam>
+    /// <typeparam name="TListing">The type of listing the enumerable manages.</typeparam>
     /// <typeparam name="TData">The type of data associated with the things that this listing contains.</typeparam>
     /// <typeparam name="TMapped">The type the things in the listing will be mapped to before being returned.</typeparam>
-    public abstract class ListingGenerator<TListing, TData, TMapped> : IAsyncEnumerable<TMapped>
-        where TListing : Listing<TData>
+    public abstract class ListingEnumerable<TListing, TData, TMapped> : IAsyncEnumerable<TMapped>
+        where TListing : Listing<TData>        
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListingGenerator{TListing, TData, TMapped}" /> class.
+        /// Initializes a new instance of the <see cref="ListingEnumerable{TListing, TData, TMapped}" /> class.
         /// </summary>
-        protected ListingGenerator()
-        {            
+        protected ListingEnumerable()
+        {    
         }
+
 
         /// <summary>
         /// Provides the data for the initial listing.
@@ -224,6 +225,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
 
                 public void Reset() => Position = 0;
             }
+        }
+
+        internal static class Constants
+        {
+            public const int DefaultLimit = 25;
         }
     }
 }

@@ -43,9 +43,9 @@ namespace Reddit.NET.Core.Client.Interactions
         /// </summary>
         /// <returns>An asynchronous enumerator over the comments on the submission.</returns>
         public IAsyncEnumerable<CommentDetails> GetCommentsAsync() =>
-            new SubmissionCommentsListingGenerator(
+            new SubmissionCommentsListingEnumerable(
                 _client,
-                new SubmissionCommentsListingGenerator.ListingParameters()
+                new SubmissionCommentsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _submission.Subreddit,
                     SubmissionId = _submission.Id

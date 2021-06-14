@@ -50,9 +50,9 @@ namespace Reddit.NET.Core.Client.Interactions
         /// </summary>
         /// <returns>An asynchronous enumerator over the 'hot' submissions of the subreddit.</returns>
         public IAsyncEnumerable<SubmissionDetails> GetHotSubmissionsAsync() => 
-            new HotSubredditSubmissionsListingGenerator(
+            new HotSubredditSubmissionsListingEnumerable(
                 _client,
-                new SubredditSubmissionsListingGenerator.ListingParameters()
+                new SubredditSubmissionsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _subredditName
                 });

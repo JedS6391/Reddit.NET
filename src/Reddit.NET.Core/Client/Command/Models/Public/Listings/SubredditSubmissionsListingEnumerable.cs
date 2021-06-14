@@ -7,19 +7,19 @@ using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the submissions of a subreddit.. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped}" /> implementation over the submissions of a subreddit.. 
     /// </summary>
-    public abstract class SubredditSubmissionsListingGenerator 
-        : ListingGenerator<Submission.Listing, Submission.Details, SubmissionDetails>
+    public abstract class SubredditSubmissionsListingEnumerable
+        : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails>
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SubredditSubmissionsListingGenerator" /> class.
+        /// Initializes a new instance of the <see cref="SubredditSubmissionsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         /// <param name="parameters">Parameters used when loading the listing data.</param>
-        protected SubredditSubmissionsListingGenerator(
+        protected SubredditSubmissionsListingEnumerable(
             RedditClient client,
-            SubredditSubmissionsListingGenerator.ListingParameters parameters)
+            SubredditSubmissionsListingEnumerable.ListingParameters parameters)
         {
             Client = client;
             Parameters = parameters;
@@ -33,7 +33,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// <summary>
         /// Gets the parameters used when loading the listing data.
         /// </summary>
-        protected SubredditSubmissionsListingGenerator.ListingParameters Parameters { get; }
+        protected SubredditSubmissionsListingEnumerable.ListingParameters Parameters { get; }
 
         /// <inheritdoc />
         internal abstract Task<Submission.Listing> GetListingAsync(string after = null);

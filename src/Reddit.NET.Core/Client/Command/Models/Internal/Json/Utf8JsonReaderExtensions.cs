@@ -5,7 +5,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
     /// <summary>
     /// Defines extensions for <see cref="Utf8JsonReader" />.
     /// </summary>
-    public static class Utf8JsonReaderExtensions
+    internal static class Utf8JsonReaderExtensions
     {
         /// <summary>
         /// Attempts to match the provided <see cref="JsonTokenType" /> at the current reader position.

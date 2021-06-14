@@ -8,18 +8,25 @@ using Reddit.NET.Core.Client.Command.Users;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the subreddits a user is subscribed to. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped}" /> implementation over the subreddits a user is subscribed to. 
     /// </summary>
-    public sealed class UserSubredditsListingGenerator 
-        : ListingGenerator<Subreddit.Listing, Subreddit.Details, SubredditDetails>
+    public sealed class UserSubredditsListingEnumerable
+        : ListingEnumerable<Subreddit.Listing, Subreddit.Details, SubredditDetails>
     {
         private readonly RedditClient _client;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserSubredditsListingGenerator" /> class.
+        /// Initializes a new instance of the <see cref="UserSubredditsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
-        public UserSubredditsListingGenerator(RedditClient client)
+        public UserSubredditsListingEnumerable(RedditClient client)
+            : base()
+        {
+            _client = client;
+        }
+
+        public UserSubredditsListingEnumerable(RedditClient client, int limit)
+            : base(limit)
         {
             _client = client;
         }

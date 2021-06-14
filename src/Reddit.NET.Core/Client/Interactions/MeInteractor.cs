@@ -32,6 +32,8 @@ namespace Reddit.NET.Core.Client.Interactions
         {
             var getMyDetailsCommand = new GetMyDetailsCommand();
 
+            // We use the data model type to deserialize the response as the user details
+            // API returns a plain data object, rather than wrapping the data within a thing.
             var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand);
 
             return new UserDetails(user);
@@ -41,6 +43,6 @@ namespace Reddit.NET.Core.Client.Interactions
         /// Gets the subreddits the authenticated user is subscribed to.
         /// </summary>
         /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
-        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync() => new UserSubredditsListingGenerator(_client); 
+        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync() => new UserSubredditsListingEnumerable(_client); 
     }
 }
