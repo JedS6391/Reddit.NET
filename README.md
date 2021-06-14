@@ -12,4 +12,4 @@ dotnet build src/
 
 ## Usage
 
-For a complete example, see the `Reddit.NET.Example` project.
+See the `demos` folder for examples of usage.

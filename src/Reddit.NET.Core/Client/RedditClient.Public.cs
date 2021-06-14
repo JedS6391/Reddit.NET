@@ -1,3 +1,5 @@
+using Microsoft;
+using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication.Abstract;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Interactions;
@@ -12,31 +14,37 @@ namespace Reddit.NET.Core.Client
     /// </remarks>
     public sealed partial class RedditClient
     {
-        private readonly CommandFactory _commandFactory;
+        private readonly ILogger<RedditClient> _logger;
+        private readonly CommandExecutor _commandExecutor;
         private readonly IAuthenticator _authenticator;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClient" /> class.
         /// </summary>
-        /// <param name="commandFactory">A <see cref="CommandFactory" /> instance used for creating commands for interactions with reddit.</param>
+        /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
+        /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to authenticate with reddit.</param>
-        internal RedditClient(CommandFactory commandFactory, IAuthenticator authenticator)
+        internal RedditClient(
+            ILogger<RedditClient> logger,
+            CommandExecutor commandExecutor,
+            IAuthenticator authenticator)
         {
-            _commandFactory = commandFactory;
-            _authenticator = authenticator;
+            _logger = Requires.NotNull(logger, nameof(logger));
+            _commandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
+            _authenticator = Requires.NotNull(authenticator, nameof(authenticator));
         }
 
         /// <summary>
         /// Gets an interactor for operations relating to the authenticated user.
         /// </summary>
         /// <returns>A <see cref="MeInteractor" /> instance that provides mechanisms for interacting with the authenticated user.</returns>
-        public MeInteractor Me() => new MeInteractor(_commandFactory, _authenticator);
+        public MeInteractor Me() => new MeInteractor(this);
         
         /// <summary>
         /// Gets an interactor for operations relating to a specific subreddit.
         /// </summary>
         /// <param name="name">The name of the subreddit to interact with.</param>
         /// <returns>A <see cref="SubredditInteractor" /> instance that provides mechanisms for interacting with the requested subreddit.</returns>
-        public SubredditInteractor Subreddit(string name) => new SubredditInteractor(_commandFactory, _authenticator, name);        
+        public SubredditInteractor Subreddit(string name) => new SubredditInteractor(this, name);        
     }
 }

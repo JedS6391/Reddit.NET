@@ -1,24 +1,33 @@
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Submissions
 {
-    public class GetSubmissionCommentsCommand 
-        : AuthenticatedCommand<GetSubmissionCommentsCommand.Parameters, GetSubmissionCommentsCommand.Result, Comment.Listing>
+    /// <summary>
+    /// Defines a command to get comments on a submission..
+    /// </summary>
+    public class GetSubmissionCommentsCommand : ClientCommand
     {
-        public GetSubmissionCommentsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory, ResponseMappers.SubmissionCommentsMapper)
+        private readonly GetSubmissionCommentsCommand.Parameters _parameters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetSubmissionCommentsCommand" /> class.
+        /// </summary>
+        /// <param name="parameters">The parameters used by the command.</param>
+        public GetSubmissionCommentsCommand(GetSubmissionCommentsCommand.Parameters parameters)
+            : base()
         {
+            _parameters = parameters;
         }
 
+        /// <inheritdoc />
         public override string Id => nameof(GetSubmissionCommentsCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        /// <inheritdoc />
+        public override HttpRequestMessage BuildRequest()
         {
-            var uriBuilder = new UriBuilder($"https://oauth.reddit.com/r/{parameters.SubredditName}/comments/{parameters.SubmissionId}");
+            var uriBuilder = new UriBuilder(
+                RedditApiUrl.Submission.Comments(_parameters.SubredditName, _parameters.SubmissionId));
 
             var request = new HttpRequestMessage()
             {
@@ -29,20 +38,20 @@ namespace Reddit.NET.Core.Client.Command.Submissions
             return request;
         }
 
-        protected override Result MapToResult(Comment.Listing response) => new Result()
-        {
-            Listing = response
-        };
-
+        /// <summary>
+        /// Defines the parameters of the command.
+        /// </summary>
         public class Parameters 
         {
+            /// <summary>
+            /// Gets or sets the name of the subreddit the submission is in.
+            /// </summary>
             public string SubredditName { get; set; }
-            public string SubmissionId { get; set; }
-        }
 
-        public class Result 
-        {
-            public Comment.Listing Listing { get; set; }
+            /// <summary>
+            /// Gets or sets the identifier of the submission.
+            /// </summary>
+            public string SubmissionId { get; set; }
         }
     }
 }

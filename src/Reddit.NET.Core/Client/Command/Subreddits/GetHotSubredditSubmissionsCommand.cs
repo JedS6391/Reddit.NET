@@ -1,28 +1,35 @@
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Subreddits
 {
-    public class GetHotSubredditSubmissionsCommand 
-        : AuthenticatedCommand<GetHotSubredditSubmissionsCommand.Parameters, GetHotSubredditSubmissionsCommand.Result, Submission.Listing>
+    /// <summary>
+    /// Defines a command to get the 'hot' submissions of a subreddit.
+    /// </summary>
+    public class GetHotSubredditSubmissionsCommand : ClientCommand
     {
-        public GetHotSubredditSubmissionsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly GetHotSubredditSubmissionsCommand.Parameters _parameters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetHotSubredditSubmissionsCommand" /> class.
+        /// </summary>
+        /// <param name="parameters">The parameters used by the command.</param>
+        public GetHotSubredditSubmissionsCommand(GetHotSubredditSubmissionsCommand.Parameters parameters)
         {
+            _parameters = parameters;
         }
 
+        /// <inheritdoc />
         public override string Id => nameof(GetHotSubredditSubmissionsCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        /// <inheritdoc />
+        public override HttpRequestMessage BuildRequest()
         {
-            var uriBuilder = new UriBuilder($"https://oauth.reddit.com/r/{parameters.SubredditName}/hot");
+            var uriBuilder = new UriBuilder(RedditApiUrl.Subreddit.Hot(_parameters.SubredditName));
 
-            if (!string.IsNullOrEmpty(parameters.After))
+            if (!string.IsNullOrEmpty(_parameters.After))
             {
-                uriBuilder.Query = $"?after={parameters.After}";
+                uriBuilder.Query = $"?after={_parameters.After}";
             }
 
             var request = new HttpRequestMessage()
@@ -34,20 +41,20 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             return request;
         }
 
-        protected override Result MapToResult(Submission.Listing response) => new Result()
-        {
-            Listing = response
-        };
-
+        /// <summary>
+        /// Defines the parameters of the command.
+        /// </summary>
         public class Parameters 
         {
+            /// <summary>
+            /// Gets or sets the name of the subreddit to get submissions for.
+            /// </summary>
             public string SubredditName { get; set; }
-            public string After { get; set; }
-        }
 
-        public class Result 
-        {
-            public Submission.Listing Listing { get; set; }
+            /// <summary>
+            /// Gets or sets the after parameter.
+            /// </summary>
+            public string After { get; set; }
         }
     }
 }

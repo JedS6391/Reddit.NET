@@ -1,27 +1,36 @@
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Users
 {
-    public class GetUserSubredditsCommand : AuthenticatedCommand<GetUserSubredditsCommand.Parameters, GetUserSubredditsCommand.Result, Subreddit.Listing>
+    /// <summary>
+    /// Defines a command to get the subreddits of the currently authenticated user.
+    /// </summary>
+    public sealed class GetUserSubredditsCommand : ClientCommand
     {
-        public GetUserSubredditsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly GetUserSubredditsCommand.Parameters _parameters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetUserSubredditsCommand" /> class.
+        /// </summary>
+        /// <param name="parameters">The parameters used by the command.</param>
+        public GetUserSubredditsCommand(GetUserSubredditsCommand.Parameters parameters)
+            : base()
         {
+            _parameters = parameters;
         }
 
+        /// <inheritdoc />
         public override string Id => nameof(GetUserSubredditsCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        /// <inheritdoc />
+        public override HttpRequestMessage BuildRequest()
         {
-            var uriBuilder = new UriBuilder("https://oauth.reddit.com/subreddits/mine/subscriber");
+            var uriBuilder = new UriBuilder(RedditApiUrl.Me.Subreddits);
 
-            if (!string.IsNullOrEmpty(parameters.After))
+            if (!string.IsNullOrEmpty(_parameters.After))
             {
-                uriBuilder.Query = $"?after={parameters.After}";
+                uriBuilder.Query = $"?after={_parameters.After}";
             }
 
             var request = new HttpRequestMessage()
@@ -33,19 +42,15 @@ namespace Reddit.NET.Core.Client.Command.Users
             return request;
         }
 
-        protected override Result MapToResult(Subreddit.Listing response) => new Result()
-        {
-            Listing = response
-        };
-
+        /// <summary>
+        /// Defines the parameters of the command.
+        /// </summary>
         public class Parameters 
         {
+            /// <summary>
+            /// Gets or sets the after parameter.
+            /// </summary>
             public string After { get; set; }
-        }
-
-        public class Result 
-        {
-            public Subreddit.Listing Listing { get; set; }
         }
     }
 }

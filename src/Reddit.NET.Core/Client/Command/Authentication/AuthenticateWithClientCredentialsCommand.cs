@@ -3,23 +3,30 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
 
 namespace Reddit.NET.Core.Client.Command.Authentication
 {
-    public class AuthenticateWithClientCredentialsCommand 
-        : UnauthenticatedCommand<AuthenticateWithClientCredentialsCommand.Parameters, AuthenticateWithClientCredentialsCommand.Result, Token>
+    /// <summary>
+    /// Defines a command to authenticate using the <c>client_credentials</c> grant type.
+    /// </summary>
+    public class AuthenticateWithClientCredentialsCommand : ClientCommand
     {
-        public AuthenticateWithClientCredentialsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly AuthenticateWithClientCredentialsCommand.Parameters _parameters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthenticateWithClientCredentialsCommand" /> class.
+        /// </summary>
+        public AuthenticateWithClientCredentialsCommand(AuthenticateWithClientCredentialsCommand.Parameters parameters)
+            : base()
         {
+            _parameters = parameters;
         }
 
+        /// <inheritdoc />
         public override string Id => nameof(AuthenticateWithUsernamePasswordCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        /// <inheritdoc />
+        public override HttpRequestMessage BuildRequest()
         {
             var requestParameters = new Dictionary<string, string>()
             {
@@ -30,32 +37,32 @@ namespace Reddit.NET.Core.Client.Command.Authentication
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri("https://www.reddit.com/api/v1/access_token"),
+                RequestUri = new Uri(RedditApiUrl.Authentication.Token),
                 Content = new FormUrlEncodedContent(requestParameters)
             };
 
             request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Basic",
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(
-                    $"{parameters.ClientId}:{parameters.ClientSecret}")));
+                    $"{_parameters.ClientId}:{_parameters.ClientSecret}")));
 
             return request;            
         }
 
-        protected override Result MapToResult(Token response) => new Result() 
-        {
-            Token = response
-        };
-
+        /// <summary>
+        /// Defines the parameters of the command.
+        /// </summary>
         public class Parameters 
         {
+            /// <summary>
+            /// Gets or sets the client identifier.
+            /// </summary>
             public string ClientId { get; set; }
-            public string ClientSecret { get; set; }
-        }
 
-        public class Result 
-        {
-            public Token Token { get; internal set; }
+            /// <summary>
+            /// Gets or sets the client secret.
+            /// </summary>
+            public string ClientSecret { get; set; }
         }
     }
 }

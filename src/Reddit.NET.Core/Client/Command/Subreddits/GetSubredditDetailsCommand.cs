@@ -1,50 +1,49 @@
 using System;
 using System.Net.Http;
-using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Command.Abstract;
-using Reddit.NET.Core.Client.Command.Models.Internal;
-using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 
 namespace Reddit.NET.Core.Client.Command.Subreddits
 {
-    public class GetSubredditDetailsCommand 
-        : AuthenticatedCommand<GetSubredditDetailsCommand.Parameters, GetSubredditDetailsCommand.Result, Subreddit>
+    /// <summary>
+    /// Defines a command to get the details of a subreddit.
+    /// </summary>
+    public sealed class GetSubredditDetailsCommand : ClientCommand
     {
-        public GetSubredditDetailsCommand(IHttpClientFactory httpClientFactory, ILoggerFactory loggerFactory)
-            : base(httpClientFactory, loggerFactory)
+        private readonly GetSubredditDetailsCommand.Parameters _parameters;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="GetSubredditDetailsCommand" /> class.
+        /// </summary>
+        /// <param name="parameters">The parameters used by the command.</param>
+        public GetSubredditDetailsCommand(GetSubredditDetailsCommand.Parameters parameters)
+            : base()            
         {
+            _parameters = parameters;
         }
 
+        /// <inheritdoc />
         public override string Id => nameof(GetSubredditDetailsCommand);
 
-        protected override HttpRequestMessage BuildRequest(Parameters parameters)
+        /// <inheritdoc />
+        public override HttpRequestMessage BuildRequest()
         {
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Get,
-                RequestUri = new Uri($"https://oauth.reddit.com/r/{parameters.SubredditName}/about")
-            };
+                RequestUri = new Uri(RedditApiUrl.Subreddit.Details(_parameters.SubredditName))
+        };
 
             return request;
         }
 
-        protected override Result MapToResult(Subreddit response) => new Result()
-        {
-            Details = new SubredditDetails()
-            {
-                Name = response.Data.DisplayName,
-                Title = response.Data.Title
-            }
-        };
-
+        /// <summary>
+        /// Defines the parameters of the command.
+        /// </summary>
         public class Parameters 
         {
+            /// <summary>
+            /// Gets or sets the name of the subreddit to get details for.
+            /// </summary>
             public string SubredditName { get; set; }
-        }
-
-        public class Result 
-        {
-            public SubredditDetails Details { get; internal set; }
         }
     }
 }

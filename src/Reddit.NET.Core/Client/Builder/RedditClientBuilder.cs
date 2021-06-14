@@ -1,8 +1,9 @@
+using System;
 using System.Net.Http;
+using System.Threading.Tasks;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Authentication;
-using Reddit.NET.Core.Client.Authentication.Abstract;
-using Reddit.NET.Core.Client.Builder.Exceptions;
 using Reddit.NET.Core.Client.Command;
 
 namespace Reddit.NET.Core.Client.Builder
@@ -10,18 +11,11 @@ namespace Reddit.NET.Core.Client.Builder
     /// <summary>
     /// Provides the ability to create <see cref="RedditClient" /> instances.
     /// </summary>
-    public class RedditClientBuilder
+    public sealed class RedditClientBuilder
     {
         private IHttpClientFactory _httpClientFactory;
         private ILoggerFactory _loggerFactory;
-        private UserRefreshTokenAuthenticator.AuthenticationDetails _userRefreshTokenAuthenticationDetails;
-        private UsernamePasswordAuthenticator.AuthenticationDetails  _usernamePasswordAuthenticationDetails;
-        private ClientCredentialsAuthenticator.AuthenticationDetails _clientCredentialsAuthenticationDetails;
-
-        /// <summary>
-        /// Creates a new <see cref="RedditClientBuilder" /> instance to start the build process.
-        /// </summary>
-        public static RedditClientBuilder New => new RedditClientBuilder();
+        private Action<CredentialsBuilder> _credentialsBuilderConfigurationAction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientBuilder" /> class.
@@ -31,16 +25,9 @@ namespace Reddit.NET.Core.Client.Builder
         }
 
         /// <summary>
-        /// Configures the builder to use the provided <see cref="IHttpClientFactory" /> instance when making HTTP calls.
+        /// Creates a new <see cref="RedditClientBuilder" /> instance to start the build process.
         /// </summary>
-        /// <param name="httpClientFactory">A <see cref="IHttpClientFactory" /> instance.</param>
-        /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithHttpClientFactory(IHttpClientFactory httpClientFactory)
-        {
-            _httpClientFactory = httpClientFactory;
-
-            return this;
-        }
+        public static RedditClientBuilder New => new RedditClientBuilder();
 
         /// <summary>
         /// Configures the builder to use the provided <see cref="ILoggerFactory" /> instance when logging messages.
@@ -49,104 +36,74 @@ namespace Reddit.NET.Core.Client.Builder
         /// <returns>The updated builder.</returns>
         public RedditClientBuilder WithLoggerFactory(ILoggerFactory loggerFactory)
         {
+            Requires.NotNull(loggerFactory, nameof(loggerFactory));
+
             _loggerFactory = loggerFactory;
 
             return this;
         }
 
         /// <summary>
-        /// Configures the builder to use <see cref="UserRefreshTokenAuthenticator" /> for authentication.
+        /// Configures the builder to use the provided <see cref="IHttpClientFactory" /> instance when making HTTP calls.
         /// </summary>
-        /// <param name="authenticationDetails">A <see cref="UserRefreshTokenAuthenticator.AuthenticationDetails" /> instance.</param>
+        /// <param name="httpClientFactory">A <see cref="IHttpClientFactory" /> instance.</param>
         /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithUserRefreshTokenAuthentication(UserRefreshTokenAuthenticator.AuthenticationDetails authenticationDetails)
+        public RedditClientBuilder WithHttpClientFactory(IHttpClientFactory httpClientFactory)
         {
-            _userRefreshTokenAuthenticationDetails = authenticationDetails;
-            
-            return this;
-        }
+            Requires.NotNull(httpClientFactory, nameof(httpClientFactory));
 
-        /// <summary>
-        /// Configures the builder to use <see cref="UsernamePasswordAuthenticator" /> for authentication.
-        /// </summary>
-        /// <param name="authenticationDetails">A <see cref="UsernamePasswordAuthenticator.AuthenticationDetails" /> instance.</param>
-        /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithUsernamePasswordAuthentication(UsernamePasswordAuthenticator.AuthenticationDetails authenticationDetails)
-        {
-            _usernamePasswordAuthenticationDetails = authenticationDetails;
+            _httpClientFactory = httpClientFactory;
 
             return this;
         }
 
         /// <summary>
-        /// Configures the builder to use <see cref="ClientCredentialsAuthenticator" /> for authentication.
+        /// Configures the builder to use the provided <see cref="Action{T}" /> to configure the credentials used by the client.
         /// </summary>
-        /// <param name="authenticationDetails">A <see cref="ClientCredentialsAuthenticator.AuthenticationDetails" /> instance.</param>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure credentials.</param>
         /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithClientCredentialsAuthentication(ClientCredentialsAuthenticator.AuthenticationDetails authenticationDetails)
+        public RedditClientBuilder WithCredentialsConfiguration(Action<CredentialsBuilder> configurationAction)
         {
-            _clientCredentialsAuthenticationDetails = authenticationDetails;
-            
+            Requires.NotNull(configurationAction, nameof(configurationAction));
+
+            _credentialsBuilderConfigurationAction = configurationAction;
+
             return this;
         }
 
         /// <summary>
         /// Creates a <see cref="RedditClient" /> instance based on the builder configuration.
         /// </summary>
-        /// <returns>A <see cref="RedditClient" /> instance configured based on the builder.</returns>
-        public RedditClient Build() 
-        {
-            CheckValidity();
-
-            var commandFactory = new CommandFactory(_httpClientFactory, _loggerFactory);
-            IAuthenticator authenticator = DetermineAuthenticator(commandFactory);
-
-            return new RedditClient(commandFactory, authenticator);
-        }
-
-        private void CheckValidity()
+        /// <remarks>
+        /// When using an interactive authentication mode, the builder will asynchronously complete the 
+        /// authentication flow to create the appropriate credentials.
+        /// </remarks>
+        /// <returns>
+        /// A task representing the asynchronous operation. The result contains a <see cref="RedditClient" /> instance configured based on the builder.
+        /// </returns>
+        public async Task<RedditClient> BuildAsync() 
         {            
-            if (_httpClientFactory == null) 
-            {
-                throw new RedditClientBuilderException("No HTTP client factory configured.");
-            }
+            var commandExecutor = new CommandExecutor(
+                _loggerFactory.CreateLogger<CommandExecutor>(),
+                _httpClientFactory);
 
-            if (_loggerFactory == null) 
-            {
-                throw new RedditClientBuilderException("No logger factory configured.");
-            }
+            var authenticatorFactory = new AuthenticatorFactory(
+                _loggerFactory, 
+                commandExecutor);
 
-            if (_usernamePasswordAuthenticationDetails == null && 
-                _clientCredentialsAuthenticationDetails == null &&
-                _userRefreshTokenAuthenticationDetails == null)
-            {
-                throw new RedditClientBuilderException("No authentication details configured.");
-            }
-        }
+            var credentialsBuilder = new CredentialsBuilder();
 
-        private IAuthenticator DetermineAuthenticator(CommandFactory commandFactory) 
-        {
-            if (_userRefreshTokenAuthenticationDetails != null) 
-            {
-                return new UserRefreshTokenAuthenticator(
-                    _loggerFactory.CreateLogger<UserRefreshTokenAuthenticator>(),
-                    commandFactory,
-                    _userRefreshTokenAuthenticationDetails
-                );
-            }
+            _credentialsBuilderConfigurationAction.Invoke(credentialsBuilder);
 
-            if (_usernamePasswordAuthenticationDetails != null)
-            {
-                return new UsernamePasswordAuthenticator(
-                    _loggerFactory.CreateLogger<UsernamePasswordAuthenticator>(),
-                    commandFactory, 
-                    _usernamePasswordAuthenticationDetails);
-            }
+            // Note that the credential builder may need to execute commands (e.g. for interactive credentials).            
+            var credentials = await credentialsBuilder.BuildCredentialsAsync(commandExecutor).ConfigureAwait(false);
 
-            return new ClientCredentialsAuthenticator(
-                _loggerFactory.CreateLogger<ClientCredentialsAuthenticator>(),
-                commandFactory, 
-                _clientCredentialsAuthenticationDetails);
+            var authenticator = authenticatorFactory.GetAuthenticator(credentials);
+
+            return new RedditClient(
+                _loggerFactory.CreateLogger<RedditClient>(), 
+                commandExecutor, 
+                authenticator);
         }
     }
 }
