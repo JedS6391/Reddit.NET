@@ -33,6 +33,20 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("display_name")]
             [JsonInclude]
             public string DisplayName { get; private set; }
+
+            /// <summary>
+            /// Gets the description of the subreddit.
+            /// </summary>
+            [JsonPropertyName("description")]
+            [JsonInclude]
+            public string Description { get; private set; }
+
+            /// <summary>
+            /// Gets the number of users subreddit to the subreddit.
+            /// </summary>
+            [JsonPropertyName("subscribers")]
+            [JsonInclude]
+            public long Subscribers { get; private set; }
         }
 
         /// <summary>

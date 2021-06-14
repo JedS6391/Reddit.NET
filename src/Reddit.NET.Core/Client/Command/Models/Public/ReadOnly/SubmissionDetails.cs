@@ -1,3 +1,4 @@
+using System;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
@@ -15,11 +16,14 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
         internal SubmissionDetails(Thing<Submission.Details> thing)
-        {
-            Id = thing.Data.Id;
+        {            
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
+            Upvotes = thing.Data.Upvotes;
+            Downvotes = thing.Data.Downvotes;
+            CreatedAtUtc = thing.Data.CreatedAtUtc;
+            Id = thing.Data.Id;
             Kind = thing.Kind;
         }
 
@@ -37,6 +41,21 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Gets the permalink of the submission.
         /// </summary>
         public string Permalink { get; }
+
+        /// <summary>
+        /// Gets the number of upvotes on the comment.
+        /// </summary>
+        public int Upvotes { get; }
+
+        /// <summary>
+        /// Gets the number of downvotes on the comment.
+        /// </summary>
+        public int Downvotes { get; }     
+
+        /// <summary>
+        /// Gets the date and time the submission was created.
+        /// </summary>
+        public DateTimeOffset CreatedAtUtc { get; }
 
         internal string Id { get; set; }     
         internal string Kind { get; set; }

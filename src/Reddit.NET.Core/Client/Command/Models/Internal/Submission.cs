@@ -1,3 +1,4 @@
+using System;
 using System.Text.Json.Serialization;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Internal.Json;
@@ -12,7 +13,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
         /// <summary>
         /// Defines the attributes of a <see cref="Submission" />.
         /// </summary>
-        public class Details 
+        public class Details : IVoteable, ICreated
         {
             /// <summary>
             /// Gets the identifier of the submission.
@@ -41,6 +42,27 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("permalink")]
             [JsonInclude]
             public string Permalink { get; private set; }
+
+            /// <inheritdoc />
+            [JsonPropertyName("ups")]
+            [JsonInclude]
+            public int Upvotes { get; private set; }
+
+            /// <inheritdoc />
+            [JsonPropertyName("downs")]
+            [JsonInclude]
+            public int Downvotes { get; private set; }
+
+            /// <inheritdoc />
+            [JsonPropertyName("likes")]
+            [JsonInclude]
+            public bool? LikedByUser { get; private set; }
+
+            /// <inheritdoc />
+            [JsonPropertyName("created_utc")]
+            [JsonInclude]
+            [JsonConverter(typeof(EpochSecondJsonConverter))]
+            public DateTimeOffset CreatedAtUtc { get; private set; }
         }
 
         /// <summary>

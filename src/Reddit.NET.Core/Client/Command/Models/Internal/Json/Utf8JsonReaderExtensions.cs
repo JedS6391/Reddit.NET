@@ -17,7 +17,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
         {
             if (reader.TokenType != tokenType)
             {
-                FailRead($"Expected '{tokenType}' token but was '{reader.TokenType}'.");
+                throw new JsonException(
+                    $"Unexpected JSON data during read: Expected '{tokenType}' token but was '{reader.TokenType}'.");
             }
         }
 
@@ -32,9 +33,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
             Match(reader, tokenType);
 
             reader.Read();
-        }
-
-        private static void FailRead(string details) => 
-            throw new JsonException($"Unexpected JSON data during read: {details}");  
+        } 
     }
 }
