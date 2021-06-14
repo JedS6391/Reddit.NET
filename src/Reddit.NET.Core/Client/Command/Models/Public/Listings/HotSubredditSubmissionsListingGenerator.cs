@@ -5,7 +5,7 @@ using Reddit.NET.Core.Client.Command.Subreddits;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the 'hot' submissions of a subreddit.. 
+    /// A <see cref="Abstract.ListingGenerator{TListing, TData, TMapped}" /> implementation over the 'hot' submissions of a subreddit.. 
     /// </summary>
     public class HotSubredditSubmissionsListingGenerator : SubredditSubmissionsListingGenerator
     {

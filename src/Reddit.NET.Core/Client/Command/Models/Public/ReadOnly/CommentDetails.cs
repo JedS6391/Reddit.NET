@@ -3,13 +3,19 @@ using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 
 namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
 {
+    /// <summary>
+    /// Defines a read-only view of a comment.
+    /// </summary>
     public class CommentDetails
     {
-        public CommentDetails(Thing<Comment.Details> comment)
+        internal CommentDetails(Thing<Comment.Details> thing)
         {
-            Body = comment.Data.Body;            
+            Body = thing.Data.Body;            
         }
 
-        public string Body { get; internal set; }         
+        /// <summary>
+        /// Gets the body of the comment.
+        /// </summary>
+        public string Body { get; }         
     }
 }

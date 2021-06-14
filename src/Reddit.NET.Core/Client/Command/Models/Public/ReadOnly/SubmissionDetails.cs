@@ -14,7 +14,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Initializes a new instance of the <see cref="SubmissionDetails" /> class.
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
-        public SubmissionDetails(Thing<Submission.Details> thing)
+        internal SubmissionDetails(Thing<Submission.Details> thing)
         {
             Id = thing.Data.Id;
             Title = thing.Data.Title;
