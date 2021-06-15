@@ -50,17 +50,18 @@ namespace Reddit.NET.Core.Client.Interactions
         /// <summary>
         /// Gets the submissions of the subreddit.
         /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
         /// <returns>An asynchronous enumerator over the submissions of the subreddit.</returns>
         public IAsyncEnumerable<SubmissionDetails> GetSubmissionsAsync(
-            Action<SubredditSubmissionsListingEnumerable.Options.Builder> optionsBuilderAction = null)
+            Action<SubredditSubmissionsListingEnumerable.Options.Builder> configurationAction = null)
         {
             var optionsBuilder = new SubredditSubmissionsListingEnumerable.Options.Builder();            
     
-            optionsBuilderAction?.Invoke(optionsBuilder);
+            configurationAction?.Invoke(optionsBuilder);
 
             return new SubredditSubmissionsListingEnumerable(
                 _client,
-                optionsBuilder,
+                optionsBuilder.Options,
                 new SubredditSubmissionsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _subredditName

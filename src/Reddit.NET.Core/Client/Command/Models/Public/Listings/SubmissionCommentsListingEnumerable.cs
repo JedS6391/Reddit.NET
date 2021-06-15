@@ -20,11 +20,13 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// Initializes a new instance of the <see cref="SubmissionCommentsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
-        /// /// <param name="parameters">Parameters used when loading the listing data.</param>
+        /// <param name="options">The options available to the listing.</param>
+        /// <param name="parameters">Parameters used when loading the listing data.</param>
         public SubmissionCommentsListingEnumerable(
             RedditClient client,
+            SubmissionCommentsListingEnumerable.Options options,
             SubmissionCommentsListingEnumerable.ListingParameters parameters)
-            : base(null) // TODO
+            : base(options)
         {
             _client = client;
             _parameters = parameters;
@@ -77,8 +79,19 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             public string SubmissionId { get; set; }
         }
 
+        /// <summary>
+        /// Defines the options available for <see cref="SubmissionCommentsListingEnumerable" />.
+        /// </summary>
         public class Options : ListingEnumerableOptions
         {
+            /// <summary>
+            /// Provides the ability to create <see cref="SubmissionCommentsListingEnumerable.Options" /> instances.
+            /// </summary>
+            public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
+            {
+                /// <inheritdoc />
+                protected override Builder Instance => this;
+            }
         }
     }
 }

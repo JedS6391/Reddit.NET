@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Public.Listings;
@@ -41,15 +42,24 @@ namespace Reddit.NET.Core.Client.Interactions
         /// <summary>
         /// Gets the comments on the submission.
         /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
         /// <returns>An asynchronous enumerator over the comments on the submission.</returns>
-        public IAsyncEnumerable<CommentDetails> GetCommentsAsync() =>
-            new SubmissionCommentsListingEnumerable(
+        public IAsyncEnumerable<CommentDetails> GetCommentsAsync(
+            Action<SubmissionCommentsListingEnumerable.Options.Builder> configurationAction = null) 
+        {
+            var optionsBuilder = new SubmissionCommentsListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new SubmissionCommentsListingEnumerable(
                 _client,
+                optionsBuilder.Options,
                 new SubmissionCommentsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _submission.Subreddit,
                     SubmissionId = _submission.Id
                 });
+        }
 
         private async Task ApplyVote(ApplyVoteToSubmissionCommand.VoteDirection direction) 
         {

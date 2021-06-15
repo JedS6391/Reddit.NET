@@ -20,10 +20,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// Initializes a new instance of the <see cref="UserSubredditsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
+        /// <param name="options">The options available to the listing.</param>
         public UserSubredditsListingEnumerable(
             RedditClient client, 
-            UserSubredditsListingEnumerable.Options.Builder optionsBuilder)
-            : base(optionsBuilder.Options)
+            UserSubredditsListingEnumerable.Options options)
+            : base(options)
         {
             _client = client;
         }
@@ -58,10 +59,17 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             return subreddits;
         } 
 
+        /// <summary>
+        /// Defines the options available for <see cref="UserSubredditsListingEnumerable" />.
+        /// </summary>
         public class Options : ListingEnumerableOptions
         {
+            /// <summary>
+            /// Provides the ability to create <see cref="UserSubredditsListingEnumerable.Options" /> instances.
+            /// </summary>
             public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
             {
+                /// <inheritdoc />
                 protected override Builder Instance => this;
             }
         }

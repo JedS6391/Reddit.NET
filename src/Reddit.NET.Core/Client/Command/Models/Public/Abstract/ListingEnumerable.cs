@@ -31,6 +31,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
         /// <summary>
         /// Initializes a new instance of the <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> class.
         /// </summary>
+        /// <param name="options">The options available to the listing.</param>
         protected ListingEnumerable(TOptions options)
         {
             ListingOptions = options;

@@ -17,12 +17,13 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// Initializes a new instance of the <see cref="SubredditSubmissionsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
+        /// <param name="options">The options available to the listing.</param>
         /// <param name="parameters">Parameters used when loading the listing data.</param>
         public SubredditSubmissionsListingEnumerable(
             RedditClient client,
-            SubredditSubmissionsListingEnumerable.Options.Builder optionsBuilder,
+            SubredditSubmissionsListingEnumerable.Options options,
             SubredditSubmissionsListingEnumerable.ListingParameters parameters)
-            : base(optionsBuilder.Options)
+            : base(options)
         {
             Client = client;
             Parameters = parameters;
@@ -81,14 +82,30 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             public string SubredditName { get; set; }
         }
 
+        /// <summary>
+        /// Defines the options available for <see cref="SubredditSubmissionsListingEnumerable" />.
+        /// </summary>
         public class Options : ListingEnumerableOptions
         {
+            /// <summary>
+            /// Gets the order to use for sorting submissions.
+            /// </summary>
+            /// <remarks>Defaults to hot.</remarks>
             internal SubredditSubmissionSort Sort { get; set; } = SubredditSubmissionSort.Hot;
 
+            /// <summary>
+            /// Provides the ability to create <see cref="UserSubredditsListingEnumerable.Options" /> instances.
+            /// </summary>
             public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
             {
+                /// <inheritdoc />
                 protected override Builder Instance => this;
 
+                /// <summary>
+                /// Sets the number of items to retrieve per request.
+                /// </summary>
+                /// <param name="sort">The order to use for sorting submissions.</param>
+                /// <returns>The updated builder.</returns>
                 public Builder WithSort(SubredditSubmissionSort sort)
                 {
                     Options.Sort = sort;

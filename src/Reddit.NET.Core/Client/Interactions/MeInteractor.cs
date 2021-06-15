@@ -43,15 +43,16 @@ namespace Reddit.NET.Core.Client.Interactions
         /// <summary>
         /// Gets the subreddits the authenticated user is subscribed to.
         /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
         /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
         public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync(
-            Action<UserSubredditsListingEnumerable.Options.Builder> optionsBuilderAction = null) 
+            Action<UserSubredditsListingEnumerable.Options.Builder> configurationAction = null) 
         {
             var optionsBuilder = new UserSubredditsListingEnumerable.Options.Builder();
 
-            optionsBuilderAction?.Invoke(optionsBuilder);
+            configurationAction?.Invoke(optionsBuilder);
 
-            return new UserSubredditsListingEnumerable(_client, optionsBuilder);
+            return new UserSubredditsListingEnumerable(_client, optionsBuilder.Options);
         }
     }
 }
