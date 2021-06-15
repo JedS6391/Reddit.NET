@@ -43,6 +43,48 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonInclude]
             public string Permalink { get; private set; }
 
+            /// <summary>
+            /// Gets the URL of the submission
+            /// </summary>
+            [JsonPropertyName("url")]
+            [JsonInclude]
+            public string Url { get; private set; }
+
+            /// <summary>
+            /// Gets the author of the submission.
+            /// </summary>
+            [JsonPropertyName("author")]
+            [JsonInclude]
+            public string Author { get; private set; }
+
+            /// <summary>
+            /// Gets the domain of the submission.
+            /// </summary>
+            [JsonPropertyName("domain")]
+            [JsonInclude]
+            public string Domain { get; private set; }
+
+            /// <summary>
+            /// Gets a value indicating whether the submission is a self post.
+            /// </summary>
+            [JsonPropertyName("is_self")]
+            [JsonInclude]
+            public bool IsSelfPost { get; private set; }
+
+            /// <summary>
+            /// Gets a value indicating whether the submission is 'Not Safe For Work' (NSFW).
+            /// </summary>
+            [JsonPropertyName("over_18")]
+            [JsonInclude]
+            public bool IsNsfw { get; private set; }
+
+            /// <summary>
+            /// Gets the raw text of the submission.
+            /// </summary>
+            [JsonPropertyName("selftext")]
+            [JsonInclude]
+            public string SelfText { get; private set; }
+
             /// <inheritdoc />
             [JsonPropertyName("ups")]
             [JsonInclude]

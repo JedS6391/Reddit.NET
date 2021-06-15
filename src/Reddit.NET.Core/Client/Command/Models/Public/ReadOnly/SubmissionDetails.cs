@@ -16,10 +16,16 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
         internal SubmissionDetails(Thing<Submission.Details> thing)
-        {            
+        {             
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
+            Url = thing.Data.Url;
+            Author = thing.Data.Author;
+            Domain = thing.Data.Domain;
+            IsSelfPost = thing.Data.IsSelfPost;
+            IsNsfw = thing.Data.IsNsfw;
+            SelfText = thing.Data.SelfText;
             Upvotes = thing.Data.Upvotes;
             Downvotes = thing.Data.Downvotes;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
@@ -41,6 +47,36 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Gets the permalink of the submission.
         /// </summary>
         public string Permalink { get; }
+        
+        /// <summary>
+        /// Gets the URL of the submission
+        /// </summary>
+        public string Url { get;}
+
+        /// <summary>
+        /// Gets the author of the submission.
+        /// </summary>
+        public string Author { get; }
+
+        /// <summary>
+        /// Gets the domain of the submission.
+        /// </summary>
+        public string Domain { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the submission is a self post.
+        /// </summary>        
+        public bool IsSelfPost { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the submission is 'Not Safe For Work' (NSFW).
+        /// </summary>
+        public bool IsNsfw { get; private set; }
+
+        /// <summary>
+        /// Gets the raw text of the submission.
+        /// </summary>
+        public string SelfText { get; private set; }
 
         /// <summary>
         /// Gets the number of upvotes on the comment.
