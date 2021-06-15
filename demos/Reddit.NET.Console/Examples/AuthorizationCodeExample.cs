@@ -58,12 +58,15 @@ namespace Reddit.NET.Console.Examples
 
             _logger.LogInformation(askRedditDetails.ToString());
 
-            var topTenHotSubmissions = askReddit.GetHotSubmissionsAsync().Take(10);
-
-            await foreach (var submission in topTenHotSubmissions)
-            {
-                _logger.LogInformation(submission.ToString());
-            }
+            var topFiftyHotSubmissions = askReddit.GetHotSubmissionsAsync(options => 
+                options
+                    .WithItemsPerRequest(10)
+                    .WithMaximumItems(50));
+        
+            await foreach (var submission in topFiftyHotSubmissions)
+            {            
+                _logger.LogInformation(submission.ToString());                
+            }  
 
             var me = client.Me(); 
 

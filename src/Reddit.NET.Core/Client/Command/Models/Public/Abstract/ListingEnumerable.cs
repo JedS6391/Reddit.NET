@@ -22,16 +22,26 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
     /// <typeparam name="TListing">The type of listing the enumerable manages.</typeparam>
     /// <typeparam name="TData">The type of data associated with the things that this listing contains.</typeparam>
     /// <typeparam name="TMapped">The type the things in the listing will be mapped to before being returned.</typeparam>
-    public abstract class ListingEnumerable<TListing, TData, TMapped> : IAsyncEnumerable<TMapped>
-        where TListing : Listing<TData>        
+    /// <typeparam name="TOptions">The type of options available to the listing.</typeparam>
+    public abstract class ListingEnumerable<TListing, TData, TMapped, TOptions> 
+        : IAsyncEnumerable<TMapped>
+        where TListing : Listing<TData>
+        where TOptions : ListingEnumerableOptions, new() 
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ListingEnumerable{TListing, TData, TMapped}" /> class.
+        /// Initializes a new instance of the <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> class.
         /// </summary>
-        protected ListingEnumerable()
-        {    
+        protected ListingEnumerable(Action<TOptions> optionsBuilder = null)
+        {
+            ListingOptions = new TOptions();
+
+            optionsBuilder?.Invoke(ListingOptions);
         }
 
+        /// <summary>
+        /// Gets the options available to the listing.
+        /// </summary>
+        protected TOptions ListingOptions { get; }
 
         /// <summary>
         /// Provides the data for the initial listing.
@@ -62,6 +72,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
         /// <inheritdoc />
         public IAsyncEnumerator<TMapped> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
             new ListingEnumerator(
+                ListingOptions,
                 GetInitialListingAsync, 
                 GetNextListingAsync, 
                 MapThing,
@@ -80,17 +91,20 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
             /// <summary>
             /// Initializes a new instance of the <see cref="ListingEnumerator" /> class.
             /// </summary>
+            /// <param name="options">The options available to the listing enumerator.</param>
             /// <param name="initialListingProvider">A function that provides the data for the initial listing.</param>
             /// <param name="nextListingProvider">A function that provides the data for subsequent listings</param>
             /// <param name="mapper">A function used to map the listing data.</param>
             /// <param name="cancellationToken">A <see cref="CancellationToken" /> that may be used to cancel the asynchronous iteration.</param>
             internal ListingEnumerator(
+                TOptions options,
                 Func<Task<TListing>> initialListingProvider,
                 Func<TListing, Task<TListing>> nextListingProvider,
                 Func<Thing<TData>, TMapped> mapper,
                 CancellationToken cancellationToken = default)
             {
                 _context = new ListingEnumeratorContext(
+                    options,
                     initialListingProvider,
                     nextListingProvider,
                     mapper,
@@ -112,6 +126,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
                         // No data for the initial page.
                         return false;
                     }
+                }         
+
+                if (_context.Options.MaximumItems.HasValue && _context.Count >= _context.Options.MaximumItems)
+                {
+                    return false;
                 }
 
                 _context.MoveNext();
@@ -178,7 +197,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
                 }
 
                 _context.UpdateListing(nextListing);
-                _context.Reset();
+                _context.ResetPosition();
 
                 return true;
             }
@@ -186,25 +205,30 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
             private class ListingEnumeratorContext
             {
                 public ListingEnumeratorContext(
+                    TOptions options,
                     Func<Task<TListing>> initialListingProvider,
                     Func<TListing, Task<TListing>> nextListingProvider,
                     Func<Thing<TData>, TMapped> mapper,
                     CancellationToken cancellationToken)
                 {
+                    Options = options;
                     InitialListingProvider = initialListingProvider;
                     NextListingProvider = nextListingProvider;
                     Mapper = mapper;
                     CurrentListing = null;
                     Position = -1;
+                    Count = 0;
                     Exhausted = false;
                     CancellationToken = cancellationToken;
                 }
 
+                public TOptions Options { get; }
                 public Func<Task<TListing>> InitialListingProvider { get; }
                 public Func<TListing, Task<TListing>> NextListingProvider { get; }
                 public Func<Thing<TData>, TMapped> Mapper { get; }
                 public TListing CurrentListing { get; private set; }
                 public int Position { get; private set; }
+                public int Count { get; private set; }
                 public bool Exhausted { get; private set; }
                 public CancellationToken CancellationToken { get; }
 
@@ -221,15 +245,14 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
                     CurrentListing = listing;                    
                 }
 
-                public void MoveNext() => Position++;
+                public void MoveNext() 
+                {
+                    Position++;
+                    Count++;;
+                }
 
-                public void Reset() => Position = 0;
+                public void ResetPosition() => Position = 0;
             }
-        }
-
-        internal static class Constants
-        {
-            public const int DefaultLimit = 25;
         }
     }
 }

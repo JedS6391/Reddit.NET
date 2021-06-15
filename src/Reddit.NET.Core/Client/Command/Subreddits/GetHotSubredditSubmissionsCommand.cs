@@ -27,9 +27,11 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
         {
             var uriBuilder = new UriBuilder(RedditApiUrl.Subreddit.Hot(_parameters.SubredditName));
 
+            uriBuilder.Query = $"?limit={_parameters.Limit}";
+
             if (!string.IsNullOrEmpty(_parameters.After))
             {
-                uriBuilder.Query = $"?after={_parameters.After}";
+                uriBuilder.Query = $"{uriBuilder.Query}&after={_parameters.After}";
             }
 
             var request = new HttpRequestMessage()
@@ -50,6 +52,11 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             /// Gets or sets the name of the subreddit to get submissions for.
             /// </summary>
             public string SubredditName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the limit parameter.
+            /// </summary>
+            public int Limit { get; set; }
 
             /// <summary>
             /// Gets or sets the after parameter.

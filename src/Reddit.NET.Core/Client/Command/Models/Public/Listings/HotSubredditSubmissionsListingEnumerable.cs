@@ -1,11 +1,13 @@
+using System;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
+using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
 using Reddit.NET.Core.Client.Command.Subreddits;
 
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="Abstract.ListingEnumerable{TListing, TData, TMapped}" /> implementation over the 'hot' submissions of a subreddit.. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the 'hot' submissions of a subreddit.
     /// </summary>
     public class HotSubredditSubmissionsListingEnumerable : SubredditSubmissionsListingEnumerable
     {
@@ -16,8 +18,9 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// <param name="parameters">Parameters used when loading the listing data.</param>
         public HotSubredditSubmissionsListingEnumerable(
             RedditClient client,
+            Action<SubredditSubmissionsListingEnumerable.Options> optionsBuilder,
             SubredditSubmissionsListingEnumerable.ListingParameters parameters) 
-            : base(client, parameters)
+            : base(client, optionsBuilder, parameters)
         {
         }
 
@@ -27,6 +30,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             var getHotSubredditSubmissionsCommand = new GetHotSubredditSubmissionsCommand(new GetHotSubredditSubmissionsCommand.Parameters()
             {
                 SubredditName = Parameters.SubredditName,
+                Limit = ListingOptions.ItemsPerRequest,
                 After = after
             });
 

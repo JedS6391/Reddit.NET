@@ -28,9 +28,11 @@ namespace Reddit.NET.Core.Client.Command.Users
         {
             var uriBuilder = new UriBuilder(RedditApiUrl.Me.Subreddits);
 
+            uriBuilder.Query = $"?limit={_parameters.Limit}";
+
             if (!string.IsNullOrEmpty(_parameters.After))
             {
-                uriBuilder.Query = $"?after={_parameters.After}";
+                uriBuilder.Query = $"{uriBuilder.Query}&after={_parameters.After}";
             }
 
             var request = new HttpRequestMessage()
@@ -47,6 +49,11 @@ namespace Reddit.NET.Core.Client.Command.Users
         /// </summary>
         public class Parameters 
         {
+            /// <summary>
+            /// Gets or sets the limit parameter.
+            /// </summary>
+            public int Limit { get; set; }
+
             /// <summary>
             /// Gets or sets the after parameter.
             /// </summary>

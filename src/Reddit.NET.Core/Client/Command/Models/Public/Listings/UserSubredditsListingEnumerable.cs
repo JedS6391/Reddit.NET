@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
@@ -8,10 +9,10 @@ using Reddit.NET.Core.Client.Command.Users;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped}" /> implementation over the subreddits a user is subscribed to. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the subreddits a user is subscribed to. 
     /// </summary>
     public sealed class UserSubredditsListingEnumerable
-        : ListingEnumerable<Subreddit.Listing, Subreddit.Details, SubredditDetails>
+        : ListingEnumerable<Subreddit.Listing, Subreddit.Details, SubredditDetails, UserSubredditsListingEnumerable.Options>
     {
         private readonly RedditClient _client;
 
@@ -19,14 +20,10 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// Initializes a new instance of the <see cref="UserSubredditsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
-        public UserSubredditsListingEnumerable(RedditClient client)
-            : base()
-        {
-            _client = client;
-        }
-
-        public UserSubredditsListingEnumerable(RedditClient client, int limit)
-            : base(limit)
+        public UserSubredditsListingEnumerable(
+            RedditClient client, 
+            Action<UserSubredditsListingEnumerable.Options> optionsBuilder)
+            : base(optionsBuilder)
         {
             _client = client;
         }
@@ -52,12 +49,17 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         {
             var getUserSubredditsCommand = new GetUserSubredditsCommand(new GetUserSubredditsCommand.Parameters()
             {
-                After = after
+                After = after,
+                Limit = ListingOptions.ItemsPerRequest
             });
 
             var subreddits = await _client.ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand);
 
             return subreddits;
         } 
+
+        public class Options : ListingEnumerableOptions
+        {
+        }
     }
 }

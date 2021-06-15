@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
@@ -7,10 +8,10 @@ using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped}" /> implementation over the submissions of a subreddit.. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions of a subreddit.. 
     /// </summary>
     public abstract class SubredditSubmissionsListingEnumerable
-        : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails>
+        : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSubmissionsListingEnumerable.Options>
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditSubmissionsListingEnumerable" /> class.
@@ -19,7 +20,9 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// <param name="parameters">Parameters used when loading the listing data.</param>
         protected SubredditSubmissionsListingEnumerable(
             RedditClient client,
+            Action<SubredditSubmissionsListingEnumerable.Options> optionsBuilder,
             SubredditSubmissionsListingEnumerable.ListingParameters parameters)
+            : base(optionsBuilder)
         {
             Client = client;
             Parameters = parameters;
@@ -64,6 +67,18 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             /// Gets or sets the name of the subreddit to load submissions from.
             /// </summary>
             public string SubredditName { get; set; }
+        }
+
+        public class Options : ListingEnumerableOptions
+        {
+            internal string Sort { get; private set; }
+
+            public Options WithSort(string sort)
+            {
+                Sort = sort;
+
+                return this;
+            }
         }
     }
 }

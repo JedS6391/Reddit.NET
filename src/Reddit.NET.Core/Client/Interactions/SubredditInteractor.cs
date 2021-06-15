@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
@@ -49,9 +50,10 @@ namespace Reddit.NET.Core.Client.Interactions
         /// Gets the 'hot' submissions of the subreddit.
         /// </summary>
         /// <returns>An asynchronous enumerator over the 'hot' submissions of the subreddit.</returns>
-        public IAsyncEnumerable<SubmissionDetails> GetHotSubmissionsAsync() => 
+        public IAsyncEnumerable<SubmissionDetails> GetHotSubmissionsAsync(Action<SubredditSubmissionsListingEnumerable.Options> optionsBuilder = null) => 
             new HotSubredditSubmissionsListingEnumerable(
                 _client,
+                optionsBuilder,
                 new SubredditSubmissionsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _subredditName
