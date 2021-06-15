@@ -1,3 +1,4 @@
+using System;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 
@@ -14,7 +15,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// <param name="thing">A <see cref="Thing{TData}" /> containing a user's data.</param>
         internal UserDetails(Thing<User> thing)
         {
-            Name = thing.Data.Name;
+            Name = thing.Data.Data.Name;
+            CreatedAtUtc = thing.Data.Data.CreatedAtUtc;
         }
 
         /// <summary>
@@ -24,12 +26,18 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         internal UserDetails(User.Details user)
         {
             Name = user.Name;
+            CreatedAtUtc = user.CreatedAtUtc;
         }
 
         /// <summary>
         /// Gets the name of the user.
         /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        /// Gets the date and time the user was created.
+        /// </summary>
+        public DateTimeOffset CreatedAtUtc { get; }
 
         /// <inheritdoc />
 

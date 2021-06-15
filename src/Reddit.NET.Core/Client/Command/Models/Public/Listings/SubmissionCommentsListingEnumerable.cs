@@ -8,22 +8,25 @@ using Reddit.NET.Core.Client.Command.Submissions;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the comments of a submission. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the comments of a submission. 
     /// </summary>
-    public class SubmissionCommentsListingGenerator 
-        : ListingGenerator<Comment.Listing, Comment.Details, CommentDetails>
+    public class SubmissionCommentsListingEnumerable
+        : ListingEnumerable<Comment.Listing, Comment.Details, CommentDetails, SubmissionCommentsListingEnumerable.Options>
     {
         private readonly RedditClient _client;
-        private readonly SubmissionCommentsListingGenerator.ListingParameters _parameters;        
+        private readonly SubmissionCommentsListingEnumerable.ListingParameters _parameters;        
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserSubredditsListingGenerator" /> class.
+        /// Initializes a new instance of the <see cref="SubmissionCommentsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
-        /// /// <param name="parameters">Parameters used when loading the listing data.</param>
-        public SubmissionCommentsListingGenerator(
+        /// <param name="options">The options available to the listing.</param>
+        /// <param name="parameters">Parameters used when loading the listing data.</param>
+        public SubmissionCommentsListingEnumerable(
             RedditClient client,
-            SubmissionCommentsListingGenerator.ListingParameters parameters)
+            SubmissionCommentsListingEnumerable.Options options,
+            SubmissionCommentsListingEnumerable.ListingParameters parameters)
+            : base(options)
         {
             _client = client;
             _parameters = parameters;
@@ -74,6 +77,21 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             /// Gets or sets the identifier of the submission to load comments for.
             /// </summary>
             public string SubmissionId { get; set; }
+        }
+
+        /// <summary>
+        /// Defines the options available for <see cref="SubmissionCommentsListingEnumerable" />.
+        /// </summary>
+        public class Options : ListingEnumerableOptions
+        {
+            /// <summary>
+            /// Provides the ability to create <see cref="SubmissionCommentsListingEnumerable.Options" /> instances.
+            /// </summary>
+            public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
+            {
+                /// <inheritdoc />
+                protected override Builder Instance => this;
+            }
         }
     }
 }

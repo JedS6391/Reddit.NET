@@ -18,6 +18,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         {
             Name = thing.Data.DisplayName;
             Title = thing.Data.Title;
+            Description = thing.Data.Description;
+            Subscribers = thing.Data.Subscribers;
         }
 
         /// <summary>
@@ -29,6 +31,16 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Gets the title of the subreddit.
         /// </summary>
         public string Title { get; }
+
+        /// <summary>
+        /// Gets the description of the subreddit.
+        /// </summary>
+        public string Description { get; }
+
+        /// <summary>
+        /// Gets the number of users subreddit to the subreddit.
+        /// </summary>
+        public long Subscribers { get; }        
 
         /// <inheritdoc />
         public SubredditInteractor Interact(RedditClient client) => client.Subreddit(Name);

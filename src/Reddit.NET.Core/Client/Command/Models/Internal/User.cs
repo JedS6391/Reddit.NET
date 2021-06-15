@@ -1,5 +1,7 @@
+using System;
 using System.Text.Json.Serialization;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
+using Reddit.NET.Core.Client.Command.Models.Internal.Json;
 
 namespace Reddit.NET.Core.Client.Command.Models.Internal
 {
@@ -11,7 +13,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
         /// <summary>
         /// Defines the attributes of a <see cref="User" />.
         /// </summary>
-        public class Details
+        public class Details : ICreated
         {
             /// <summary>
             /// Gets the identifier of the user.
@@ -26,6 +28,12 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("name")]
             [JsonInclude]
             public string Name { get; private set; }
+
+            /// <inheritdoc />
+            [JsonPropertyName("created_utc")]
+            [JsonInclude]
+            [JsonConverter(typeof(EpochSecondJsonConverter))]
+            public DateTimeOffset CreatedAtUtc { get; private set; }
         }
     }
 }

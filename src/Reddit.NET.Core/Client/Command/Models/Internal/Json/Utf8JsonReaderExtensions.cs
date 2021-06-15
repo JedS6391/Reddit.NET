@@ -5,7 +5,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
     /// <summary>
     /// Defines extensions for <see cref="Utf8JsonReader" />.
     /// </summary>
-    public static class Utf8JsonReaderExtensions
+    internal static class Utf8JsonReaderExtensions
     {
         /// <summary>
         /// Attempts to match the provided <see cref="JsonTokenType" /> at the current reader position.
@@ -17,7 +17,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
         {
             if (reader.TokenType != tokenType)
             {
-                FailRead($"Expected '{tokenType}' token but was '{reader.TokenType}'.");
+                throw new JsonException(
+                    $"Unexpected JSON data during read: Expected '{tokenType}' token but was '{reader.TokenType}'.");
             }
         }
 
@@ -32,9 +33,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
             Match(reader, tokenType);
 
             reader.Read();
-        }
-
-        private static void FailRead(string details) => 
-            throw new JsonException($"Unexpected JSON data during read: {details}");  
+        } 
     }
 }

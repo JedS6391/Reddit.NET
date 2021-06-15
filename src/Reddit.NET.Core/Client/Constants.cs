@@ -36,7 +36,7 @@ namespace Reddit.NET.Core.Client
             public static string[] ReadOnlyCommandIds = new string[]
             {
                 nameof(GetSubredditDetailsCommand),
-                nameof(GetHotSubredditSubmissionsCommand),
+                nameof(GetSubredditSubmissionsCommand),
                 nameof(GetSubmissionCommentsCommand)
             };
 
@@ -46,7 +46,7 @@ namespace Reddit.NET.Core.Client
             public static string[] UserCommandIds = new string[]
             {
                 nameof(GetSubredditDetailsCommand),
-                nameof(GetHotSubredditSubmissionsCommand),
+                nameof(GetSubredditSubmissionsCommand),
                 nameof(GetMyDetailsCommand),
                 nameof(GetUserSubredditsCommand),
                 nameof(ApplyVoteToSubmissionCommand),

@@ -1,5 +1,4 @@
 using System.Net.Http;
-using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command;
 using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;

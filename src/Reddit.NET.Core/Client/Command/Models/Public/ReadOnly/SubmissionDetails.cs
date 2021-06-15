@@ -1,3 +1,4 @@
+using System;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
@@ -15,11 +16,20 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
         internal SubmissionDetails(Thing<Submission.Details> thing)
-        {
-            Id = thing.Data.Id;
+        {             
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
+            Url = thing.Data.Url;
+            Author = thing.Data.Author;
+            Domain = thing.Data.Domain;
+            IsSelfPost = thing.Data.IsSelfPost;
+            IsNsfw = thing.Data.IsNsfw;
+            SelfText = thing.Data.SelfText;
+            Upvotes = thing.Data.Upvotes;
+            Downvotes = thing.Data.Downvotes;
+            CreatedAtUtc = thing.Data.CreatedAtUtc;
+            Id = thing.Data.Id;
             Kind = thing.Kind;
         }
 
@@ -37,6 +47,51 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Gets the permalink of the submission.
         /// </summary>
         public string Permalink { get; }
+        
+        /// <summary>
+        /// Gets the URL of the submission
+        /// </summary>
+        public string Url { get;}
+
+        /// <summary>
+        /// Gets the author of the submission.
+        /// </summary>
+        public string Author { get; }
+
+        /// <summary>
+        /// Gets the domain of the submission.
+        /// </summary>
+        public string Domain { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the submission is a self post.
+        /// </summary>        
+        public bool IsSelfPost { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the submission is 'Not Safe For Work' (NSFW).
+        /// </summary>
+        public bool IsNsfw { get; private set; }
+
+        /// <summary>
+        /// Gets the raw text of the submission.
+        /// </summary>
+        public string SelfText { get; private set; }
+
+        /// <summary>
+        /// Gets the number of upvotes on the comment.
+        /// </summary>
+        public int Upvotes { get; }
+
+        /// <summary>
+        /// Gets the number of downvotes on the comment.
+        /// </summary>
+        public int Downvotes { get; }     
+
+        /// <summary>
+        /// Gets the date and time the submission was created.
+        /// </summary>
+        public DateTimeOffset CreatedAtUtc { get; }
 
         internal string Id { get; set; }     
         internal string Kind { get; set; }

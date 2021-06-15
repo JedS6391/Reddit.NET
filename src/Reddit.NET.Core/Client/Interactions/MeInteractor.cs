@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
@@ -32,6 +33,8 @@ namespace Reddit.NET.Core.Client.Interactions
         {
             var getMyDetailsCommand = new GetMyDetailsCommand();
 
+            // We use the data model type to deserialize the response as the user details
+            // API returns a plain data object, rather than wrapping the data within a thing.
             var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand);
 
             return new UserDetails(user);
@@ -40,7 +43,16 @@ namespace Reddit.NET.Core.Client.Interactions
         /// <summary>
         /// Gets the subreddits the authenticated user is subscribed to.
         /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
         /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
-        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync() => new UserSubredditsListingGenerator(_client); 
+        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync(
+            Action<UserSubredditsListingEnumerable.Options.Builder> configurationAction = null) 
+        {
+            var optionsBuilder = new UserSubredditsListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new UserSubredditsListingEnumerable(_client, optionsBuilder.Options);
+        }
     }
 }

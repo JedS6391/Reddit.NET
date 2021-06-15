@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
@@ -45,16 +46,26 @@ namespace Reddit.NET.Core.Client.Interactions
             return new SubredditDetails(subreddit);
         }
 
+    
         /// <summary>
-        /// Gets the 'hot' submissions of the subreddit.
+        /// Gets the submissions of the subreddit.
         /// </summary>
-        /// <returns>An asynchronous enumerator over the 'hot' submissions of the subreddit.</returns>
-        public IAsyncEnumerable<SubmissionDetails> GetHotSubmissionsAsync() => 
-            new HotSubredditSubmissionsListingGenerator(
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the submissions of the subreddit.</returns>
+        public IAsyncEnumerable<SubmissionDetails> GetSubmissionsAsync(
+            Action<SubredditSubmissionsListingEnumerable.Options.Builder> configurationAction = null)
+        {
+            var optionsBuilder = new SubredditSubmissionsListingEnumerable.Options.Builder();            
+    
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new SubredditSubmissionsListingEnumerable(
                 _client,
-                new SubredditSubmissionsListingGenerator.ListingParameters()
+                optionsBuilder.Options,
+                new SubredditSubmissionsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _subredditName
                 });
+        }
     }
 }

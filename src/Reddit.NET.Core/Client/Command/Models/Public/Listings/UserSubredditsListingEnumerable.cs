@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
@@ -8,18 +9,22 @@ using Reddit.NET.Core.Client.Command.Users;
 namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingGenerator{TListing, TData, TMapped}" /> implementation over the subreddits a user is subscribed to. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the subreddits a user is subscribed to. 
     /// </summary>
-    public sealed class UserSubredditsListingGenerator 
-        : ListingGenerator<Subreddit.Listing, Subreddit.Details, SubredditDetails>
+    public sealed class UserSubredditsListingEnumerable
+        : ListingEnumerable<Subreddit.Listing, Subreddit.Details, SubredditDetails, UserSubredditsListingEnumerable.Options>
     {
         private readonly RedditClient _client;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserSubredditsListingGenerator" /> class.
+        /// Initializes a new instance of the <see cref="UserSubredditsListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
-        public UserSubredditsListingGenerator(RedditClient client)
+        /// <param name="options">The options available to the listing.</param>
+        public UserSubredditsListingEnumerable(
+            RedditClient client, 
+            UserSubredditsListingEnumerable.Options options)
+            : base(options)
         {
             _client = client;
         }
@@ -45,12 +50,28 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         {
             var getUserSubredditsCommand = new GetUserSubredditsCommand(new GetUserSubredditsCommand.Parameters()
             {
-                After = after
+                After = after,
+                Limit = ListingOptions.ItemsPerRequest
             });
 
             var subreddits = await _client.ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand);
 
             return subreddits;
         } 
+
+        /// <summary>
+        /// Defines the options available for <see cref="UserSubredditsListingEnumerable" />.
+        /// </summary>
+        public class Options : ListingEnumerableOptions
+        {
+            /// <summary>
+            /// Provides the ability to create <see cref="UserSubredditsListingEnumerable.Options" /> instances.
+            /// </summary>
+            public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
+            {
+                /// <inheritdoc />
+                protected override Builder Instance => this;
+            }
+        }
     }
 }

@@ -62,9 +62,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
         }
 
         /// <inheritdoc />
-        public override void Write(Utf8JsonWriter writer, Submission.SubmissionComments value, JsonSerializerOptions options)
-        {
+        public override void Write(Utf8JsonWriter writer, Submission.SubmissionComments value, JsonSerializerOptions options) =>        
             throw new NotImplementedException();
-        }
     }
 }

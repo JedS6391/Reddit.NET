@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
@@ -7,6 +6,7 @@ using System.Web;
 using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Builder;
+using Reddit.NET.Core.Client.Command.Models.Public.Listings;
 
 namespace Reddit.NET.Console.Examples
 {
@@ -58,18 +58,21 @@ namespace Reddit.NET.Console.Examples
 
             _logger.LogInformation(askRedditDetails.ToString());
 
-            var topTenHotSubmissions = askReddit.GetHotSubmissionsAsync().Take(10);
-
-            await foreach (var submission in topTenHotSubmissions)
-            {
-                _logger.LogInformation(submission.ToString());
-            }
+            var topFiftyHotSubmissions = askReddit.GetSubmissionsAsync(builder => 
+                builder                    
+                    .WithSort(SubredditSubmissionSort.Hot)                    
+                    .WithMaximumItems(50));
+        
+            await foreach (var submission in topFiftyHotSubmissions)
+            {            
+                _logger.LogInformation(submission.ToString());                
+            }  
 
             var me = client.Me(); 
 
             var meDetails = await me.GetDetailsAsync();
 
-            _logger.LogInformation(meDetails.ToString());
+            _logger.LogInformation(meDetails.ToString());            
 
             await foreach (var subreddit in me.GetSubredditsAsync())
             {            

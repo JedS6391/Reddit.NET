@@ -19,7 +19,8 @@ namespace Reddit.NET.Core.Client.Command
         public static class Subreddit 
         {
             public static string Details(string subredditName) => $"https://oauth.reddit.com/r/{subredditName}/about";
-            public static string Hot(string subredditName) => $"https://oauth.reddit.com/r/{subredditName}/hot";
+            public static string Submissions(string subredditName, string sort) 
+                => $"https://oauth.reddit.com/r/{subredditName}/{sort}";
         }
 
         public static class Submission 
