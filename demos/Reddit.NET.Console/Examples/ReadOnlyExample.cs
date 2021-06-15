@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Core.Client.Builder;
+using Reddit.NET.Core.Client.Command.Models.Public.Listings;
 
 namespace Reddit.NET.Console.Examples
 {
@@ -56,13 +56,15 @@ namespace Reddit.NET.Console.Examples
 
             _logger.LogInformation(askRedditDetails.ToString());
 
-            var topTenHotSubmissions = askReddit.GetHotSubmissionsAsync().Take(10);
+            var topFiftyHotSubmissions = askReddit.GetSubmissionsAsync(builder => 
+                builder                    
+                    .WithSort(SubredditSubmissionSort.Hot)                    
+                    .WithMaximumItems(50));
 
-            await foreach (var submission in topTenHotSubmissions)
+            await foreach (var submission in topFiftyHotSubmissions)
             {
                 _logger.LogInformation(submission.ToString());
             }
-
             
             var me = client.Me(); 
 

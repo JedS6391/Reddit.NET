@@ -1,25 +1,28 @@
 namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
 {
-    public abstract class ListingEnumerableOptionsBuilder<TOptions>
-        where TOptions : ListingEnumerableOptions
+    public abstract class ListingEnumerableOptionsBuilder<TOptions, TBuilder> 
+        where TOptions : ListingEnumerableOptions, new()
+        where TBuilder : ListingEnumerableOptionsBuilder<TOptions, TBuilder>
     {
-        private readonly TOptions _options;
-
-        protected ListingEnumerableOptionsBuilder(TOptions options)
+        protected ListingEnumerableOptionsBuilder()
         {
-            _options = options;
+            Options = new TOptions();
         }
+
+        protected abstract TBuilder Instance { get; }
+
+        protected internal readonly TOptions Options;
 
         /// <summary>
         /// Sets the number of items to retrieve per request.
         /// </summary>
-        /// <param name="itemsPerRequest">The number of items to retrieve per request.</param>
+        /// <param name="limit">The number of items to retrieve per request.</param>
         /// <returns>The updated options.</returns>
-        public ListingEnumerableOptionsBuilder<TOptions> WithItemsPerRequest(int itemsPerRequest)
+        public TBuilder WithItemsPerRequest(int limit)
         {
-            _options.WithItemsPerRequest(itemsPerRequest);
+            Options.ItemsPerRequest = limit;
 
-            return this;
+            return Instance;
         }
 
         /// <summary>
@@ -27,11 +30,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
         /// </summary>
         /// <param name="maximum">The maximum number of items to enumerate.</param>
         /// <returns>The updated options.</returns>
-        public ListingEnumerableOptionsBuilder<TOptions> WithMaximumItems(int maximum)
+        public TBuilder WithMaximumItems(int maximum)
         {
-            _options.WithMaximumItems(maximum);
+            Options.MaximumItems = maximum;
 
-            return this;
+            return Instance;
         }
     }
 }

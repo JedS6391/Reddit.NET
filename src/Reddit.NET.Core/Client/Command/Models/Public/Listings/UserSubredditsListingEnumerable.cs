@@ -22,8 +22,8 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         public UserSubredditsListingEnumerable(
             RedditClient client, 
-            Action<UserSubredditsListingEnumerable.Options> optionsBuilder)
-            : base(optionsBuilder)
+            UserSubredditsListingEnumerable.Options.Builder optionsBuilder)
+            : base(optionsBuilder.Options)
         {
             _client = client;
         }
@@ -60,6 +60,10 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 
         public class Options : ListingEnumerableOptions
         {
+            public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
+            {
+                protected override Builder Instance => this;
+            }
         }
     }
 }

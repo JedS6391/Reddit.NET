@@ -46,17 +46,25 @@ namespace Reddit.NET.Core.Client.Interactions
             return new SubredditDetails(subreddit);
         }
 
+    
         /// <summary>
-        /// Gets the 'hot' submissions of the subreddit.
+        /// Gets the submissions of the subreddit.
         /// </summary>
-        /// <returns>An asynchronous enumerator over the 'hot' submissions of the subreddit.</returns>
-        public IAsyncEnumerable<SubmissionDetails> GetHotSubmissionsAsync(Action<SubredditSubmissionsListingEnumerable.Options> optionsBuilder = null) => 
-            new HotSubredditSubmissionsListingEnumerable(
+        /// <returns>An asynchronous enumerator over the submissions of the subreddit.</returns>
+        public IAsyncEnumerable<SubmissionDetails> GetSubmissionsAsync(
+            Action<SubredditSubmissionsListingEnumerable.Options.Builder> optionsBuilderAction = null)
+        {
+            var optionsBuilder = new SubredditSubmissionsListingEnumerable.Options.Builder();            
+    
+            optionsBuilderAction?.Invoke(optionsBuilder);
+
+            return new SubredditSubmissionsListingEnumerable(
                 _client,
                 optionsBuilder,
                 new SubredditSubmissionsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _subredditName
                 });
+        }
     }
 }

@@ -24,7 +24,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         public SubmissionCommentsListingEnumerable(
             RedditClient client,
             SubmissionCommentsListingEnumerable.ListingParameters parameters)
-            : base()
+            : base(null) // TODO
         {
             _client = client;
             _parameters = parameters;

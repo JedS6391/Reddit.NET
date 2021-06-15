@@ -26,16 +26,14 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
     public abstract class ListingEnumerable<TListing, TData, TMapped, TOptions> 
         : IAsyncEnumerable<TMapped>
         where TListing : Listing<TData>
-        where TOptions : ListingEnumerableOptions, new() 
+        where TOptions : ListingEnumerableOptions, new()        
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> class.
         /// </summary>
-        protected ListingEnumerable(Action<TOptions> optionsBuilder = null)
+        protected ListingEnumerable(TOptions options)
         {
-            ListingOptions = new TOptions();
-
-            optionsBuilder?.Invoke(ListingOptions);
+            ListingOptions = options;
         }
 
         /// <summary>
