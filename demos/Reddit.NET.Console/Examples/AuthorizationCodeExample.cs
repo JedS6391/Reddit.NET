@@ -5,9 +5,8 @@ using System.Threading.Tasks;
 using System.Web;
 using Microsoft;
 using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Builder;
-using Reddit.NET.Core.Client.Command.Models.Public.Listings;
-using Reddit.NET.Core.Client.Command.Models.Public.Listings.Sorting;
+using Reddit.NET.Client.Builder;
+using Reddit.NET.Client.Models.Public.Listings.Sorting;
 
 namespace Reddit.NET.Console.Examples
 {
