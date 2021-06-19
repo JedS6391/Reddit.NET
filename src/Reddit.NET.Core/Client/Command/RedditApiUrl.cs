@@ -32,8 +32,11 @@ namespace Reddit.NET.Core.Client.Command
         {
             public static string Comments(string subredditName, string submissionId) =>
                 $"https://oauth.reddit.com/r/{subredditName}/comments/{submissionId}";
+        }
 
-            public static string Vote => "https://oauth.reddit.com/api/vote/";
+        public static class UserContent
+        {
+        public static string Vote => "https://oauth.reddit.com/api/vote/";  
         }
     }
 }

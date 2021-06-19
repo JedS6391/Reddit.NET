@@ -37,7 +37,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
             reader.Match(JsonTokenType.StartObject);
 
             // Read submission listing
-            var submissions = JsonSerializer.Deserialize<Submission.Listing>(ref reader);
+            var submissions = JsonSerializer.Deserialize<Submission.Listing>(ref reader, options);
 
             // End first object            
             reader.Consume(JsonTokenType.EndObject);
@@ -46,7 +46,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Json
             reader.Match(JsonTokenType.StartObject);
 
             // Read comment listing
-            var comments = JsonSerializer.Deserialize<Comment.Listing>(ref reader);
+            var comments = JsonSerializer.Deserialize<Comment.Listing>(ref reader, options);
 
             // End second object
             reader.Consume(JsonTokenType.EndObject);

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Public.Listings;
 using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
-using Reddit.NET.Core.Client.Command.Submissions;
+using Reddit.NET.Core.Client.Command.Vote;
 using Reddit.NET.Core.Client.Interactions.Abstract;
 
 namespace Reddit.NET.Core.Client.Interactions
@@ -11,7 +11,7 @@ namespace Reddit.NET.Core.Client.Interactions
     /// <summary>
     /// Provides mechanisms for interacting with a submission.
     /// </summary>
-    public class SubmissionInteractor : IInteractor
+    public sealed class SubmissionInteractor : IInteractor
     {
         private readonly RedditClient _client;
         private readonly SubmissionDetails _submission;
@@ -31,13 +31,13 @@ namespace Reddit.NET.Core.Client.Interactions
         /// Upvotes the submission.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpvoteAsync() => await ApplyVote(ApplyVoteToSubmissionCommand.VoteDirection.Upvote).ConfigureAwait(false);
+        public async Task UpvoteAsync() => await ApplyVote(ApplyVoteCommand.VoteDirection.Upvote).ConfigureAwait(false);
 
         /// <summary>
         /// Downvotes the submission.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DownvoteAsync() => await ApplyVote(ApplyVoteToSubmissionCommand.VoteDirection.Downvote).ConfigureAwait(false);
+        public async Task DownvoteAsync() => await ApplyVote(ApplyVoteCommand.VoteDirection.Downvote).ConfigureAwait(false);
 
         /// <summary>
         /// Gets the comments on the submission.
@@ -61,11 +61,11 @@ namespace Reddit.NET.Core.Client.Interactions
                 });
         }
 
-        private async Task ApplyVote(ApplyVoteToSubmissionCommand.VoteDirection direction) 
+        private async Task ApplyVote(ApplyVoteCommand.VoteDirection direction) 
         {
-            var applyVoteToSubmissionCommand = new ApplyVoteToSubmissionCommand(new ApplyVoteToSubmissionCommand.Parameters()
+            var applyVoteToSubmissionCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
-                Id = $"{_submission.Kind}_{_submission.Id}",
+                Id = _submission.FullName,
                 Direction = direction
             });
 

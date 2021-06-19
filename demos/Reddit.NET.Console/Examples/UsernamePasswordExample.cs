@@ -78,12 +78,12 @@ namespace Reddit.NET.Console.Examples
                 _logger.LogInformation(subreddit.ToString());
             }
 
-            var savedHistory = me.GetHistoryAsync(builder =>
+            var overviewHistory = me.GetHistoryAsync(builder =>
                 builder
                     .WithSort(UserHistorySort.Overview)
                     .WithMaximumItems(50));
 
-            await foreach (var item in savedHistory)
+            await foreach (var item in overviewHistory)
             {
                 _logger.LogInformation(item.ToString());
             }            
