@@ -13,7 +13,7 @@ namespace Reddit.NET.Core.Client.Interactions
     /// <summary>
     /// Provides mechanisms for interacting with the authenticated user.
     /// </summary>
-    public class MeInteractor : IInteractor
+    public sealed class MeInteractor : IInteractor
     {
         private readonly RedditClient _client; 
 

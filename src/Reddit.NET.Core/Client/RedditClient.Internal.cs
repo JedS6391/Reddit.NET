@@ -18,9 +18,16 @@ namespace Reddit.NET.Core.Client
         /// Gets an interactor for operations relating to a specific submission.
         /// </summary>
         /// <param name="submission">The submission to interact with.</param>            
-        /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the requested submission.</returns>
+        /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the provided submission.</returns>
         internal SubmissionInteractor Submission(SubmissionDetails submission) => new SubmissionInteractor(this, submission);
-    
+
+        /// <summary>
+        /// Gets an interactor for operations relating to a specific comment.
+        /// </summary>
+        /// <param name="comment">The comment to interact with.</param>            
+        /// <returns>A <see cref="CommentInteractor" /> instance that provides mechanisms for interacting with the provided comment.</returns>
+        internal CommentInteractor Comment(CommentDetails comment) => new CommentInteractor(this, comment);
+
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />.
         /// </summary>

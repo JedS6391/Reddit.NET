@@ -12,7 +12,7 @@ namespace Reddit.NET.Core.Client.Interactions
     /// <summary>
     /// Provides mechanisms for interacting with a subreddit.
     /// </summary>
-    public class SubredditInteractor : IInteractor
+    public sealed class SubredditInteractor : IInteractor
     {
         private readonly RedditClient _client;
         private readonly string _subredditName;

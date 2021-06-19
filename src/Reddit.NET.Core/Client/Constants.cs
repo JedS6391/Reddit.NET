@@ -1,6 +1,7 @@
 using Reddit.NET.Core.Client.Command.Submissions;
 using Reddit.NET.Core.Client.Command.Subreddits;
 using Reddit.NET.Core.Client.Command.Users;
+using Reddit.NET.Core.Client.Command.Vote;
 
 namespace Reddit.NET.Core.Client
 {
@@ -50,7 +51,7 @@ namespace Reddit.NET.Core.Client
                 nameof(GetMyDetailsCommand),
                 nameof(GetMySubredditsCommand),
                 nameof(GetUserHistoryCommand),
-                nameof(ApplyVoteToSubmissionCommand),
+                nameof(ApplyVoteCommand),
                 nameof(GetSubmissionCommentsCommand)
             };
         }

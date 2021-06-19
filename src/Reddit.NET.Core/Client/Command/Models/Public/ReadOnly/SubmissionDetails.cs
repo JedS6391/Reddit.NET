@@ -15,6 +15,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
         internal SubmissionDetails(IThing<Submission.Details> thing)
+            : base(thing.Kind, thing.Data.Id)
         {             
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
@@ -28,8 +29,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
             Upvotes = thing.Data.Upvotes;
             Downvotes = thing.Data.Downvotes;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
-            Id = thing.Data.Id;
-            Kind = thing.Kind;
         }
 
         /// <summary>
@@ -71,9 +70,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Gets the raw text of the submission.
         /// </summary>
         public string SelfText { get; private set; }
-
-        internal string Id { get; set; }     
-        internal string Kind { get; set; }
         
         /// <inheritdoc />
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(this);

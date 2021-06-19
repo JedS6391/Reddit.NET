@@ -20,6 +20,16 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings.Sorting
         public static UserHistorySort Overview = new UserHistorySort("overview");
 
         /// <summary>
+        /// Gets the 'submitted' sort option.
+        /// </summary>
+        public static UserHistorySort Submitted = new UserHistorySort("submitted");
+
+        /// <summary>
+        /// Gets the 'comments' sort option.
+        /// </summary>
+        public static UserHistorySort Comments = new UserHistorySort("comments");
+
+        /// <summary>
         /// Gets the 'saved' sort option.
         /// </summary>        
         public static UserHistorySort Saved = new UserHistorySort("saved");

@@ -66,7 +66,7 @@ namespace Reddit.NET.Console.Examples
         
             await foreach (var submission in topFiftyHotSubmissions)
             {            
-                _logger.LogInformation(submission.ToString());                
+                _logger.LogInformation(submission.ToString());
             }  
 
             var me = client.Me(); 

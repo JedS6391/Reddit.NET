@@ -3,27 +3,27 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 
-namespace Reddit.NET.Core.Client.Command.Submissions
+namespace Reddit.NET.Core.Client.Command.Vote
 {
     /// <summary>
-    /// Defines a command to apply a vote to a submission.
+    /// Defines a command to apply a vote to a submission or comment.
     /// </summary>
-    public class ApplyVoteToSubmissionCommand : ClientCommand
+    public class ApplyVoteCommand : ClientCommand
     {
-        private readonly ApplyVoteToSubmissionCommand.Parameters _parameters;
+        private readonly ApplyVoteCommand.Parameters _parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="ApplyVoteToSubmissionCommand" /> class.
+        /// Initializes a new instance of the <see cref="ApplyVoteCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public ApplyVoteToSubmissionCommand(ApplyVoteToSubmissionCommand.Parameters parameters)
+        public ApplyVoteCommand(ApplyVoteCommand.Parameters parameters)
             : base()
         {
             _parameters = parameters;
         }
         
         /// <inheritdoc />
-        public override string Id => nameof(ApplyVoteToSubmissionCommand);
+        public override string Id => nameof(ApplyVoteCommand);
 
         /// <inheritdoc />
         public override HttpRequestMessage BuildRequest()
@@ -37,7 +37,7 @@ namespace Reddit.NET.Core.Client.Command.Submissions
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Post,
-                RequestUri = new Uri(RedditApiUrl.Submission.Vote),
+                RequestUri = new Uri(RedditApiUrl.UserContent.Vote),
                 Content = new FormUrlEncodedContent(requestParameters)
             };
 
@@ -50,7 +50,7 @@ namespace Reddit.NET.Core.Client.Command.Submissions
         public class Parameters 
         {
             /// <summary>
-            /// Gets or sets the identifier of the submission to vote on.
+            /// Gets or sets the identifier of the submission or comment to vote on.
             /// </summary>
             public string Id { get; set; }
 
