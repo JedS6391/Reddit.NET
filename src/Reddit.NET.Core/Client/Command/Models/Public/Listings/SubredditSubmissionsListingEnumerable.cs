@@ -2,6 +2,7 @@ using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
+using Reddit.NET.Core.Client.Command.Models.Public.Listings.Sorting;
 using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 using Reddit.NET.Core.Client.Command.Subreddits;
 
@@ -10,9 +11,12 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
     /// <summary>
     /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions of a subreddit.. 
     /// </summary>
-    public class SubredditSubmissionsListingEnumerable
+    public sealed class SubredditSubmissionsListingEnumerable
         : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSubmissionsListingEnumerable.Options>
     {
+        private readonly RedditClient _client;
+        private readonly SubredditSubmissionsListingEnumerable.ListingParameters _parameters;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditSubmissionsListingEnumerable" /> class.
         /// </summary>
@@ -25,19 +29,9 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             SubredditSubmissionsListingEnumerable.ListingParameters parameters)
             : base(options)
         {
-            Client = client;
-            Parameters = parameters;
+            _client = client;
+            _parameters = parameters;
         }
-
-        /// <summary>
-        /// Gets a <see cref="RedditClient" /> instance used to load the listing data.
-        /// </summary>
-        protected RedditClient Client { get; }
-
-        /// <summary>
-        /// Gets the parameters used when loading the listing data.
-        /// </summary>
-        protected SubredditSubmissionsListingEnumerable.ListingParameters Parameters { get; }
     
         /// <inheritdoc />
         internal async override Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
@@ -54,19 +48,19 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         }
 
         /// <inheritdoc />
-        internal override SubmissionDetails MapThing(Thing<Submission.Details> thing) => new SubmissionDetails(thing);
+        internal override SubmissionDetails MapThing(IThing<Submission.Details> thing) => new SubmissionDetails(thing);
 
         private async Task<Submission.Listing> GetListingAsync(string after = null)
         {
             var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(new GetSubredditSubmissionsCommand.Parameters()
             {
-                SubredditName = Parameters.SubredditName,
+                SubredditName = _parameters.SubredditName,
                 Sort = ListingOptions.Sort.Name,
                 Limit = ListingOptions.ItemsPerRequest,
                 After = after
             });
 
-            var submissions = await Client.ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand);
+            var submissions = await _client.ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand);
 
             return submissions;    
         }
@@ -88,13 +82,13 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         public class Options : ListingEnumerableOptions
         {
             /// <summary>
-            /// Gets the order to use for sorting submissions.
+            /// Gets the option to use for sorting submissions.
             /// </summary>
             /// <remarks>Defaults to hot.</remarks>
             internal SubredditSubmissionSort Sort { get; set; } = SubredditSubmissionSort.Hot;
 
             /// <summary>
-            /// Provides the ability to create <see cref="UserSubredditsListingEnumerable.Options" /> instances.
+            /// Provides the ability to create <see cref="SubredditSubmissionsListingEnumerable.Options" /> instances.
             /// </summary>
             public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
             {
@@ -102,9 +96,9 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
                 protected override Builder Instance => this;
 
                 /// <summary>
-                /// Sets the number of items to retrieve per request.
+                /// Sets the sort option.
                 /// </summary>
-                /// <param name="sort">The order to use for sorting submissions.</param>
+                /// <param name="sort">The option to use for sorting submissions.</param>
                 /// <returns>The updated builder.</returns>
                 public Builder WithSort(SubredditSubmissionSort sort)
                 {

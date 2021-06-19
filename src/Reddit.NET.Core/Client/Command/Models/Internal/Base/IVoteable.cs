@@ -4,7 +4,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Base
     /// Represents an object that can be voted on. 
     /// </summary>
     /// <see href="https://github.com/reddit-archive/reddit/wiki/JSON#votable-implementation" />
-    internal interface IVoteable
+    public interface IVoteable
     {    
         /// <summary>
         /// Gets the number of upvotes.

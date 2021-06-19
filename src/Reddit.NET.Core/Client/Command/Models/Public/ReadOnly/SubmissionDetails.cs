@@ -1,4 +1,3 @@
-using System;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Abstract;
@@ -9,23 +8,23 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
     /// <summary>
     /// Defines a read-only view of a submission.
     /// </summary>
-    public class SubmissionDetails : IToInteractor<SubmissionInteractor>
+    public class SubmissionDetails : UserContentDetails, IToInteractor<SubmissionInteractor>
     {   
         /// <summary>
         /// Initializes a new instance of the <see cref="SubmissionDetails" /> class.
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
-        internal SubmissionDetails(Thing<Submission.Details> thing)
+        internal SubmissionDetails(IThing<Submission.Details> thing)
         {             
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
-            Url = thing.Data.Url;
-            Author = thing.Data.Author;
+            Url = thing.Data.Url; 
             Domain = thing.Data.Domain;
             IsSelfPost = thing.Data.IsSelfPost;
             IsNsfw = thing.Data.IsNsfw;
             SelfText = thing.Data.SelfText;
+            Author = thing.Data.Author;
             Upvotes = thing.Data.Upvotes;
             Downvotes = thing.Data.Downvotes;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
@@ -54,11 +53,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         public string Url { get;}
 
         /// <summary>
-        /// Gets the author of the submission.
-        /// </summary>
-        public string Author { get; }
-
-        /// <summary>
         /// Gets the domain of the submission.
         /// </summary>
         public string Domain { get; }
@@ -78,21 +72,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// </summary>
         public string SelfText { get; private set; }
 
-        /// <summary>
-        /// Gets the number of upvotes on the comment.
-        /// </summary>
-        public int Upvotes { get; }
-
-        /// <summary>
-        /// Gets the number of downvotes on the comment.
-        /// </summary>
-        public int Downvotes { get; }     
-
-        /// <summary>
-        /// Gets the date and time the submission was created.
-        /// </summary>
-        public DateTimeOffset CreatedAtUtc { get; }
-
         internal string Id { get; set; }     
         internal string Kind { get; set; }
         
@@ -101,6 +80,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
 
         /// <inheritdoc />
         public override string ToString() => 
-            $"Submission [Subreddit = {Subreddit}, Title = {Title}, Permalink = {Permalink}]";
+            $"Submission [Subreddit = {Subreddit}, Title = {Title}, Author = {Author}, Permalink = {Permalink}, CreatedAtUtc = {CreatedAtUtc}]";
     }
 }

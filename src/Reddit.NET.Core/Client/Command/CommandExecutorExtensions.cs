@@ -1,6 +1,9 @@
+using System;
 using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Authentication.Abstract;
+using Reddit.NET.Core.Client.Command.Models.Internal.Json;
 
 namespace Reddit.NET.Core.Client.Command
 {
@@ -9,6 +12,8 @@ namespace Reddit.NET.Core.Client.Command
     /// </summary>
     public static class CommandExecutorExtensions
     {
+        private static Lazy<JsonSerializerOptions> s_jsonSerializerOptions = new Lazy<JsonSerializerOptions>(GetJsonSerializerOptions);
+
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> instance, parsing the response to an instance of type <typeparamref name="TResponse" />.
         /// </summary>
@@ -47,8 +52,17 @@ namespace Reddit.NET.Core.Client.Command
 
             return await response
                 .Content
-                .ReadFromJsonAsync<TResponse>()
+                .ReadFromJsonAsync<TResponse>(s_jsonSerializerOptions.Value)
                 .ConfigureAwait(false);
+        }
+
+        private static JsonSerializerOptions GetJsonSerializerOptions()
+        {
+            var options = new JsonSerializerOptions();
+
+            options.Converters.Add(new ThingJsonConverterFactory());
+
+            return options;
         }
     }
 }

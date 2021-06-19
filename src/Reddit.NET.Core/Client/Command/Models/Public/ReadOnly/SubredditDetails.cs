@@ -14,7 +14,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.ReadOnly
         /// Initializes a new instance of the <see cref="UserDetails" /> class.
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containg a subreddit's data.</param>
-        internal SubredditDetails(Thing<Subreddit.Details> thing)
+        internal SubredditDetails(IThing<Subreddit.Details> thing)
         {
             Name = thing.Data.DisplayName;
             Title = thing.Data.Title;

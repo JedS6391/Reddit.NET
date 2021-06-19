@@ -13,7 +13,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
         /// <summary>
         /// Defines the attributes of a <see cref="Comment" />.
         /// </summary>
-        public class Details : IVoteable
+        public class Details : IUserContent
         {
             /// <summary>
             /// Gets the identifier of the comment.
@@ -28,6 +28,25 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("body")]
             [JsonInclude]
             public string Body { get; private set; }
+
+            /// <summary>
+            /// Gets the subreddit the comment belongs to.
+            /// </summary>
+            [JsonPropertyName("subreddit")]
+            [JsonInclude]
+            public string Subreddit { get; private set; }
+
+            /// <summary>
+            /// Gets the permanent link of the comment.
+            /// </summary>
+            [JsonPropertyName("permalink")]
+            [JsonInclude]
+            public string Permalink { get; private set; }            
+
+            /// <inheritdoc />
+            [JsonPropertyName("author")]
+            [JsonInclude]
+            public string Author { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("ups")]

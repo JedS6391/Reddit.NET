@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
+using Reddit.NET.Core.Client.Command.Models.Internal.Base;
 using Reddit.NET.Core.Client.Command.Models.Public.Listings;
 using Reddit.NET.Core.Client.Command.Models.Public.ReadOnly;
 using Reddit.NET.Core.Client.Command.Users;
@@ -41,18 +42,39 @@ namespace Reddit.NET.Core.Client.Interactions
         }
 
         /// <summary>
+        /// Gets the history of the authenticated user.
+        /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the authenticated user's history.</returns>
+        public IAsyncEnumerable<UserContentDetails> GetHistoryAsync(
+            Action<UserHistoryListingEnumerable.Options.Builder> configurationAction = null)
+        {
+            var optionsBuilder = new UserHistoryListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new UserHistoryListingEnumerable(
+                _client,
+                optionsBuilder.Options,
+                new UserHistoryListingEnumerable.ListingParameters()
+                {
+                    UseAuthenticatedUser = true
+                });
+        }
+
+        /// <summary>
         /// Gets the subreddits the authenticated user is subscribed to.
         /// </summary>
         /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
         /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
         public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync(
-            Action<UserSubredditsListingEnumerable.Options.Builder> configurationAction = null) 
+            Action<MySubredditsListingEnumerable.Options.Builder> configurationAction = null) 
         {
-            var optionsBuilder = new UserSubredditsListingEnumerable.Options.Builder();
+            var optionsBuilder = new MySubredditsListingEnumerable.Options.Builder();
 
             configurationAction?.Invoke(optionsBuilder);
 
-            return new UserSubredditsListingEnumerable(_client, optionsBuilder.Options);
+            return new MySubredditsListingEnumerable(_client, optionsBuilder.Options);
         }
     }
 }
