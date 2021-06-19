@@ -18,7 +18,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Base
         /// </summary>
         string Id { get; }
 
-		/// <summary>
+        /// <summary>
         /// Gets the full name of the thing.
         /// </summary>
         /// <remarks>
