@@ -47,7 +47,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
         }
 
         /// <inheritdoc />
-        internal override CommentDetails MapThing(Thing<Comment.Details> thing) => new CommentDetails(thing);
+        internal override CommentDetails MapThing(IThing<Comment.Details> thing) => new CommentDetails(thing);
 
         private async Task<Comment.Listing> GetListingAsync(string after = null)
         {

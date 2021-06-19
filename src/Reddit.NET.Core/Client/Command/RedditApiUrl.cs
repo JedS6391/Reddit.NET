@@ -16,6 +16,11 @@ namespace Reddit.NET.Core.Client.Command
             public static string Subreddits => "https://oauth.reddit.com/subreddits/mine/subscriber";
         }
 
+        public static class User 
+        {
+            public static string History(string username, string type) => $"https://oauth.reddit.com/user/{username}/{type}";
+        }
+
         public static class Subreddit 
         {
             public static string Details(string subredditName) => $"https://oauth.reddit.com/r/{subredditName}/about";

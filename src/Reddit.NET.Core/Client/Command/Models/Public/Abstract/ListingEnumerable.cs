@@ -66,7 +66,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
         /// </summary>
         /// <param name="thing">The thing to map.</param>
         /// <returns></returns>
-        internal abstract TMapped MapThing(Thing<TData> thing);
+        internal abstract TMapped MapThing(IThing<TData> thing);
 
         /// <inheritdoc />
         public IAsyncEnumerator<TMapped> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
@@ -99,7 +99,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
                 TOptions options,
                 Func<Task<TListing>> initialListingProvider,
                 Func<TListing, Task<TListing>> nextListingProvider,
-                Func<Thing<TData>, TMapped> mapper,
+                Func<IThing<TData>, TMapped> mapper,
                 CancellationToken cancellationToken = default)
             {
                 _context = new ListingEnumeratorContext(
@@ -207,7 +207,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
                     TOptions options,
                     Func<Task<TListing>> initialListingProvider,
                     Func<TListing, Task<TListing>> nextListingProvider,
-                    Func<Thing<TData>, TMapped> mapper,
+                    Func<IThing<TData>, TMapped> mapper,
                     CancellationToken cancellationToken)
                 {
                     Options = options;
@@ -224,7 +224,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
                 public TOptions Options { get; }
                 public Func<Task<TListing>> InitialListingProvider { get; }
                 public Func<TListing, Task<TListing>> NextListingProvider { get; }
-                public Func<Thing<TData>, TMapped> Mapper { get; }
+                public Func<IThing<TData>, TMapped> Mapper { get; }
                 public TListing CurrentListing { get; private set; }
                 public int Position { get; private set; }
                 public int Count { get; private set; }
@@ -233,7 +233,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Abstract
 
                 public bool HasStarted => CurrentListing != null && Position >= 0;
                 public bool HasMoreData => Position < CurrentListing.Data.Children.Count;
-                public Thing<TData> GetCurrentThing => CurrentListing.Data.Children[Position];
+                public IThing<TData> GetCurrentThing => CurrentListing.Data.Children[Position];
 
                 public void UpdateListing(TListing listing) 
                 {

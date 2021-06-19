@@ -60,6 +60,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal.Base
         /// </summary>
         [JsonPropertyName("children")]
         [JsonInclude]
-        public IReadOnlyList<Thing<TData>> Children { get; private set; }
+        public IReadOnlyList<IThing<TData>> Children { get; private set; }
     }
 }

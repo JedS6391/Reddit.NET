@@ -48,7 +48,8 @@ namespace Reddit.NET.Core.Client
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetSubredditSubmissionsCommand),
                 nameof(GetMyDetailsCommand),
-                nameof(GetUserSubredditsCommand),
+                nameof(GetMySubredditsCommand),
+                nameof(GetUserHistoryCommand),
                 nameof(ApplyVoteToSubmissionCommand),
                 nameof(GetSubmissionCommentsCommand)
             };

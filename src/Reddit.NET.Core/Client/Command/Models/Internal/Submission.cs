@@ -13,7 +13,7 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
         /// <summary>
         /// Defines the attributes of a <see cref="Submission" />.
         /// </summary>
-        public class Details : IVoteable, ICreated
+        public class Details : IUserContent
         {
             /// <summary>
             /// Gets the identifier of the submission.
@@ -51,13 +51,6 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             public string Url { get; private set; }
 
             /// <summary>
-            /// Gets the author of the submission.
-            /// </summary>
-            [JsonPropertyName("author")]
-            [JsonInclude]
-            public string Author { get; private set; }
-
-            /// <summary>
             /// Gets the domain of the submission.
             /// </summary>
             [JsonPropertyName("domain")]
@@ -84,6 +77,11 @@ namespace Reddit.NET.Core.Client.Command.Models.Internal
             [JsonPropertyName("selftext")]
             [JsonInclude]
             public string SelfText { get; private set; }
+            
+            /// <inheritdoc />
+            [JsonPropertyName("author")]
+            [JsonInclude]
+            public string Author { get; private set; }            
 
             /// <inheritdoc />
             [JsonPropertyName("ups")]

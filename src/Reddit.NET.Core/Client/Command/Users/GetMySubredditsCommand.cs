@@ -1,32 +1,32 @@
 using System;
 using System.Net.Http;
 
-namespace Reddit.NET.Core.Client.Command.Subreddits
+namespace Reddit.NET.Core.Client.Command.Users
 {
     /// <summary>
-    /// Defines a command to get the submissions of a subreddit.
+    /// Defines a command to get the subreddits of the currently authenticated user.
     /// </summary>
-    public class GetSubredditSubmissionsCommand : ClientCommand
+    public sealed class GetMySubredditsCommand : ClientCommand
     {
-        private readonly GetSubredditSubmissionsCommand.Parameters _parameters;
+        private readonly GetMySubredditsCommand.Parameters _parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="GetSubredditSubmissionsCommand" /> class.
+        /// Initializes a new instance of the <see cref="GetMySubredditsCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public GetSubredditSubmissionsCommand(GetSubredditSubmissionsCommand.Parameters parameters)
+        public GetMySubredditsCommand(GetMySubredditsCommand.Parameters parameters)
+            : base()
         {
             _parameters = parameters;
         }
 
         /// <inheritdoc />
-        public override string Id => nameof(GetSubredditSubmissionsCommand);
+        public override string Id => nameof(GetMySubredditsCommand);
 
         /// <inheritdoc />
         public override HttpRequestMessage BuildRequest()
         {
-            var uriBuilder = new UriBuilder(
-                RedditApiUrl.Subreddit.Submissions(_parameters.SubredditName, _parameters.Sort));
+            var uriBuilder = new UriBuilder(RedditApiUrl.Me.Subreddits);
 
             uriBuilder.Query = $"?limit={_parameters.Limit}";
 
@@ -49,16 +49,6 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
         /// </summary>
         public class Parameters 
         {
-            /// <summary>
-            /// Gets or sets the name of the subreddit to get submissions for.
-            /// </summary>
-            public string SubredditName { get; set; }
-
-            /// <summary>
-            /// Gets or sets the sort option of the submissions.
-            /// </summary>
-            public string Sort { get; set; }
-
             /// <summary>
             /// Gets or sets the limit parameter.
             /// </summary>
