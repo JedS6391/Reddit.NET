@@ -61,7 +61,8 @@ namespace Reddit.NET.Console.Examples
 
             var topFiftyHotSubmissions = askReddit.GetSubmissionsAsync(builder => 
                 builder                    
-                    .WithSort(SubredditSubmissionSort.Hot)                    
+                    .WithSort(SubredditSubmissionSort.Hot)
+                    .WithTimeRange(TimeRangeSort.Day)                    
                     .WithMaximumItems(50));
         
             await foreach (var submission in topFiftyHotSubmissions)

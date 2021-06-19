@@ -1,5 +1,9 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
+using System.Text;
 
 namespace Reddit.NET.Core.Client.Command.Subreddits
 {
@@ -28,12 +32,9 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             var uriBuilder = new UriBuilder(
                 RedditApiUrl.Subreddit.Submissions(_parameters.SubredditName, _parameters.Sort));
 
-            uriBuilder.Query = $"?limit={_parameters.Limit}";
+            var queryString = BuildQueryString();
 
-            if (!string.IsNullOrEmpty(_parameters.After))
-            {
-                uriBuilder.Query = $"{uriBuilder.Query}&after={_parameters.After}";
-            }
+            uriBuilder.Query = $"?{queryString}";
 
             var request = new HttpRequestMessage()
             {
@@ -42,6 +43,22 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             };
 
             return request;
+        }
+
+        private string BuildQueryString()
+        {            
+            var parameters = new Dictionary<string, string>()
+            {
+                { "limit", _parameters.Limit.ToString(CultureInfo.InvariantCulture) },
+                { "t", _parameters.TimeRange },
+                { "after", _parameters.After }
+            };
+
+            var queryStringParameters = parameters
+                .Where(p => !string.IsNullOrEmpty(p.Value))
+                .Select(p => $"{p.Key}={p.Value}");
+
+            return string.Join('&', queryStringParameters);            
         }
 
         /// <summary>
@@ -58,6 +75,11 @@ namespace Reddit.NET.Core.Client.Command.Subreddits
             /// Gets or sets the sort option of the submissions.
             /// </summary>
             public string Sort { get; set; }
+
+            /// <summary>
+            /// Gets or sets the option for the time range of submissions.
+            /// </summary>
+            public string TimeRange { get; set; }
 
             /// <summary>
             /// Gets or sets the limit parameter.

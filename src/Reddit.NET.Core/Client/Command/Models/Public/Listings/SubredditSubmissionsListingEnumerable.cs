@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Core.Client.Command.Models.Internal;
 using Reddit.NET.Core.Client.Command.Models.Internal.Base;
@@ -14,6 +15,12 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
     public sealed class SubredditSubmissionsListingEnumerable
         : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSubmissionsListingEnumerable.Options>
     {
+        private static readonly SubredditSubmissionSort[] s_sortOptionsSupportTimeRange = new SubredditSubmissionSort[]
+        {
+            SubredditSubmissionSort.Controversial,
+            SubredditSubmissionSort.Top
+        };
+
         private readonly RedditClient _client;
         private readonly SubredditSubmissionsListingEnumerable.ListingParameters _parameters;
 
@@ -52,13 +59,20 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
 
         private async Task<Submission.Listing> GetListingAsync(string after = null)
         {
-            var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(new GetSubredditSubmissionsCommand.Parameters()
+            var commandParameters = new GetSubredditSubmissionsCommand.Parameters()
             {
                 SubredditName = _parameters.SubredditName,
                 Sort = ListingOptions.Sort.Name,
                 Limit = ListingOptions.ItemsPerRequest,
                 After = after
-            });
+            };
+
+            if (s_sortOptionsSupportTimeRange.Any(s => s.Name == ListingOptions.Sort.Name))
+            {
+                commandParameters.TimeRange = ListingOptions.TimeRange.Name;
+            }
+
+            var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(commandParameters);
 
             var submissions = await _client.ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand);
 
@@ -88,6 +102,12 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
             internal SubredditSubmissionSort Sort { get; set; } = SubredditSubmissionSort.Hot;
 
             /// <summary>
+            /// Gets the option to use for the time range of submissions.
+            /// </summary>
+            /// <remarks>Defaults to day.</remarks>
+            internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.Day;
+
+            /// <summary>
             /// Provides the ability to create <see cref="SubredditSubmissionsListingEnumerable.Options" /> instances.
             /// </summary>
             public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
@@ -105,7 +125,19 @@ namespace Reddit.NET.Core.Client.Command.Models.Public.Listings
                     Options.Sort = sort;
 
                     return this;
-                }          
+                } 
+
+                /// <summary>
+                /// Sets the time range option.
+                /// </summary>
+                /// <param name="timeRange">The option to use for the time range of submissions.</param>
+                /// <returns>The updated builder.</returns>
+                public Builder WithTimeRange(TimeRangeSort timeRange)
+                {
+                    Options.TimeRange = timeRange;
+
+                    return this;
+                }      
             }
         }
     }
