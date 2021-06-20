@@ -5,6 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Reddit.NET.Client;
+using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Builder;
 
 namespace Reddit.NET.WebApi.Services.Interfaces
@@ -17,17 +20,20 @@ namespace Reddit.NET.WebApi.Services.Interfaces
         private readonly IHttpContextAccessor _httpContextAccessor;
         private readonly IHttpClientFactory _httpClientFactory;
         private readonly ILoggerFactory _loggerFactory;
+        private readonly ITokenStorage _tokenStorage;
 
         public RedditService(
             IOptions<RedditOptions> optionsAccessor,
             IHttpContextAccessor httpContextAccessor,
             IHttpClientFactory httpClientFactory,
-            ILoggerFactory loggerFactory)
+            ILoggerFactory loggerFactory,
+            ITokenStorage tokenStorage)
         {
             _options = optionsAccessor.Value;
             _httpContextAccessor = httpContextAccessor;
             _httpClientFactory = httpClientFactory;
             _loggerFactory = loggerFactory;
+            _tokenStorage = tokenStorage;
         }
 
         public Uri GenerateAuthorizationUri()
@@ -36,10 +42,8 @@ namespace Reddit.NET.WebApi.Services.Interfaces
 
             var state = GetRandomState();
 
-            // Save the state so we can validate it upon authorization completion.
-            httpContext.Session.SetString(StateSessionKeyName, state);
-
-            var credentialsBuilder = CredentialsBuilder
+            // Use the credentials builder to get a new authorization URI.
+            var interactiveCredentialsBuilder = CredentialsBuilder
                 .New
                 .WebApp(
                     _options.ClientId,
@@ -47,10 +51,13 @@ namespace Reddit.NET.WebApi.Services.Interfaces
                     _options.RedirectUri,
                     state);
 
-            return credentialsBuilder.AuthorizationUri;
+            // Save the state so we can validate it upon authorization completion.
+            httpContext.Session.SetString(StateSessionKeyName, state);                    
+
+            return interactiveCredentialsBuilder.AuthorizationUri;
         }
 
-        public async Task CompleteAuthorizationAsync(string state, string code)
+        public async Task<Guid> CompleteAuthorizationAsync(string state, string code)
         {
             var httpContext = _httpContextAccessor.HttpContext;
 
@@ -62,23 +69,44 @@ namespace Reddit.NET.WebApi.Services.Interfaces
                 throw new Exception("Invalid state parameter");
             }
 
-            var client = await RedditClientBuilder
+            var credentialsBuilder = CredentialsBuilder.New;            
+            var interactiveCredentialsBuilder = credentialsBuilder.WebApp(
+                _options.ClientId,
+                _options.ClientSecret,
+                _options.RedirectUri,
+                state);
+
+            interactiveCredentialsBuilder.Authorize(code);
+
+            var credentials = await credentialsBuilder.BuildCredentialsAsync(
+                _loggerFactory,
+                _httpClientFactory,
+                _tokenStorage);            
+
+            return (credentials as InteractiveCredentials).SessionId;
+        }
+
+        public async Task<RedditClient> GetClientAsync(Guid sessionId)
+        {
+            return await RedditClientBuilder
                 .New
                 .WithHttpClientFactory(_httpClientFactory)
                 .WithLoggerFactory(_loggerFactory)
+                .WithTokenStorage(_tokenStorage)
                 .WithCredentialsConfiguration(credentialsBuilder =>
                 {
-                    var interactiveCredentialsBuilder = credentialsBuilder.WebApp(
+                    var interactiveCredentialsBuilder = credentialsBuilder.Session(
                         _options.ClientId,
                         _options.ClientSecret,
                         _options.RedirectUri,
-                        state);
-
-                    interactiveCredentialsBuilder.Authorize(code);
+                        sessionId);                                    
                 })
                 .BuildAsync();
+        }
 
-            // TODO: Need a way to let further requests after authentication obtain a client instance.
+        public async Task EndSessionAsync(Guid sessionId)
+        {
+            await _tokenStorage.RemoveTokenAsync(sessionId);
         }
 
         private static string GetRandomState() 

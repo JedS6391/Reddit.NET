@@ -2,6 +2,8 @@ using System;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft;
+using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Builder;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Command.Authentication;
 using Reddit.NET.Client.Models.Internal;
@@ -24,16 +26,20 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// <param name="token">A token retrieved at the end of the interactive authentication.</param>
         internal InteractiveCredentials(
             AuthenticationMode mode, 
+            Guid sessionId,
             string clientId, 
             string clientSecret, 
             Uri redirectUri,
             string state,
             Token token)
             : base(mode, clientId, clientSecret, redirectUri: redirectUri)
-        {        
-            State = Requires.NotNull(state, nameof(state));
+        {
+            SessionId = sessionId;
+            State = state;
             Token = Requires.NotNull(token, nameof(token));
         }
+
+        public Guid SessionId { get; }
 
         /// <summary>
         /// Gets the state value used during the authorization flow.
@@ -71,7 +77,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             private readonly Uri _redirectUri;
             private readonly string _state;
             private string _code;
-            private Token _token;
+            private Token _token;            
             private Stage _stage;
 
             /// <summary>
@@ -92,9 +98,25 @@ namespace Reddit.NET.Client.Authentication.Credential
                 _mode = mode;
                 _clientId = Requires.NotNull(clientId, nameof(clientId));
                 _clientSecret = Requires.NotNull(clientSecret, nameof(clientSecret));
-                _redirectUri = redirectUri;
-                _state = Requires.NotNull(state, nameof(state));
-                _stage = Stage.Initialised;
+                _redirectUri = Requires.NotNull(redirectUri, nameof(redirectUri));
+                _state = Requires.NotNull(state, nameof(state));            
+                _stage = Stage.Initialised;                            
+            }
+
+            internal Builder(
+                AuthenticationMode mode,
+                string clientId,
+                string clientSecret,
+                Uri redirectUri,
+                Guid sessionId)
+            {
+                _mode = mode;
+                _clientId = Requires.NotNull(clientId, nameof(clientId));
+                _clientSecret = Requires.NotNull(clientSecret, nameof(clientSecret));
+                _redirectUri = Requires.NotNull(redirectUri, nameof(redirectUri));                
+                _stage = Stage.AuthorizedWithSessionId;
+
+                SessionId = sessionId;
             }
 
             /// <summary>
@@ -103,16 +125,21 @@ namespace Reddit.NET.Client.Authentication.Credential
             public Uri AuthorizationUri =>
                 new Uri($"https://www.reddit.com/api/v1/authorize?client_id={HttpUtility.UrlEncode(_clientId)}&response_type=code&state={HttpUtility.UrlEncode(_state)}&redirect_uri={HttpUtility.UrlEncode(_redirectUri.AbsoluteUri)}&duration=permanent&scope={HttpUtility.UrlEncode(string.Join(' ', Scopes))}");
 
+            public Guid? SessionId { get; private set; }
+
             /// <summary>
             /// Completes the interactive authentication flow.
             /// </summary>
             /// <param name="code">The authorization code returned on completion of interactive authentication.</param>
             public void Authorize(string code) 
             {
-                EnsureStage(Stage.Initialised, "Builder has already been authorized with a code.");
+                if (_stage != Stage.Initialised)
+                {
+                    throw new InvalidOperationException("Builder has already been authorized.");
+                }
 
                 _code = code;
-                _stage = Stage.Authorized;
+                _stage = Stage.AuthorizedWithCode;
             }
 
             /// <summary>
@@ -120,24 +147,39 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// </summary>
             /// <param name="commandExecutor">A <see cref="CommandExecutor" /> instance used for executing commands.</param>
             /// <returns>A task representing the asynchronous operation.</returns>
-            internal async Task AuthenticateAsync(CommandExecutor commandExecutor)
+            internal async Task AuthenticateAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage)
             {
-                EnsureStage(
-                    Stage.Authorized,
-                    message: "Builder must be authorized with a code before authentication can be performed.");
-
-                var parameters = new AuthenticateWithAuthorizationCodeCommand.Parameters()
+                if (_stage != Stage.AuthorizedWithCode && _stage != Stage.AuthorizedWithSessionId)
                 {
-                    Code = _code,
-                    RedirectUri = _redirectUri.AbsoluteUri,
-                    ClientId = _clientId,
-                    ClientSecret = _clientSecret
-                };
+                    throw new InvalidOperationException("Builder must be authorized with a code or session ID before authentication can be performed.");
+                }
 
-                var authenticateCommand = new AuthenticateWithAuthorizationCodeCommand(parameters);
+                if (_stage == Stage.AuthorizedWithCode)
+                {
+                    // Authorized with code
+                    var parameters = new AuthenticateWithAuthorizationCodeCommand.Parameters()
+                    {
+                        Code = _code,
+                        RedirectUri = _redirectUri.AbsoluteUri,
+                        ClientId = _clientId,
+                        ClientSecret = _clientSecret
+                    };
 
-                _token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
-                _stage = Stage.Authenticated;
+                    var authenticateCommand = new AuthenticateWithAuthorizationCodeCommand(parameters);
+
+                    _token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+                    _stage = Stage.Authenticated;
+
+                    SessionId = Guid.NewGuid();
+
+                    await tokenStorage.StoreTokenAsync(SessionId.Value, _token);
+                }
+                else 
+                {
+                    // Authorized with session ID
+                    _token = await tokenStorage.GetTokenAsync(SessionId.Value);
+                    _stage = Stage.Authenticated;
+                }
             }
             
             /// <summary>
@@ -146,12 +188,14 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// <returns>An <see cref="InteractiveCredentials" /> instance representing the builder configuration.</returns>
             internal InteractiveCredentials Build()
             {
-                EnsureStage(
-                    Stage.Authenticated,
-                    message: "Builder must be authenticated before credentials can be built.");
+                if (_stage != Stage.Authenticated)
+                {
+                    throw new InvalidOperationException("Builder must be authenticated before credentials can be built.");
+                }
 
                  return new InteractiveCredentials(
                     _mode,
+                    SessionId.Value,
                     _clientId,
                     _clientSecret,
                     _redirectUri,
@@ -159,18 +203,11 @@ namespace Reddit.NET.Client.Authentication.Credential
                     _token);
             }
 
-            private void EnsureStage(Stage expectedStage, string message) 
-            {
-                if (_stage != expectedStage)
-                {
-                    throw new InvalidOperationException(message);
-                }
-            }
-
             private enum Stage 
             {
                 Initialised,
-                Authorized,
+                AuthorizedWithCode,
+                AuthorizedWithSessionId,
                 Authenticated
             }
         }   

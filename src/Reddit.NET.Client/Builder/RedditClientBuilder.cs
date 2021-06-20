@@ -4,6 +4,8 @@ using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication;
+using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
 
 namespace Reddit.NET.Client.Builder
@@ -15,7 +17,8 @@ namespace Reddit.NET.Client.Builder
     {
         private IHttpClientFactory _httpClientFactory;
         private ILoggerFactory _loggerFactory;
-        private Action<CredentialsBuilder> _credentialsBuilderConfigurationAction;
+        private ITokenStorage _tokenStorage;
+        private Action<CredentialsBuilder> _credentialsBuilderConfigurationAction;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientBuilder" /> class.
@@ -57,6 +60,15 @@ namespace Reddit.NET.Client.Builder
             return this;
         }
 
+        public RedditClientBuilder WithTokenStorage(ITokenStorage tokenStorage)
+        {
+            Requires.NotNull(tokenStorage, nameof(tokenStorage));
+
+            _tokenStorage = tokenStorage;
+
+            return this;
+        }
+
         /// <summary>
         /// Configures the builder to use the provided <see cref="Action{T}" /> to configure the credentials used by the client.
         /// </summary>
@@ -87,6 +99,11 @@ namespace Reddit.NET.Client.Builder
                 _loggerFactory.CreateLogger<CommandExecutor>(),
                 _httpClientFactory);
 
+            if (_tokenStorage == null)
+            {                
+                _tokenStorage = new NullTokenStorage();
+            }
+
             var authenticatorFactory = new AuthenticatorFactory(
                 _loggerFactory, 
                 commandExecutor);
@@ -96,7 +113,9 @@ namespace Reddit.NET.Client.Builder
             _credentialsBuilderConfigurationAction.Invoke(credentialsBuilder);
 
             // Note that the credential builder may need to execute commands (e.g. for interactive credentials).            
-            var credentials = await credentialsBuilder.BuildCredentialsAsync(commandExecutor).ConfigureAwait(false);
+            var credentials = await credentialsBuilder
+                .BuildCredentialsAsync(commandExecutor, _tokenStorage)
+                .ConfigureAwait(false);
 
             var authenticator = authenticatorFactory.GetAuthenticator(credentials);
 

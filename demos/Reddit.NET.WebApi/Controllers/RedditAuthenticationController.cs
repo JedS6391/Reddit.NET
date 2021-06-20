@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -30,13 +31,27 @@ namespace Reddit.NET.WebApi.Controllers
             return Redirect(authorizationUri.AbsoluteUri);
         }
 
-        [HttpGet]
-        [Route("callback")]
-        public async Task<IActionResult> Callback([Required] string state, [Required] string code)
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout([Required, FromQuery] Guid sessionId)
         {
-            await _redditService.CompleteAuthorizationAsync(state, code);
+            await _redditService.EndSessionAsync(sessionId);
 
             return Ok();
+        }
+
+        [HttpGet]
+        [Route("callback")]
+        public async Task<IActionResult> Callback(
+            [Required, FromQuery] string state, 
+            [Required, FromQuery] string code)
+        {
+            var sessionId = await _redditService.CompleteAuthorizationAsync(state, code);
+
+            return Ok(new 
+            {
+                SessionId = sessionId
+            });
         }
     }
 }

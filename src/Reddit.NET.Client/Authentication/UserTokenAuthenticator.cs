@@ -29,13 +29,13 @@ namespace Reddit.NET.Client.Authentication
             InteractiveCredentials credentials)
             : base(logger, commandExecutor, credentials)
         {                    
-            _token = Requires.NotNull(credentials.Token, nameof(credentials.Token));
+            _token = Requires.NotNull(credentials.Token, nameof(credentials.Token));            
         }
 
         /// <inheritdoc />
         protected override Task<AuthenticationContext> DoAuthenticateAsync()
-        {            
-            return Task.FromResult<AuthenticationContext>(new UserTokenAuthenticationContext(_token)); 
+        {
+            return Task.FromResult<AuthenticationContext>(new UserTokenAuthenticationContext(_token));
         }
 
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
+            var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);            
 
             return new UserTokenAuthenticationContext(token);
         }

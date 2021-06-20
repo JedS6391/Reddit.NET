@@ -17,7 +17,7 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// <param name="password">The password of the user the reddit app is for.</param>          
         /// <param name="deviceId">The identifier of the device.</param> 
         internal NonInteractiveCredentials(
-            AuthenticationMode mode, 
+            AuthenticationMode mode,             
             string clientId, 
             string clientSecret, 
             string username = null, 

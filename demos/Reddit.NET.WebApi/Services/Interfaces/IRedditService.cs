@@ -1,5 +1,6 @@
 using System;
 using System.Threading.Tasks;
+using Reddit.NET.Client;
 
 namespace Reddit.NET.WebApi.Services.Interfaces
 {
@@ -7,6 +8,10 @@ namespace Reddit.NET.WebApi.Services.Interfaces
     {
         Uri GenerateAuthorizationUri();
 
-        Task CompleteAuthorizationAsync(string state, string code);
+        Task<Guid> CompleteAuthorizationAsync(string state, string code);
+
+        Task<RedditClient> GetClientAsync(Guid sessionId);
+
+        Task EndSessionAsync(Guid sessionId);
     }
 }

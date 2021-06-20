@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.WebApi.Services.Interfaces;
 
 namespace Reddit.NET.WebApi
@@ -40,6 +42,8 @@ namespace Reddit.NET.WebApi
                 options.ClientSecret = Configuration.GetValue<string>("REDDIT_CLIENT_SECRET");
                 options.RedirectUri = Configuration.GetValue<Uri>("REDDIT_CLIENT_REDIRECT_URI");
             });
+
+            services.AddSingleton<ITokenStorage, MemoryTokenStorage>();
 
             services.AddSingleton<IRedditService, RedditService>();
         }

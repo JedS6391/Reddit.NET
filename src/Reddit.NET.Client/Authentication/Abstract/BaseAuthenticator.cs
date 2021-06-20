@@ -11,16 +11,19 @@ namespace Reddit.NET.Client.Authentication.Abstract
     /// </summary>
     public abstract class BaseAuthenticator : IAuthenticator
     {        
-        private readonly CommandExecutor _commandExecutor;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseAuthenticator" /> class.
         /// </summary>
         /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         protected BaseAuthenticator(CommandExecutor commandExecutor)
         {        
-            _commandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
+            CommandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));            
         }
+
+        /// <summary>
+        /// Gets a <see cref="CommandExecutor" /> instance used to execute commands against reddit.
+        /// </summary>
+        protected CommandExecutor CommandExecutor { get; }
 
         /// <inheritdoc />
         public abstract Task<AuthenticationContext> GetAuthenticationContextAsync();
@@ -30,7 +33,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// </summary>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
         internal async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command) =>
-            await _commandExecutor.ExecuteCommandAsync(command).ConfigureAwait(false);
+            await CommandExecutor.ExecuteCommandAsync(command).ConfigureAwait(false);
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> via the authenticators <see cref="CommandExecutor" />, parsing the response to an instance of type <typeparamref name="TResponse" />.

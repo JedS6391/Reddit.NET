@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.Authentication
         /// <param name="credentials">A <see cref="Credentials" /> instance describing the credentials to use for authentication.</param>
         public UsernamePasswordAuthenticator(
             ILogger<UsernamePasswordAuthenticator> logger,
-            CommandExecutor commandExecutor, 
+            CommandExecutor commandExecutor,
             Credentials credentials)
             : base(logger, commandExecutor, credentials)
         {            
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);            
 
             return new UsernamePasswordAuthenticationContext(token); 
         }
