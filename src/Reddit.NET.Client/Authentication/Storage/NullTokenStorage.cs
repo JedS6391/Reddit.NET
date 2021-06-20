@@ -11,11 +11,10 @@ namespace Reddit.NET.Client.Authentication.Storage
     public class NullTokenStorage : ITokenStorage
     {
         /// <inheritdoc />
-        public Task<Token> GetTokenAsync(Guid sessionId) =>
-            throw new NotSupportedException("Storage provider does not support retrieval of tokens");
+        public Task<Token> GetTokenAsync(Guid sessionId) => Task.FromResult<Token>(null);
 
         /// <inheritdoc />
-        public Task StoreTokenAsync(Guid sessionId, Token token) => Task.CompletedTask;
+        public Task<Guid> StoreTokenAsync(Token token) => Task.FromResult(Guid.Empty);
 
         /// <inheritdoc />
         public Task RemoveTokenAsync(Guid sessionId) => Task.CompletedTask;

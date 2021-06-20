@@ -19,16 +19,20 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// Gets the token associated with the provided session identifier.
         /// </summary>
         /// <param name="sessionId">A session identifier obtained during the interactive authentication process.</param>
-        /// <returns>A task representing the asynchronous operation. The result contains the <see cref="Token" /> associated with the provided session identifier.</returns>
+        /// <returns>
+        /// A task representing the asynchronous operation. 
+        /// The result contains the <see cref="Token" /> associated with the provided session identifier, or <see langword="null" /> if no token was found.
+        /// </returns>
         Task<Token> GetTokenAsync(Guid sessionId);
 
         /// <summary>
-        /// Stores the provided token, associating it with the session identifier.
+        /// Stores the provided token, associating it with the session identifier returned.
         /// </summary>
-        /// <param name="sessionId">A session identifier obtained during the interactive authentication process.</param>
         /// <param name="token">The token to store and associate with the provided session identifier.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        Task StoreTokenAsync(Guid sessionId, Token token);
+        /// <returns>
+        /// A task representing the asynchronous operation. The result contains an identifier for the session associated with the token.
+        /// </returns>
+        Task<Guid> StoreTokenAsync(Token token);
 
         /// <summary>
         /// Removes the token associated with the provided session identifier.

@@ -220,17 +220,25 @@ namespace Reddit.NET.Client.Authentication.Credential
 
                 var authenticateCommand = new AuthenticateWithAuthorizationCodeCommand(parameters);
 
-                _token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
-                
-                _stage = Stage.Authenticated;
-                _sessionId = Guid.NewGuid();
+                var token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);                            
 
-                await tokenStorage.StoreTokenAsync(_sessionId.Value, _token);                
+                var sessionId = await tokenStorage.StoreTokenAsync(token);
+
+                _token = token;
+                _sessionId = sessionId;
+                _stage = Stage.Authenticated;
             }
 
             private async Task AuthenticateWithSessionIdAsync(ITokenStorage tokenStorage)
             {
-                _token = await tokenStorage.GetTokenAsync(_sessionId.Value);
+                var token = await tokenStorage.GetTokenAsync(_sessionId.Value);
+
+                if (token == null)
+                {
+                    throw new InvalidOperationException($"No existing token associated with session identifier '{_sessionId.Value}'.");
+                }
+
+                _token = token;
                 _stage = Stage.Authenticated;               
             }
 

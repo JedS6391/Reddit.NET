@@ -17,14 +17,24 @@ namespace Reddit.NET.Client.Authentication.Storage
         private static readonly ConcurrentDictionary<Guid, Token> _tokens = new ConcurrentDictionary<Guid, Token>();
 
         /// <inheritdoc />
-        public Task<Token> GetTokenAsync(Guid sessionId) => Task.FromResult(_tokens[sessionId]);        
+        public Task<Token> GetTokenAsync(Guid sessionId)
+        {
+            if (_tokens.TryGetValue(sessionId, out var token))
+            {
+                return Task.FromResult(token);
+            }
+
+            return Task.FromResult<Token>(null);
+        }     
 
         /// <inheritdoc />
-        public Task StoreTokenAsync(Guid sessionId, Token token)
+        public Task<Guid> StoreTokenAsync(Token token)
         {
+            var sessionId = Guid.NewGuid();
+
             _tokens[sessionId] = token;
 
-            return Task.CompletedTask;
+            return Task.FromResult(sessionId);
         }
 
         /// <inheritdoc />
