@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
+using Reddit.NET.WebApi.Services;
 using Reddit.NET.WebApi.Services.Interfaces;
 
 namespace Reddit.NET.WebApi
@@ -48,8 +49,8 @@ namespace Reddit.NET.WebApi
             });
 
             services.AddSingleton<CommandExecutor>();
-            services.AddSingleton<ITokenStorage, MemoryTokenStorage>();        
-
+            services.AddSingleton<ITokenStorage, MemoryTokenStorage>();
+            services.AddSingleton<ISessionService, SessionService>();
             services.AddSingleton<IRedditService, RedditService>();
         }
 
