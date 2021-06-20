@@ -65,7 +65,7 @@ namespace Reddit.NET.WebApi.Services.Interfaces
                     _options.RedirectUri,
                     state);
 
-            var authorizationUri = interactiveCredentialsBuilder.AuthorizationUri;
+            var authorizationUri = interactiveCredentialsBuilder.GetAuthorizationUri();
 
             // Save the state so we can validate it upon authorization completion.
             httpContext.Session.SetString(StateSessionKeyName, state);

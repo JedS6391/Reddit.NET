@@ -9,7 +9,7 @@ namespace Reddit.NET.Console
     /// The main console example program.
     /// </summary>
     public class Program
-    {
+    {        
         public static async Task Main(string[] args)
         {
             var host = Host

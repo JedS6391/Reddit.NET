@@ -25,6 +25,8 @@ namespace Reddit.NET.Client.Builder
         /// </summary>
         private RedditClientBuilder()
         {
+            // By default, we don't store any tokens.
+            _tokenStorage = new NullTokenStorage();
         }
 
         /// <summary>
@@ -60,6 +62,11 @@ namespace Reddit.NET.Client.Builder
             return this;
         }
 
+        /// <summary>
+        /// Configures the builder to use the provided <see cref="ITokenStorage" /> instance to manage tokens.
+        /// </summary>
+        /// <param name="tokenStorage">An <see cref="ITokenStorage" /> instance.</param>
+        /// <returns>The updated builder.</returns>
         public RedditClientBuilder WithTokenStorage(ITokenStorage tokenStorage)
         {
             Requires.NotNull(tokenStorage, nameof(tokenStorage));
@@ -98,11 +105,6 @@ namespace Reddit.NET.Client.Builder
             var commandExecutor = new CommandExecutor(
                 _loggerFactory.CreateLogger<CommandExecutor>(),
                 _httpClientFactory);
-
-            if (_tokenStorage == null)
-            {                
-                _tokenStorage = new NullTokenStorage();
-            }
 
             var authenticatorFactory = new AuthenticatorFactory(
                 _loggerFactory, 

@@ -6,15 +6,20 @@ using Reddit.NET.Client.Models.Internal;
 
 namespace Reddit.NET.Client.Authentication.Storage
 {
+    /// <summary>
+    /// An <see cref="ITokenStorage" /> that stores tokens in memory.
+    /// </summary>
+    /// <remarks>
+    /// A static <see cref="ConcurrentDictionary{TKey, TValue}" /> is used to safely manage tokens across threads.
+    /// </remarks>
     public class MemoryTokenStorage : ITokenStorage
     {
         private static readonly ConcurrentDictionary<Guid, Token> _tokens = new ConcurrentDictionary<Guid, Token>();
 
-        public Task<Token> GetTokenAsync(Guid sessionId)
-        {
-            return Task.FromResult(_tokens[sessionId]);
-        }
+        /// <inheritdoc />
+        public Task<Token> GetTokenAsync(Guid sessionId) => Task.FromResult(_tokens[sessionId]);        
 
+        /// <inheritdoc />
         public Task StoreTokenAsync(Guid sessionId, Token token)
         {
             _tokens[sessionId] = token;
@@ -22,6 +27,7 @@ namespace Reddit.NET.Client.Authentication.Storage
             return Task.CompletedTask;
         }
 
+        /// <inheritdoc />
         public Task RemoveTokenAsync(Guid sessionId)
         {
             _tokens.TryRemove(sessionId, out _);

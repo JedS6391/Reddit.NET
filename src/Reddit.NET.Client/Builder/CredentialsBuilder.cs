@@ -170,6 +170,19 @@ namespace Reddit.NET.Client.Builder
             return interactiveCredentialsBuilder;
         }
 
+        /// <summary>
+        /// Configures the builder to create credentials for use when an existing session identifier is available.
+        /// </summary>
+        /// <remarks>
+        /// A session identifier can be obtained at the end of the interactive authentication process. 
+        /// 
+        /// It can then be used to create interactive credentials without restarting the interaction authentication process.
+        /// </remarks>
+        /// <param name="clientId">The client ID of the reddit app.</param>
+        /// <param name="clientSecret">The client secret of the reddit app.</param>
+        /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
+        /// <param name="sessionId">A unique key generated at the end of the interactive authentication process.</param>
+        /// <returns>A <see cref="InteractiveCredentials.Builder" /> instance to further configure the interactive credentials.</returns>
         public InteractiveCredentials.Builder Session(
             string clientId, 
             string clientSecret, 
@@ -203,6 +216,7 @@ namespace Reddit.NET.Client.Builder
         /// Creates a <see cref="Credentials" /> instance based on the builder configuration.
         /// </summary>
         /// <param name="commandExecutor">A <see cref="CommandExecutor" /> instance used when creating the credentials.</param>
+        /// <param name="tokenStorage">An <see cref="ITokenStorage" /> instance used for managing tokens.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the credentials.</returns>
         public async Task<Credentials> BuildCredentialsAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage) =>
             await _builderFunc.Invoke(commandExecutor, tokenStorage).ConfigureAwait(false);
