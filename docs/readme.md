@@ -10,4 +10,4 @@ This documentation describes how to use the client and an overview of the compon
 
 ## Demos
 
-See the [demos](./demos/) folder for full demonstrations.
+See the [demos](../demos/) folder for full demonstrations.
