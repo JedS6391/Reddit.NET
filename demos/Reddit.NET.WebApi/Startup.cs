@@ -5,10 +5,14 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Storage;
+using Reddit.NET.Client.Command;
 using Reddit.NET.WebApi.Services.Interfaces;
 
 namespace Reddit.NET.WebApi
 {
+    /// <summary>
+    /// Configures the Web API.
+    /// </summary>
     public class Startup
     {
         public Startup(IConfiguration configuration)
@@ -43,7 +47,8 @@ namespace Reddit.NET.WebApi
                 options.RedirectUri = Configuration.GetValue<Uri>("REDDIT_CLIENT_REDIRECT_URI");
             });
 
-            services.AddSingleton<ITokenStorage, MemoryTokenStorage>();
+            services.AddSingleton<CommandExecutor>();
+            services.AddSingleton<ITokenStorage, MemoryTokenStorage>();        
 
             services.AddSingleton<IRedditService, RedditService>();
         }

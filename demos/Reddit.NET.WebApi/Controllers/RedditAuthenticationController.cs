@@ -2,26 +2,31 @@
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Reddit.NET.WebApi.Services.Interfaces;
 
 namespace Reddit.NET.WebApi.Controllers
 {
+    /// <summary>
+    /// An API controller for reddit authentication.
+    /// </summary>
     [ApiController]
     [Route("v1/api/reddit/authentication")]
     public class RedditAuthenticationController : ControllerBase
-    {
-        private readonly ILogger<RedditAuthenticationController> _logger;
+    {    
         private readonly IRedditService _redditService;
 
-        public RedditAuthenticationController(
-            ILogger<RedditAuthenticationController> logger,
-            IRedditService redditService)
-        {
-            _logger = logger;
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RedditAuthenticationController" /> class.
+        /// </summary>
+        /// <param name="redditService">A service for interacting with reddit.</param>
+        public RedditAuthenticationController(IRedditService redditService)
+        {            
             _redditService = redditService;
         }
 
+        /// <summary>
+        /// Starts the reddit OAuth login process.
+        /// </summary>        
         [HttpGet]
         [Route("login")]
         public IActionResult Login()
@@ -31,15 +36,14 @@ namespace Reddit.NET.WebApi.Controllers
             return Redirect(authorizationUri.AbsoluteUri);
         }
 
-        [HttpPost]
-        [Route("logout")]
-        public async Task<IActionResult> Logout([Required, FromQuery] Guid sessionId)
-        {
-            await _redditService.EndSessionAsync(sessionId);
-
-            return Ok();
-        }
-
+        /// <summary>
+        /// Completes the reddit OAuth login process.
+        /// </summary>
+        /// <remarks>
+        /// The session ID returned allows the user to perform further authenticated actions.
+        /// </remarks>
+        /// <param name="state">The OAuth state parameter.</param>
+        /// <param name="code">The OAuth authorization code parameter.</param>
         [HttpGet]
         [Route("callback")]
         public async Task<IActionResult> Callback(
@@ -52,6 +56,20 @@ namespace Reddit.NET.WebApi.Controllers
             {
                 SessionId = sessionId
             });
+        }
+
+        /// <summary>
+        /// Ends the reddit session.
+        /// </summary>
+        /// <param name="sessionId">The session identifier obtained upon completion of the login process.</param>
+        /// <returns></returns>
+        [HttpPost]
+        [Route("logout")]
+        public async Task<IActionResult> Logout([Required, FromQuery] Guid sessionId)
+        {
+            await _redditService.EndSessionAsync(sessionId);
+
+            return Ok();
         }
     }
 }

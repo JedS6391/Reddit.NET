@@ -3,12 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Reddit.NET.WebApi
 {
+    /// <summary>
+    /// The main Web API example program.
+    /// </summary>
     public class Program
     {
         public static void Main(string[] args)
