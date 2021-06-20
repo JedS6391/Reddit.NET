@@ -1,6 +1,9 @@
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft;
+using Microsoft.Extensions.Logging;
+using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Command;
 
@@ -14,7 +17,7 @@ namespace Reddit.NET.Client.Builder
     /// </remarks>
     public sealed class CredentialsBuilder
     {
-        private Func<CommandExecutor, Task<Credentials>> _builderFunc;
+        private Func<CommandExecutor, ITokenStorage, Task<Credentials>> _builderFunc;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CredentialsBuilder" /> class.
@@ -45,8 +48,8 @@ namespace Reddit.NET.Client.Builder
             Requires.NotNull(username, nameof(username));
             Requires.NotNull(password, nameof(password));
 
-            _builderFunc = (commandExecutor) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
-                AuthenticationMode.Script,
+            _builderFunc = (_, _) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
+                AuthenticationMode.Script,            
                 clientId,            
                 clientSecret,
                 username: username,
@@ -64,7 +67,7 @@ namespace Reddit.NET.Client.Builder
             Requires.NotNull(clientId, nameof(clientId));
             Requires.NotNull(clientSecret, nameof(clientSecret));
 
-            _builderFunc = (commandExecutor) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
+            _builderFunc = (_, _) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
                 AuthenticationMode.ReadOnly,
                 clientId,            
                 clientSecret,
@@ -80,7 +83,7 @@ namespace Reddit.NET.Client.Builder
         {
             Requires.NotNull(clientId, nameof(clientId));        
 
-            _builderFunc = (commandExecutor) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
+            _builderFunc = (_, _) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
                 AuthenticationMode.ReadOnlyInstalledApp,
                 clientId,            
                 // No secret is expected for an installed app as the secret cannot be stored securely.
@@ -118,9 +121,11 @@ namespace Reddit.NET.Client.Builder
                 redirectUri,
                 state);
 
-            _builderFunc = async (commandExecutor) =>
+            _builderFunc = async (commandExecutor, tokenStorage) =>
             {
-                await interactiveCredentialsBuilder.AuthenticateAsync(commandExecutor).ConfigureAwait(false);
+                await interactiveCredentialsBuilder
+                    .AuthenticateAsync(commandExecutor, tokenStorage)
+                    .ConfigureAwait(false);
 
                 return interactiveCredentialsBuilder.Build();
             };
@@ -153,9 +158,53 @@ namespace Reddit.NET.Client.Builder
                 redirectUri: redirectUri,
                 state: state);
 
-            _builderFunc = async (commandExecutor) =>
+            _builderFunc = async (commandExecutor, tokenStorage) =>
             {
-                await interactiveCredentialsBuilder.AuthenticateAsync(commandExecutor).ConfigureAwait(false);
+                await interactiveCredentialsBuilder
+                    .AuthenticateAsync(commandExecutor, tokenStorage)
+                    .ConfigureAwait(false);
+
+                return interactiveCredentialsBuilder.Build();
+            };
+
+            return interactiveCredentialsBuilder;
+        }
+
+        /// <summary>
+        /// Configures the builder to create credentials for use when an existing session identifier is available.
+        /// </summary>
+        /// <remarks>
+        /// A session identifier can be obtained at the end of the interactive authentication process. 
+        /// 
+        /// It can then be used to create interactive credentials without restarting the interaction authentication process.
+        /// </remarks>
+        /// <param name="clientId">The client ID of the reddit app.</param>
+        /// <param name="clientSecret">The client secret of the reddit app.</param>
+        /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
+        /// <param name="sessionId">A unique key generated at the end of the interactive authentication process.</param>
+        /// <returns>A <see cref="InteractiveCredentials.Builder" /> instance to further configure the interactive credentials.</returns>
+        public InteractiveCredentials.Builder Session(
+            string clientId, 
+            string clientSecret, 
+            Uri redirectUri,
+            Guid sessionId)
+        {
+            Requires.NotNull(clientId, nameof(clientId));
+            Requires.NotNull(clientSecret, nameof(clientSecret));
+            Requires.NotNull(redirectUri, nameof(redirectUri));
+
+            var interactiveCredentialsBuilder = new InteractiveCredentials.Builder(
+                AuthenticationMode.WebApp,
+                clientId,
+                clientSecret,
+                redirectUri,
+                sessionId);
+
+            _builderFunc = async (commandExecutor, tokenStorage) =>
+            {
+                await interactiveCredentialsBuilder
+                    .AuthenticateAsync(commandExecutor, tokenStorage)
+                    .ConfigureAwait(false);
 
                 return interactiveCredentialsBuilder.Build();
             };
@@ -167,8 +216,9 @@ namespace Reddit.NET.Client.Builder
         /// Creates a <see cref="Credentials" /> instance based on the builder configuration.
         /// </summary>
         /// <param name="commandExecutor">A <see cref="CommandExecutor" /> instance used when creating the credentials.</param>
+        /// <param name="tokenStorage">An <see cref="ITokenStorage" /> instance used for managing tokens.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the credentials.</returns>
-        internal async Task<Credentials> BuildCredentialsAsync(CommandExecutor commandExecutor) =>
-            await _builderFunc.Invoke(commandExecutor).ConfigureAwait(false);
+        public async Task<Credentials> BuildCredentialsAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage) =>
+            await _builderFunc.Invoke(commandExecutor, tokenStorage).ConfigureAwait(false);
     }
 }

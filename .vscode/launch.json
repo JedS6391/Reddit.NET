@@ -36,6 +36,18 @@
             "cwd": "${workspaceFolder}",
             "stopAtEntry": false,
             "console": "integratedTerminal"
+        },
+        {
+            "name": ".NET Core Launch (Web API) - Web API Example",
+            "type": "coreclr",
+            "request": "launch",
+            "preLaunchTask": "build",
+            "program": "${workspaceFolder}/demos/Reddit.NET.WebApi/bin/Debug/net5.0/Reddit.NET.WebApi.dll",
+            "args": [],
+            "envFile": "${workspaceFolder}/.env",
+            "cwd": "${workspaceFolder}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal"            
         }
     ]
 }

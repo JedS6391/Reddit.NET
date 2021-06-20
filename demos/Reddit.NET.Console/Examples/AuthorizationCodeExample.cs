@@ -106,12 +106,14 @@ namespace Reddit.NET.Console.Examples
                 clientId,
                 clientSecret,
                 new Uri(redirectUri),
-                state);                
+                state);
+
+            var authorizationUri = interactiveCredentialsBuilder.GetAuthorizationUri();
 
             // Send the user to the authorization URI.
             _logger.LogInformation("Please follow the steps to retrieve an access token and refresh token you can use with the Reddit.NET client.\n");                         
             _logger.LogInformation("1. Open the following link in your browser to complete the authorization process:\n");
-            _logger.LogInformation($"{interactiveCredentialsBuilder.AuthorizationUri}\n");            
+            _logger.LogInformation($"{authorizationUri}\n");            
             _logger.LogInformation("2. Once you've completed authorization in the browser, copy the final redirect URI and enter it below.\n");            
 
             var finalRedirectUriString = PromptForValue("Final Redirect URI");

@@ -43,7 +43,7 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// Gets the mode of authentication this instance represents.
         /// </summary>
         public AuthenticationMode Mode { get; }
-
+        
         /// <summary>
         /// Gets the client ID of the reddit app.
         /// </summary>

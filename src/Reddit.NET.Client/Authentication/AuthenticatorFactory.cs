@@ -76,7 +76,7 @@ namespace Reddit.NET.Client.Authentication
                 AuthenticationMode.WebApp or AuthenticationMode.WebApp => 
                     new UserTokenAuthenticator(
                         _loggerFactory.CreateLogger<UserTokenAuthenticator>(),
-                        _commandExecutor,
+                        _commandExecutor,                        
                         credentials),
 
                 _ => throw new ArgumentException($"Mode '{credentials.Mode}' is not supported for interactive authentication.", nameof(credentials)),

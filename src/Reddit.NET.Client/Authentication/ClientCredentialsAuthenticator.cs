@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.Authentication
         /// <param name="credentials">A <see cref="Credentials" /> instance describing the credentials to use for authentication.</param>
         public ClientCredentialsAuthenticator(
             ILogger<ClientCredentialsAuthenticator> logger,
-            CommandExecutor commandExecutor, 
+            CommandExecutor commandExecutor,             
             Credentials credentials)
             : base(logger, commandExecutor, credentials)
         {          
