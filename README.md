@@ -12,4 +12,4 @@ dotnet build src/
 
 ## Usage
 
-See the `demos` folder for examples of usage.
+See the [demos](./demos/) folder for examples of usage.
