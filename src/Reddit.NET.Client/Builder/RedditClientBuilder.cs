@@ -121,10 +121,7 @@ namespace Reddit.NET.Client.Builder
 
             var authenticator = authenticatorFactory.GetAuthenticator(credentials);
 
-            return new RedditClient(
-                _loggerFactory.CreateLogger<RedditClient>(), 
-                commandExecutor, 
-                authenticator);
+            return new RedditClient(commandExecutor, authenticator);
         }
     }
 }

@@ -51,13 +51,16 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
         private async Task<Comment.Listing> GetListingAsync(string after = null)
         {
+            // TODO: This doesn't handle the after parameter. Is it applicable for comments?
             var getSubmissionCommentsCommand = new GetSubmissionCommentsCommand(new GetSubmissionCommentsCommand.Parameters()
             {
                 SubredditName = _parameters.SubredditName,
                 SubmissionId = _parameters.SubmissionId
             });
-        
-            var submissionComments = await _client.ExecuteCommandAsync<Submission.SubmissionComments>(getSubmissionCommentsCommand);            
+
+            var submissionComments = await _client
+                .ExecuteCommandAsync<Submission.SubmissionComments>(getSubmissionCommentsCommand)
+                .ConfigureAwait(false);
 
             // TODO: Would be nice to have the link between submission and comment.
             return submissionComments.Comments;

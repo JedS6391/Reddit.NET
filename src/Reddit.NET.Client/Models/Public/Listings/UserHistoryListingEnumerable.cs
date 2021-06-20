@@ -67,9 +67,12 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
             if (_parameters.UseAuthenticatedUser)
             {
+                // Resolve the username for the currently authenticated user.
                 var getMyDetailsCommand = new GetMyDetailsCommand();
 
-                var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand);
+                var user = await _client
+                    .ExecuteCommandAsync<User.Details>(getMyDetailsCommand)
+                    .ConfigureAwait(false);
 
                 commandParameters.Username = user.Name;
             }
@@ -80,7 +83,9 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
             var getUserHistoryCommand = new GetUserHistoryCommand(commandParameters);
 
-            var history = await _client.ExecuteCommandAsync<Listing<IUserContent>>(getUserHistoryCommand);
+            var history = await _client
+                .ExecuteCommandAsync<Listing<IUserContent>>(getUserHistoryCommand)
+                .ConfigureAwait(false);
 
             return history;
         } 

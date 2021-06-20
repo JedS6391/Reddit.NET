@@ -14,22 +14,16 @@ namespace Reddit.NET.Client
     /// </remarks>
     public sealed partial class RedditClient
     {
-        private readonly ILogger<RedditClient> _logger;
         private readonly CommandExecutor _commandExecutor;
         private readonly IAuthenticator _authenticator;        
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClient" /> class.
-        /// </summary>
-        /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
+        /// </summary>        
         /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to authenticate with reddit.</param>
-        internal RedditClient(
-            ILogger<RedditClient> logger,
-            CommandExecutor commandExecutor,
-            IAuthenticator authenticator)
-        {
-            _logger = Requires.NotNull(logger, nameof(logger));
+        internal RedditClient(CommandExecutor commandExecutor, IAuthenticator authenticator)
+        {            
             _commandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
             _authenticator = Requires.NotNull(authenticator, nameof(authenticator));
         }

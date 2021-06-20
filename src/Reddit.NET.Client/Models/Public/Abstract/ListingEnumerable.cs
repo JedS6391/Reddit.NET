@@ -155,7 +155,6 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             /// <inheritdoc />
             public ValueTask DisposeAsync() => ValueTask.CompletedTask;
 
-
             private async Task<bool> TryLoadInitialPageAsync()
             {
                 if (_context.HasStarted)

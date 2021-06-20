@@ -12,7 +12,7 @@ namespace Reddit.NET.Client.Command
     /// </summary>
     public static class CommandExecutorExtensions
     {
-        private static Lazy<JsonSerializerOptions> s_jsonSerializerOptions = new Lazy<JsonSerializerOptions>(GetJsonSerializerOptions);
+        private static readonly Lazy<JsonSerializerOptions> s_jsonSerializerOptions = new Lazy<JsonSerializerOptions>(GetJsonSerializerOptions);
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> instance, parsing the response to an instance of type <typeparamref name="TResponse" />.

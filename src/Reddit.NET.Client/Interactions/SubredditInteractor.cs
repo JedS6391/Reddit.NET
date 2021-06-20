@@ -22,9 +22,7 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>        
         /// <param name="subredditName">The name of the subreddit to interact with.</param>
-        public SubredditInteractor(
-            RedditClient client,
-            string subredditName)
+        public SubredditInteractor(RedditClient client, string subredditName)
         {
             _client = client;
             _subredditName = subredditName;
@@ -41,7 +39,7 @@ namespace Reddit.NET.Client.Interactions
                 SubredditName = _subredditName
             });
 
-            var subreddit = await _client.ExecuteCommandAsync<Subreddit>(getSubredditDetailsCommand);
+            var subreddit = await _client.ExecuteCommandAsync<Subreddit>(getSubredditDetailsCommand).ConfigureAwait(false);
 
             return new SubredditDetails(subreddit);
         }

@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Models.Internal;
-using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.ReadOnly;
 using Reddit.NET.Client.Command.Users;
@@ -36,9 +35,24 @@ namespace Reddit.NET.Client.Interactions
 
             // We use the data model type to deserialize the response as the user details
             // API returns a plain data object, rather than wrapping the data within a thing.
-            var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand);
+            var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand).ConfigureAwait(false);
 
             return new UserDetails(user);
+        }
+
+        /// <summary>
+        /// Gets the subreddits the authenticated user is subscribed to.
+        /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
+        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync(
+            Action<MySubredditsListingEnumerable.Options.Builder> configurationAction = null) 
+        {
+            var optionsBuilder = new MySubredditsListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new MySubredditsListingEnumerable(_client, optionsBuilder.Options);
         }
 
         /// <summary>
@@ -60,21 +74,6 @@ namespace Reddit.NET.Client.Interactions
                 {
                     UseAuthenticatedUser = true
                 });
-        }
-
-        /// <summary>
-        /// Gets the subreddits the authenticated user is subscribed to.
-        /// </summary>
-        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
-        /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
-        public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync(
-            Action<MySubredditsListingEnumerable.Options.Builder> configurationAction = null) 
-        {
-            var optionsBuilder = new MySubredditsListingEnumerable.Options.Builder();
-
-            configurationAction?.Invoke(optionsBuilder);
-
-            return new MySubredditsListingEnumerable(_client, optionsBuilder.Options);
-        }
+        }        
     }
 }

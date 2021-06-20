@@ -69,7 +69,7 @@ namespace Reddit.NET.Client.Interactions
                 Direction = direction
             });
 
-            await _client.ExecuteCommandAsync(applyVoteToSubmissionCommand);           
+            await _client.ExecuteCommandAsync(applyVoteToSubmissionCommand).ConfigureAwait(false);           
         }   
     }
 }

@@ -1,4 +1,3 @@
-using System;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -21,9 +20,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         /// <param name="options">The options available to the listing.</param>
-        public MySubredditsListingEnumerable(
-            RedditClient client, 
-            MySubredditsListingEnumerable.Options options)
+        public MySubredditsListingEnumerable(RedditClient client, MySubredditsListingEnumerable.Options options)
             : base(options)
         {
             _client = client;
@@ -54,7 +51,9 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 Limit = ListingOptions.ItemsPerRequest
             });
 
-            var subreddits = await _client.ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand);
+            var subreddits = await _client
+                .ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand)
+                .ConfigureAwait(false);
 
             return subreddits;
         } 

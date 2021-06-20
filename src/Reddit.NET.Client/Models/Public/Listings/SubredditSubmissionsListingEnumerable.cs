@@ -74,7 +74,9 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
             var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(commandParameters);
 
-            var submissions = await _client.ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand);
+            var submissions = await _client
+                .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand)
+                .ConfigureAwait(false);
 
             return submissions;    
         }

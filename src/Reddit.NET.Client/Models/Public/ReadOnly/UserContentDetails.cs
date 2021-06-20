@@ -10,8 +10,8 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         /// <summary>
         /// Initializes a new instance of the <see cref="UserContentDetails" /> class.
         /// </summary>
-        /// <param name="kind"></param>
-        /// <param name="id"></param>
+        /// <param name="kind">The kind of the thing.</param>
+        /// <param name="id">The identifier of the thing.</param>
         protected UserContentDetails(string kind, string id)
         {
             Kind = kind;
