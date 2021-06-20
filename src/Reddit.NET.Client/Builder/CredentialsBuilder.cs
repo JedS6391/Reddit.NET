@@ -199,18 +199,6 @@ namespace Reddit.NET.Client.Builder
             return interactiveCredentialsBuilder;
         }
 
-        public async Task<Credentials> BuildCredentialsAsync(
-            ILoggerFactory loggerFactory, 
-            IHttpClientFactory httpClientFactory,
-            ITokenStorage tokenStorage)
-        {
-            var commandExecutor = new CommandExecutor(
-                loggerFactory.CreateLogger<CommandExecutor>(),
-                httpClientFactory);
-
-            return await BuildCredentialsAsync(commandExecutor, tokenStorage);
-        } 
-
         /// <summary>
         /// Creates a <see cref="Credentials" /> instance based on the builder configuration.
         /// </summary>

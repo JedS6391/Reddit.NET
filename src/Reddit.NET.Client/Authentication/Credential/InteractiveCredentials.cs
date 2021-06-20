@@ -147,7 +147,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// </summary>
             /// <param name="commandExecutor">A <see cref="CommandExecutor" /> instance used for executing commands.</param>
             /// <returns>A task representing the asynchronous operation.</returns>
-            internal async Task AuthenticateAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage)
+            public async Task AuthenticateAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage)
             {
                 if (_stage != Stage.AuthorizedWithCode && _stage != Stage.AuthorizedWithSessionId)
                 {
@@ -186,7 +186,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// Builds an <see cref="InteractiveCredentials" /> instance based on the builder configuration.
             /// </summary>
             /// <returns>An <see cref="InteractiveCredentials" /> instance representing the builder configuration.</returns>
-            internal InteractiveCredentials Build()
+            public InteractiveCredentials Build()
             {
                 if (_stage != Stage.Authenticated)
                 {
