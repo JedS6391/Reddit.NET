@@ -38,7 +38,8 @@ namespace Reddit.NET.Client
             {
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetSubredditSubmissionsCommand),
-                nameof(GetSubmissionCommentsCommand)
+                nameof(GetSubmissionCommentsCommand),
+                nameof(GetUserDetailsCommand)
             };
 
             /// <summary>
@@ -50,6 +51,7 @@ namespace Reddit.NET.Client
                 nameof(GetSubredditSubmissionsCommand),
                 nameof(GetMyDetailsCommand),
                 nameof(GetMySubredditsCommand),
+                nameof(GetUserDetailsCommand),
                 nameof(GetUserHistoryCommand),
                 nameof(ApplyVoteCommand),
                 nameof(GetSubmissionCommentsCommand)

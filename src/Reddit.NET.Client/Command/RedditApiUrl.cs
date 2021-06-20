@@ -18,6 +18,7 @@ namespace Reddit.NET.Client.Command
 
         public static class User 
         {
+            public static string Details(string username) => $"https://oauth.reddit.com/user/{username}/about";
             public static string History(string username, string type) => $"https://oauth.reddit.com/user/{username}/{type}";
         }
 

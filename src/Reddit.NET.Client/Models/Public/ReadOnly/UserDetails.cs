@@ -13,10 +13,10 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         /// Initializes a new instance of the <see cref="UserDetails" /> class.
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containing a user's data.</param>
-        internal UserDetails(IThing<User> thing)
+        internal UserDetails(IThing<User.Details> thing)
         {
-            Name = thing.Data.Data.Name;
-            CreatedAtUtc = thing.Data.Data.CreatedAtUtc;
+            Name = thing.Data.Name;
+            CreatedAtUtc = thing.Data.CreatedAtUtc;
         }
 
         /// <summary>
