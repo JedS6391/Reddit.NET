@@ -44,7 +44,20 @@ namespace Reddit.NET.Client.Interactions
             return new SubredditDetails(subreddit);
         }
 
-    
+        /// <summary>
+        /// Subscribes to the subreddit.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SubscribeAsync() =>
+            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Subscribe);
+
+        /// <summary>
+        /// Unsubscribes from the subreddit.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UnsubscribeAsync() =>
+            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Unubscribe);
+
         /// <summary>
         /// Gets the submissions of the subreddit.
         /// </summary>
@@ -64,6 +77,19 @@ namespace Reddit.NET.Client.Interactions
                 {
                     SubredditName = _subredditName
                 });
+        }
+
+        private async Task UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction action)
+        {
+            var commandParameters = new UpdateSubredditSubscriptionCommand.Parameters()
+            {
+                SubredditName = _subredditName,
+                Action = action
+            };
+
+            var updateSubredditSubscriptionCommand = new UpdateSubredditSubscriptionCommand(commandParameters);
+
+            await _client.ExecuteCommandAsync(updateSubredditSubscriptionCommand).ConfigureAwait(false);             
         }
     }
 }
