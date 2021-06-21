@@ -2,7 +2,7 @@ using System;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 
-namespace Reddit.NET.Client.Models.Public.ReadOnly
+namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// Defines a read-only view of a user.

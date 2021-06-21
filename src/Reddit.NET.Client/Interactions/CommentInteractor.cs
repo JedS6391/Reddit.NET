@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Reddit.NET.Client.Models.Public.ReadOnly;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Vote;
 using Reddit.NET.Client.Interactions.Abstract;
 
@@ -11,17 +11,17 @@ namespace Reddit.NET.Client.Interactions
     public sealed class CommentInteractor : IInteractor
     {
         private readonly RedditClient _client;
-        private readonly CommentDetails _comment;
+        private readonly string _commentId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentInteractor" /> class.
         /// </summary>        
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
-        /// <param name="comment">The details of the comment to interact with.</param>
-        public CommentInteractor(RedditClient client, CommentDetails comment)
+        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>
+        public CommentInteractor(RedditClient client, string commentId)
         {
             _client = client;
-            _comment = comment;
+            _commentId = commentId;
         }
 
         /// <summary>
@@ -40,7 +40,8 @@ namespace Reddit.NET.Client.Interactions
         {
             var applyVoteToSubmissionCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
-                Id = _comment.FullName,
+                // We need to provide the full name of the comment to vote on.
+                Id = $"{Constants.Kind.Comment}_{_commentId}",
                 Direction = direction
             });
 

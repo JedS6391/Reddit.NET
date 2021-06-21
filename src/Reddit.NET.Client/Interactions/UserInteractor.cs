@@ -7,7 +7,7 @@ using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Listings.Sorting;
-using Reddit.NET.Client.Models.Public.ReadOnly;
+using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Interactions
 {

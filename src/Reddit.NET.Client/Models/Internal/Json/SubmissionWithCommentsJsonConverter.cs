@@ -6,7 +6,7 @@ using System.Text.Json.Serialization;
 namespace Reddit.NET.Client.Models.Internal.Json
 {
     /// <summary>
-    /// A <see cref="JsonConverter{T}" /> implementation for <see cref="Submission.SubmissionComments" /> instances.
+    /// A <see cref="JsonConverter{T}" /> implementation for <see cref="Submission.SubmissionWithComments" /> instances.
     /// </summary>
     /// <remarks>
     /// A <c>GET /r/{subreddit}/comments/{article}</c> request returns an array with two elements:
@@ -14,12 +14,12 @@ namespace Reddit.NET.Client.Models.Internal.Json
     ///   1. Listing of submission things (with a single child for the submission in question)
     ///   2. Listing of comment things
     ///   
-    /// This converter will read both parts from the array and encapsulate them in a <see cref="Submission.SubmissionComments" /> instance.
+    /// This converter will read both parts from the array and encapsulate them in a <see cref="Submission.SubmissionWithComments" /> instance.
     /// </remarks>
-    internal class SubmissionCommentsJsonConverter : JsonConverter<Submission.SubmissionComments>
+    internal class SubmissionWithCommentsJsonConverter : JsonConverter<Submission.SubmissionWithComments>
     {
         /// <inheritdoc />
-        public override Submission.SubmissionComments Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Submission.SubmissionWithComments Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
             // [
             //     {
@@ -54,15 +54,13 @@ namespace Reddit.NET.Client.Models.Internal.Json
             // End array
             reader.Consume(JsonTokenType.EndArray);
 
-            return new Submission.SubmissionComments()
-            {
-                Submissions = submissions,
-                Comments = comments
-            };
+            return new Submission.SubmissionWithComments(
+                submissions,
+                comments);
         }
 
         /// <inheritdoc />
-        public override void Write(Utf8JsonWriter writer, Submission.SubmissionComments value, JsonSerializerOptions options) =>        
+        public override void Write(Utf8JsonWriter writer, Submission.SubmissionWithComments value, JsonSerializerOptions options) =>        
             throw new NotImplementedException();
     }
 }

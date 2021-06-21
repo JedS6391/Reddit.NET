@@ -43,7 +43,7 @@ namespace Reddit.NET.Client.Command.Subreddits
             return request;
         }
 
-        private string MapSubscriptionAction(SubscriptionAction action) =>
+        private static string MapSubscriptionAction(SubscriptionAction action) =>
             action switch
             {
                 SubscriptionAction.Subscribe => "sub",

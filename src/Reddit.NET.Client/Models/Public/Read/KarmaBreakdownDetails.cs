@@ -1,7 +1,7 @@
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 
-namespace Reddit.NET.Client.Models.Public.ReadOnly
+namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// A read-only view of a user's karma breakdown.

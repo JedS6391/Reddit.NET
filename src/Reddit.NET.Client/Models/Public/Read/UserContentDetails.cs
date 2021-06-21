@@ -1,6 +1,6 @@
 using System;
 
-namespace Reddit.NET.Client.Models.Public.ReadOnly
+namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// Defines a read-only view of user content.

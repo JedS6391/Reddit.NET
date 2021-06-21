@@ -3,9 +3,13 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings;
-using Reddit.NET.Client.Models.Public.ReadOnly;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Interactions.Abstract;
+using Reddit.NET.Client.Models.Public.Write;
+using System.Net.Http.Json;
+using Reddit.NET.Client.Command.Submissions;
+using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -59,6 +63,38 @@ namespace Reddit.NET.Client.Interactions
             await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Unubscribe);
 
         /// <summary>
+        /// Creates a link submission in the subreddit.
+        /// </summary>
+        /// <param name="details">The details of a link submission to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created submission details.
+        /// </returns>
+        public async Task<SubmissionDetails> CreateSubmissionAsync(LinkSubmissionDetails details) =>
+            await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
+            {
+                SubredditName = _subredditName,
+                Type = CreateSubredditSubmissionCommand.SubmissionType.Link,
+                Title = details.Title,
+                Url = details.Uri.AbsoluteUri
+            });        
+
+        /// <summary>
+        /// Creates a text submission in the subreddit.
+        /// </summary>
+        /// <param name="details">The details of a text submission to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created submission details.
+        /// </returns>
+        public async Task<SubmissionDetails> CreateSubmissionAsync(TextSubmissionDetails details) =>
+            await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
+            {
+                SubredditName = _subredditName,
+                Type = CreateSubredditSubmissionCommand.SubmissionType.Self,
+                Title = details.Title,
+                Text = details.Text
+            });  
+
+        /// <summary>
         /// Gets the submissions of the subreddit.
         /// </summary>
         /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
@@ -90,6 +126,35 @@ namespace Reddit.NET.Client.Interactions
             var updateSubredditSubscriptionCommand = new UpdateSubredditSubscriptionCommand(commandParameters);
 
             await _client.ExecuteCommandAsync(updateSubredditSubscriptionCommand).ConfigureAwait(false);             
+        }
+
+        private async Task<SubmissionDetails> CreateSubmissionAsync(CreateSubredditSubmissionCommand.Parameters parameters)
+        {
+            var createSubredditSubmissionCommand = new CreateSubredditSubmissionCommand(parameters);
+        
+            var response = await _client
+                .ExecuteCommandAsync<JsonDataResponse>(createSubredditSubmissionCommand)
+                .ConfigureAwait(false);
+
+            return await GetSubmissionDetailsAsync(response.Json.Data.Id);
+        }
+
+        private async Task<SubmissionDetails> GetSubmissionDetailsAsync(string submissionId)
+        {            
+            var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
+            {
+                SubmissionId = submissionId,
+                // Don't fetch any comments since we're just interested in the submission details
+                Limit = 0
+            };
+
+            var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
+
+            var submissionWithComments = await _client
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
+                .ConfigureAwait(false);
+
+            return new SubmissionDetails(submissionWithComments.Submission);
         }
     }
 }

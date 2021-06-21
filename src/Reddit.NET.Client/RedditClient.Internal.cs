@@ -1,7 +1,7 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command;
-using Reddit.NET.Client.Models.Public.ReadOnly;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Interactions;
 
 namespace Reddit.NET.Client
@@ -17,16 +17,16 @@ namespace Reddit.NET.Client
         /// <summary>
         /// Gets an interactor for operations relating to a specific submission.
         /// </summary>
-        /// <param name="submission">The submission to interact with.</param>            
+        /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>            
         /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the provided submission.</returns>
-        internal SubmissionInteractor Submission(SubmissionDetails submission) => new SubmissionInteractor(this, submission);
+        internal SubmissionInteractor Submission(string submissionId) => new SubmissionInteractor(this, submissionId);
 
         /// <summary>
         /// Gets an interactor for operations relating to a specific comment.
         /// </summary>
-        /// <param name="comment">The comment to interact with.</param>            
+        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>            
         /// <returns>A <see cref="CommentInteractor" /> instance that provides mechanisms for interacting with the provided comment.</returns>
-        internal CommentInteractor Comment(CommentDetails comment) => new CommentInteractor(this, comment);
+        internal CommentInteractor Comment(string commentId) => new CommentInteractor(this, commentId);
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />.

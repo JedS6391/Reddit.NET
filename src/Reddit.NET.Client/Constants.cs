@@ -38,7 +38,7 @@ namespace Reddit.NET.Client
             {
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetSubredditSubmissionsCommand),
-                nameof(GetSubmissionCommentsCommand),
+                nameof(GetSubmissionDetailsWithCommentsCommand),
                 nameof(GetUserDetailsCommand)
             };
 
@@ -50,14 +50,23 @@ namespace Reddit.NET.Client
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetSubredditSubmissionsCommand),
                 nameof(UpdateSubredditSubscriptionCommand),
+                nameof(CreateSubredditSubmissionCommand),
                 nameof(GetMyDetailsCommand),
                 nameof(GetMySubredditsCommand),
                 nameof(GetMyKarmaBreakdownCommand),
                 nameof(GetUserDetailsCommand),
                 nameof(GetUserHistoryCommand),
                 nameof(ApplyVoteCommand),
-                nameof(GetSubmissionCommentsCommand)
+                nameof(GetSubmissionDetailsWithCommentsCommand)
             };
+        }
+
+        public static class Kind
+        {
+            public const string Comment = "t1";
+            public const string User = "t2";
+            public const string Submission = "t3";
+            public const string Subreddit = "t5";
         }
     }
 }
