@@ -16,6 +16,8 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         internal UserDetails(IThing<User.Details> thing)
         {
             Name = thing.Data.Name;
+            CommentKarma = thing.Data.CommentKarma;
+            SubmissionKarma = thing.Data.LinkKarma;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
         }
 
@@ -26,6 +28,8 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         internal UserDetails(User.Details user)
         {
             Name = user.Name;
+            CommentKarma = user.CommentKarma;
+            SubmissionKarma = user.LinkKarma;            
             CreatedAtUtc = user.CreatedAtUtc;
         }
 
@@ -33,6 +37,16 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         /// Gets the name of the user.
         /// </summary>
         public string Name { get; }
+
+        /// <summary>
+        /// Gets the karma of the user earned from comments.
+        /// </summary>
+        public int CommentKarma { get; private set; }
+
+        /// <summary>
+        /// Gets the link karma of the user earned from submissions.
+        /// </summary>
+        public int SubmissionKarma { get; private set; }           
 
         /// <summary>
         /// Gets the date and time the user was created.
