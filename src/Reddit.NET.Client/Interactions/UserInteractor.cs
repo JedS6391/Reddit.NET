@@ -55,7 +55,7 @@ namespace Reddit.NET.Client.Interactions
         /// Gets the history of the user.
         /// </summary>
         /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
-        /// <returns>An asynchronous enumerator over the authenticated user's history.</returns>
+        /// <returns>An asynchronous enumerator over the user's history.</returns>
         public IAsyncEnumerable<UserContentDetails> GetHistoryAsync(
             Action<UserHistoryListingEnumerable.Options.Builder> configurationAction = null)
         {
