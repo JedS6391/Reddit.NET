@@ -14,6 +14,7 @@ namespace Reddit.NET.Client.Command
         {
             public static string Details => "https://oauth.reddit.com/api/v1/me";
             public static string Subreddits => "https://oauth.reddit.com/subreddits/mine/subscriber";
+            public static string KarmaBreakdown => "https://oauth.reddit.com/api/v1/me/karma";
         }
 
         public static class User 

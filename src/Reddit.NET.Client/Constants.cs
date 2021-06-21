@@ -51,6 +51,7 @@ namespace Reddit.NET.Client
                 nameof(GetSubredditSubmissionsCommand),
                 nameof(GetMyDetailsCommand),
                 nameof(GetMySubredditsCommand),
+                nameof(GetMyKarmaBreakdownCommand),
                 nameof(GetUserDetailsCommand),
                 nameof(GetUserHistoryCommand),
                 nameof(ApplyVoteCommand),

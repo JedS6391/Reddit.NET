@@ -6,6 +6,7 @@ using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.ReadOnly;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
+using System.Linq;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -74,6 +75,24 @@ namespace Reddit.NET.Client.Interactions
                 {
                     UseAuthenticatedUser = true
                 });
-        }        
+        }
+
+        /// <summary>
+        /// Gets the karma breakdown of the authenticated user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation. The result contains the karma breakdown of the authenticated user.</returns>
+        public async Task<IReadOnlyList<KarmaBreakdownDetails>> GetKarmaBreakdownAsync()
+        {
+            var getMyKarmaBreakdownCommand = new GetMyKarmaBreakdownCommand();
+
+            var karmaBreakdown = await _client
+                .ExecuteCommandAsync<KarmaBreakdown>(getMyKarmaBreakdownCommand)
+                .ConfigureAwait(false);
+            
+            return karmaBreakdown
+                .Data
+                .Select(kb => new KarmaBreakdownDetails(kb))
+                .ToList();
+        }      
     }
 }

@@ -41,12 +41,12 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         /// <summary>
         /// Gets the karma of the user earned from comments.
         /// </summary>
-        public int CommentKarma { get; private set; }
+        public int CommentKarma { get; }
 
         /// <summary>
         /// Gets the link karma of the user earned from submissions.
         /// </summary>
-        public int SubmissionKarma { get; private set; }           
+        public int SubmissionKarma { get; }           
 
         /// <summary>
         /// Gets the date and time the user was created.
