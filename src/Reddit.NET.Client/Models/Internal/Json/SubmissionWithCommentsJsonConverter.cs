@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Models.Internal.Json
 {
@@ -30,28 +31,30 @@ namespace Reddit.NET.Client.Models.Internal.Json
             //     }
             // ]
 
-            // Begin array 
+            // Begin array.
             reader.Consume(JsonTokenType.StartArray);
 
-            // Start first object
+            // Start first object.
             reader.Match(JsonTokenType.StartObject);
 
-            // Read submission listing
+            // Read submission listing.
             var submissions = JsonSerializer.Deserialize<Submission.Listing>(ref reader, options);
 
-            // End first object            
+            // End first object.        
             reader.Consume(JsonTokenType.EndObject);
 
-            // Start second object
+            // Start second object.
             reader.Match(JsonTokenType.StartObject);
 
-            // Read comment listing
-            var comments = JsonSerializer.Deserialize<Comment.Listing>(ref reader, options);
+            // Read comment listing. 
+            // Note we treat the comment listing as a very generic IHasParent model, as it will
+            // contain both Comment and MoreChildren objects.
+            var comments = JsonSerializer.Deserialize<Listing<IHasParent>>(ref reader, options);
 
             // End second object
             reader.Consume(JsonTokenType.EndObject);
 
-            // End array
+            // End array.
             reader.Consume(JsonTokenType.EndArray);
 
             return new Submission.SubmissionWithComments(

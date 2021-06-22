@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Internal.Json;
@@ -13,7 +14,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines the attributes of a <see cref="Comment" />.
         /// </summary>
-        public class Details : IUserContent
+        public class Details : IUserContent, IHasParent
         {
             /// <summary>
             /// Gets the identifier of the comment.
@@ -22,12 +23,25 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonInclude]
             public string Id { get; private set; }
 
+            /// <inheritdoc />
+            [JsonPropertyName("parent_id")]
+            [JsonInclude]
+            public string ParentFullName { get; private set; }            
+
             /// <summary>
             /// Gets the body of the comment.
             /// </summary>
             [JsonPropertyName("body")]
             [JsonInclude]
             public string Body { get; private set; }
+
+            /// <summary>
+            /// Gets the replies to the comment.
+            /// </summary>
+            [JsonPropertyName("replies")]
+            [JsonInclude]
+            [JsonConverter(typeof(CommentRepliesJsonConverter))]
+            public Listing<IHasParent> Replies { get; private set; }
 
             /// <summary>
             /// Gets the subreddit the comment belongs to.
@@ -67,7 +81,7 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonPropertyName("created_utc")]
             [JsonInclude]
             [JsonConverter(typeof(EpochSecondJsonConverter))]
-            public DateTimeOffset CreatedAtUtc { get; private set; }            
+            public DateTimeOffset CreatedAtUtc { get; private set; }
         }
         
         /// <summary>
