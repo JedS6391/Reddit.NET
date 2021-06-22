@@ -133,10 +133,10 @@ namespace Reddit.NET.Client.Interactions
             var createSubredditSubmissionCommand = new CreateSubredditSubmissionCommand(parameters);
         
             var response = await _client
-                .ExecuteCommandAsync<JsonDataResponse>(createSubredditSubmissionCommand)
+                .ExecuteCommandAsync<JsonDataResponse<CreateSubmissionDataNode>>(createSubredditSubmissionCommand)
                 .ConfigureAwait(false);
 
-            return await GetSubmissionDetailsAsync(response.Json.Data.Id);
+            return await GetSubmissionDetailsAsync(submissionId: response.Data.Id);
         }
 
         private async Task<SubmissionDetails> GetSubmissionDetailsAsync(string submissionId)

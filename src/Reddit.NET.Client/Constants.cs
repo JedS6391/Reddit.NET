@@ -58,6 +58,7 @@ namespace Reddit.NET.Client
                 nameof(GetUserHistoryCommand),
                 nameof(ApplyVoteCommand),
                 nameof(SaveOrUnsaveContentCommand),
+                nameof(CreateCommentCommand),
                 nameof(GetSubmissionDetailsWithCommentsCommand)
             };
         }

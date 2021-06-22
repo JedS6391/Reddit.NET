@@ -46,6 +46,7 @@ namespace Reddit.NET.Client.Command
             public static string Vote => $"{RedditOAuthPath}/api/vote/";
             public static string Save => $"{RedditOAuthPath}/api/save";
             public static string Unsave => $"{RedditOAuthPath}/api/unsave";
+            public static string Reply => $"{RedditOAuthPath}/api/comment";
         }
     }
 }

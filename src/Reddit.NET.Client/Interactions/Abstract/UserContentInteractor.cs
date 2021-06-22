@@ -1,5 +1,10 @@
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.UserContent;
+using Reddit.NET.Client.Models.Internal;
+using Reddit.NET.Client.Models.Internal.Base;
+using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Interactions.Abstract
 {
@@ -70,6 +75,41 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task UnsaveAsync() => await SaveOrUnsaveAsync(unsave: true).ConfigureAwait(false);
+
+        /// <summary>
+        /// Adds a reply to the content.
+        /// </summary>
+        /// <remarks>
+        /// The behaviour of this method depends on the kind of content being interacted with:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <term>Submission</term>
+        ///         <description>Adds a new top-level comment on the submission</description>
+        ///     </item>
+        ///     <item>
+        ///         <term>Comment</term>
+        ///         <description>Adds a reply to the comment</description>
+        ///     </item>
+        /// </list>
+        /// </remarks>
+        /// <param name="text">The text of the comment to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created comment details.
+        /// </returns>
+        public async Task<CommentDetails> ReplyAsync(string text)
+        {
+            var createCommentCommand = new CreateCommentCommand(new CreateCommentCommand.Parameters()
+            {
+                ParentFullName = FullName,
+                Text = text
+            });
+
+            var response = await Client
+                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand)
+                .ConfigureAwait(false);
+
+            return new CommentDetails(thing: response.Data.Things[0]);
+        }
 
         private async Task ApplyVoteAsync(ApplyVoteCommand.VoteDirection direction) 
         {
