@@ -4,7 +4,7 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Models.Public.Listings.Sorting;
-using Reddit.NET.Client.Models.Public.ReadOnly;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Subreddits;
 
 namespace Reddit.NET.Client.Models.Public.Listings

@@ -26,7 +26,8 @@ namespace Reddit.NET.Client.Models.Internal.Json
             { typeof(Comment.Details), typeof(Comment) },
             { typeof(User.Details), typeof(User) },
             { typeof(Submission.Details), typeof(Submission) },
-            { typeof(Subreddit.Details), typeof(Subreddit) }
+            { typeof(Subreddit.Details), typeof(Subreddit) },
+            { typeof(KarmaBreakdown.Details), typeof(KarmaBreakdown) }
         };
 
         /// <inheritdoc />
@@ -122,24 +123,16 @@ namespace Reddit.NET.Client.Models.Internal.Json
                 // TODO: Check whether the deserialized type can actually be cast to IThing<TData>.
                 return kind switch
                 {
-                    KindConstants.Comment => JsonSerializer.Deserialize<Comment>(ref reader, options) as IThing<TData>,
-                    KindConstants.User => JsonSerializer.Deserialize<User>(ref reader, options) as IThing<TData>,
-                    KindConstants.Submission => JsonSerializer.Deserialize<Submission>(ref reader, options) as IThing<TData>,
-                    KindConstants.Subreddit => JsonSerializer.Deserialize<Subreddit>(ref reader, options) as IThing<TData>,
+                    Constants.Kind.Comment => JsonSerializer.Deserialize<Comment>(ref reader, options) as IThing<TData>,
+                    Constants.Kind.User => JsonSerializer.Deserialize<User>(ref reader, options) as IThing<TData>,
+                    Constants.Kind.Submission => JsonSerializer.Deserialize<Submission>(ref reader, options) as IThing<TData>,
+                    Constants.Kind.Subreddit => JsonSerializer.Deserialize<Subreddit>(ref reader, options) as IThing<TData>,
                     _ => throw new JsonException($"Unsupported thing kind 'kind'."),
                 };
             }
             
             /// <inheritdoc />
-            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => throw new NotImplementedException();    
-
-            private static class KindConstants
-            {
-                public const string Comment = "t1";
-                public const string User = "t2";
-                public const string Submission = "t3";
-                public const string Subreddit = "t5";
-            }        
+            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => throw new NotImplementedException();           
         }
     }
 }

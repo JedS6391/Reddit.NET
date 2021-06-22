@@ -3,7 +3,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 
-namespace Reddit.NET.Client.Models.Public.ReadOnly
+namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// Defines a read-only view of a subreddit.

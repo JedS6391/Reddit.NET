@@ -1,4 +1,7 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
 
 namespace Reddit.NET.Client.Command.Users
@@ -29,12 +32,9 @@ namespace Reddit.NET.Client.Command.Users
             var uriBuilder = new UriBuilder(
                 RedditApiUrl.User.History(_parameters.Username, _parameters.HistoryType));
 
-            uriBuilder.Query = $"?limit={_parameters.Limit}";
+            var queryString = BuildQueryString();
 
-            if (!string.IsNullOrEmpty(_parameters.After))
-            {
-                uriBuilder.Query = $"{uriBuilder.Query}&after={_parameters.After}";
-            }
+            uriBuilder.Query = $"?{queryString}";
 
             var request = new HttpRequestMessage()
             {
@@ -44,6 +44,23 @@ namespace Reddit.NET.Client.Command.Users
 
             return request;
         }
+
+        private string BuildQueryString()
+        {            
+            var parameters = new Dictionary<string, string>()
+            {                
+                { "sort", _parameters.Sort },
+                { "t", _parameters.TimeRange },
+                { "limit", _parameters.Limit.ToString(CultureInfo.InvariantCulture) },                
+                { "after", _parameters.After }
+            };
+
+            var queryStringParameters = parameters
+                .Where(p => !string.IsNullOrEmpty(p.Value))
+                .Select(p => $"{p.Key}={p.Value}");
+
+            return string.Join('&', queryStringParameters);            
+        }        
 
         /// <summary>
         /// Defines the parameters of the command.
@@ -59,6 +76,16 @@ namespace Reddit.NET.Client.Command.Users
             /// Gets or sets the type of history.
             /// </summary>
             public string HistoryType { get; set; }
+
+            /// <summary>
+            /// Gets or sets the sort option of history.
+            /// </summary>
+            public string Sort { get; set; }    
+
+            /// <summary>
+            /// Gets or sets the option for the time range of history.
+            /// </summary>
+            public string TimeRange { get; set; }  
 
             /// <summary>
             /// Gets or sets the limit parameter.

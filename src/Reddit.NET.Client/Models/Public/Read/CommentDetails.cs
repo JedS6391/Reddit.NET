@@ -3,7 +3,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 
-namespace Reddit.NET.Client.Models.Public.ReadOnly
+namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// Defines a read-only view of a comment.
@@ -38,7 +38,7 @@ namespace Reddit.NET.Client.Models.Public.ReadOnly
         public string Permalink { get; }
 
         /// <inheritdoc />
-        public CommentInteractor Interact(RedditClient client) => client.Comment(this);
+        public CommentInteractor Interact(RedditClient client) => client.Comment(Id);
 
         /// <inheritdoc />
         public override string ToString() => 

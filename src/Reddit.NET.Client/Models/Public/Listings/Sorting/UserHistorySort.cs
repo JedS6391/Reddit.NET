@@ -1,39 +1,37 @@
 namespace Reddit.NET.Client.Models.Public.Listings.Sorting
 {
     /// <summary>
-    /// Represents a sort option for the history of a user.
+    /// Represents a sort option for user history
     /// </summary>
     public sealed class UserHistorySort : Sort
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="SubredditSubmissionSort" /> class.
+        /// Initializes a new instance of the <see cref="UserHistorySort" /> class.
         /// </summary>
-        /// <param name="name">The name of the sort option.</param>        
+        /// <param name="name">The name of the sort option.</param>
         private UserHistorySort(string name)
             : base(name)
         {            
         }
 
         /// <summary>
-        /// Gets the 'overview' sort option.
+        /// Gets the 'hot' sort option.
         /// </summary>
-        public static UserHistorySort Overview = new UserHistorySort("overview");
+        public static UserHistorySort Hot => new UserHistorySort("hot");
 
         /// <summary>
-        /// Gets the 'submitted' sort option.
+        /// Gets the 'new' sort option.
         /// </summary>
-        public static UserHistorySort Submitted = new UserHistorySort("submitted");
+        public static UserHistorySort New => new UserHistorySort("new");
 
         /// <summary>
-        /// Gets the 'comments' sort option.
+        /// Gets the 'top' sort option.
         /// </summary>
-        public static UserHistorySort Comments = new UserHistorySort("comments");
+        public static UserHistorySort Top => new UserHistorySort("top");
 
         /// <summary>
-        /// Gets the 'saved' sort option.
-        /// </summary>        
-        public static UserHistorySort Saved = new UserHistorySort("saved");
-        
-        // TODO: Other sorts
+        /// Gets the 'controversial' sort option.
+        /// </summary>
+        public static UserHistorySort Controversial => new UserHistorySort("controversial");        
     }
 }

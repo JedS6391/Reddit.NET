@@ -21,13 +21,27 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonPropertyName("id")]
             [JsonInclude]
             public string Id { get; private set; }
-
+         
             /// <summary>
             /// Gets the username of the user.
             /// </summary>
             [JsonPropertyName("name")]
             [JsonInclude]
             public string Name { get; private set; }
+
+            /// <summary>
+            /// Gets the comment karma of the user.
+            /// </summary>
+            [JsonPropertyName("comment_karma")]
+            [JsonInclude]
+            public int CommentKarma { get; private set; }
+
+            /// <summary>
+            /// Gets the link karma of the user.
+            /// </summary>
+            [JsonPropertyName("link_karma")]
+            [JsonInclude]
+            public int LinkKarma { get; private set; }   
 
             /// <inheritdoc />
             [JsonPropertyName("created_utc")]

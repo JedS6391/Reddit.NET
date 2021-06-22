@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Text.Json.Serialization;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Internal.Json;
@@ -115,11 +116,20 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// A custom model used to represent the data returned by a <c>GET /r/{subreddit}/comments/{article}</c> request.
         /// </summary>
-        [JsonConverter(typeof(SubmissionCommentsJsonConverter))]
-        internal class SubmissionComments
+        [JsonConverter(typeof(SubmissionWithCommentsJsonConverter))]
+        internal class SubmissionWithComments
         {
-            public Submission.Listing Submissions { get; set;}
-            public Comment.Listing Comments { get; set;}
+            private readonly Submission.Listing _submissionListing;
+            private readonly Comment.Listing _commentListing;
+
+            public SubmissionWithComments(Submission.Listing submissionListing, Comment.Listing commentListing)
+            {
+                _submissionListing = submissionListing;
+                _commentListing = commentListing;
+            }
+
+            public Submission Submission => (Submission) (_submissionListing?.Data?.Children?[0]);
+            public Comment.Listing Comments => _commentListing;
         }
     }
 }

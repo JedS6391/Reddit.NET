@@ -2,7 +2,7 @@ using System.Threading.Tasks;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
-using Reddit.NET.Client.Models.Public.ReadOnly;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Submissions;
 
 namespace Reddit.NET.Client.Models.Public.Listings
@@ -52,18 +52,20 @@ namespace Reddit.NET.Client.Models.Public.Listings
         private async Task<Comment.Listing> GetListingAsync(string after = null)
         {
             // TODO: This doesn't handle the after parameter. Is it applicable for comments?
-            var getSubmissionCommentsCommand = new GetSubmissionCommentsCommand(new GetSubmissionCommentsCommand.Parameters()
+            var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
-                SubredditName = _parameters.SubredditName,
-                SubmissionId = _parameters.SubmissionId
-            });
+                SubmissionId = _parameters.SubmissionId,
+                Limit = ListingOptions.ItemsPerRequest
+            };
 
-            var submissionComments = await _client
-                .ExecuteCommandAsync<Submission.SubmissionComments>(getSubmissionCommentsCommand)
+            var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
+
+            var submissionWithComments = await _client
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
                 .ConfigureAwait(false);
 
             // TODO: Would be nice to have the link between submission and comment.
-            return submissionComments.Comments;
+            return submissionWithComments.Comments;
         }    
 
         /// <summary>
@@ -71,11 +73,6 @@ namespace Reddit.NET.Client.Models.Public.Listings
         /// </summary>
         public class ListingParameters 
         {
-            /// <summary>
-            /// Gets or sets the name of the subreddit the submission belongs to
-            /// </summary>
-            public string SubredditName { get; set; }
-
             /// <summary>
             /// Gets or sets the identifier of the submission to load comments for.
             /// </summary>

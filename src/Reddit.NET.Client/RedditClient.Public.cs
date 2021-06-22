@@ -1,5 +1,4 @@
 using Microsoft;
-using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Interactions;
@@ -39,6 +38,13 @@ namespace Reddit.NET.Client
         /// </summary>
         /// <param name="name">The name of the subreddit to interact with.</param>
         /// <returns>A <see cref="SubredditInteractor" /> instance that provides mechanisms for interacting with the requested subreddit.</returns>
-        public SubredditInteractor Subreddit(string name) => new SubredditInteractor(this, name);        
+        public SubredditInteractor Subreddit(string name) => new SubredditInteractor(this, name);
+
+        /// <summary>
+        /// Gets an interactor for operations relating to a specific user.
+        /// </summary>
+        /// <param name="name">The name of the user to interact with.</param>
+        /// <returns>An <see cref="UserInteractor" /> instance that provides mechanisms for interacting with the requested user.</returns>
+        public UserInteractor User(string name) => new UserInteractor(this, name);
     }
 }
