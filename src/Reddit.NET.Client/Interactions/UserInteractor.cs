@@ -16,9 +16,11 @@ namespace Reddit.NET.Client.Interactions
     /// </summary>
     public class UserInteractor : IInteractor
     {
-        private static readonly UserHistorySort[] s_unsupportedSortOptions = new UserHistorySort[]
+        private static readonly UserHistoryType[] s_unsupportedHistoryTypeOptions = new UserHistoryType[]
         {
-            UserHistorySort.Saved
+            UserHistoryType.Saved,
+            UserHistoryType.Upvoted,
+            UserHistoryType.Downvoted
         };
 
         private readonly RedditClient _client;
@@ -63,9 +65,9 @@ namespace Reddit.NET.Client.Interactions
 
             configurationAction?.Invoke(optionsBuilder);
 
-            if (s_unsupportedSortOptions.Any(s => s.Name == optionsBuilder.Options.Sort.Name))
+            if (s_unsupportedHistoryTypeOptions.Any(t => t.Name == optionsBuilder.Options.Type.Name))
             {
-                throw new InvalidOperationException($"Sort option {optionsBuilder.Options.Sort.Name} is only supported for the currently authenticated user.");
+                throw new InvalidOperationException($"History type option {optionsBuilder.Options.Type.Name} is only supported for the currently authenticated user.");
             }
 
             return new UserHistoryListingEnumerable(

@@ -81,7 +81,7 @@ namespace Reddit.NET.Console.Examples
 
             var savedHistory = me.GetHistoryAsync(builder =>
                 builder
-                    .WithSort(UserHistorySort.Saved)
+                    .WithType(UserHistoryType.Saved)                    
                     .WithMaximumItems(50));
 
             await foreach (var item in savedHistory)

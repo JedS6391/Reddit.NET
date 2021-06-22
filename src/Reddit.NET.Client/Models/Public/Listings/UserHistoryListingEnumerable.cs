@@ -6,6 +6,7 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Models.Public.Listings.Sorting;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Users;
+using System.Linq;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -15,6 +16,12 @@ namespace Reddit.NET.Client.Models.Public.Listings
     public sealed class UserHistoryListingEnumerable
         : ListingEnumerable<Listing<IUserContent>, IUserContent, UserContentDetails, UserHistoryListingEnumerable.Options>
     {
+        private static readonly UserHistorySort[] s_sortOptionsSupportTimeRange = new UserHistorySort[]
+        {
+            UserHistorySort.Controversial,
+            UserHistorySort.Top
+        };
+
         private readonly RedditClient _client;
         private readonly UserHistoryListingEnumerable.ListingParameters _parameters;
 
@@ -60,7 +67,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
         {
             var commandParameters = new GetUserHistoryCommand.Parameters()
             {                
-                HistoryType = ListingOptions.Sort.Name,
+                HistoryType = ListingOptions.Type.Name,   
+                Sort = ListingOptions.Sort.Name,                 
                 After = after,
                 Limit = ListingOptions.ItemsPerRequest,            
             };
@@ -79,6 +87,11 @@ namespace Reddit.NET.Client.Models.Public.Listings
             else 
             {
                 commandParameters.Username = _parameters.Username;
+            }
+
+            if (s_sortOptionsSupportTimeRange.Any(s => s.Name == ListingOptions.Sort.Name))
+            {
+                commandParameters.TimeRange = ListingOptions.TimeRange.Name;
             }
 
             var getUserHistoryCommand = new GetUserHistoryCommand(commandParameters);
@@ -115,10 +128,21 @@ namespace Reddit.NET.Client.Models.Public.Listings
         public class Options : ListingEnumerableOptions
         {
             /// <summary>
+            /// Gets the option to use for history type.
+            /// </summary>
+            /// <remarks>Defaults to overview.</remarks>
+            internal UserHistoryType Type { get; set; } = UserHistoryType.Overview;
+
+            /// <summary>
             /// Gets the option to use for sorting history.
             /// </summary>
-            /// <remarks>Defaults to hot.</remarks>
-            internal UserHistorySort Sort { get; set; } = UserHistorySort.Overview;
+            internal UserHistorySort Sort { get; set; } = UserHistorySort.New;
+
+            /// <summary>
+            /// Gets the option to use for the time range of history.
+            /// </summary>
+            /// <remarks>Defaults to day.</remarks>
+            internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.Day;            
 
             /// <summary>
             /// Provides the ability to create <see cref="UserHistoryListingEnumerable.Options" /> instances.
@@ -129,6 +153,18 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 protected override Builder Instance => this;
 
                 /// <summary>
+                /// Sets the history type option.
+                /// </summary>
+                /// <param name="type">The option to use for history type.</param>
+                /// <returns>The updated builder.</returns>
+                public Builder WithType(UserHistoryType type)
+                {
+                    Options.Type = type;
+
+                    return this;
+                }       
+                
+                /// <summary>
                 /// Sets the sort option.
                 /// </summary>
                 /// <param name="sort">The option to use for sorting history.</param>
@@ -138,7 +174,19 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.Sort = sort;
 
                     return this;
-                }          
+                }
+
+                /// <summary>
+                /// Sets the time range option.
+                /// </summary>
+                /// <param name="timeRange">The option to use for the time range of history.</param>
+                /// <returns>The updated builder.</returns>
+                public Builder WithTimeRange(TimeRangeSort timeRange)
+                {
+                    Options.TimeRange = timeRange;
+
+                    return this;
+                }                               
             }
         }
     }

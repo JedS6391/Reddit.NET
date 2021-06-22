@@ -80,7 +80,9 @@ namespace Reddit.NET.Console.Examples
 
             var overviewHistory = me.GetHistoryAsync(builder =>
                 builder
-                    .WithSort(UserHistorySort.Overview)
+                    .WithType(UserHistoryType.Overview)
+                    .WithSort(UserHistorySort.Top)
+                    .WithTimeRange(TimeRangeSort.AllTime)
                     .WithMaximumItems(50));
 
             await foreach (var item in overviewHistory)
