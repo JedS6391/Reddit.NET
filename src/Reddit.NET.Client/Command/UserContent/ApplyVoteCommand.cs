@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
 
-namespace Reddit.NET.Client.Command.Vote
+namespace Reddit.NET.Client.Command.UserContent
 {
     /// <summary>
     /// Defines a command to apply a vote to a submission or comment.
@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.Command.Vote
             var requestParameters = new Dictionary<string, string>()
             {
                 { "dir", ((int) _parameters.Direction).ToString(CultureInfo.InvariantCulture) },
-                { "id", _parameters.Id }
+                { "id", _parameters.FullName }
             };
 
             var request = new HttpRequestMessage()
@@ -50,9 +50,9 @@ namespace Reddit.NET.Client.Command.Vote
         public class Parameters 
         {
             /// <summary>
-            /// Gets or sets the identifier of the submission or comment to vote on.
+            /// Gets or sets the full name of the submission or comment to vote on.
             /// </summary>
-            public string Id { get; set; }
+            public string FullName { get; set; }
 
             /// <summary>
             /// Gets or sets the direction of the vote.

@@ -1,5 +1,5 @@
 using System.Threading.Tasks;
-using Reddit.NET.Client.Command.Vote;
+using Reddit.NET.Client.Command.UserContent;
 
 namespace Reddit.NET.Client.Interactions.Abstract
 {
@@ -45,23 +45,52 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// Upvotes the content.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpvoteAsync() => await ApplyVote(ApplyVoteCommand.VoteDirection.Upvote).ConfigureAwait(false);
+        public async Task UpvoteAsync() => await ApplyVoteAsync(ApplyVoteCommand.VoteDirection.Upvote).ConfigureAwait(false);
 
         /// <summary>
         /// Downvotes the content.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DownvoteAsync() => await ApplyVote(ApplyVoteCommand.VoteDirection.Downvote).ConfigureAwait(false);        
+        public async Task DownvoteAsync() => await ApplyVoteAsync(ApplyVoteCommand.VoteDirection.Downvote).ConfigureAwait(false);
 
-        private async Task ApplyVote(ApplyVoteCommand.VoteDirection direction) 
+        /// <summary>
+        /// Removes any vote on the content.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UnvoteAsync() => await ApplyVoteAsync(ApplyVoteCommand.VoteDirection.Unvote).ConfigureAwait(false);
+
+        /// <summary>
+        /// Saves the content.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SaveAsync() => await SaveOrUnsaveAsync(unsave: false).ConfigureAwait(false);
+
+        /// <summary>
+        /// Unsaves the content.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UnsaveAsync() => await SaveOrUnsaveAsync(unsave: true).ConfigureAwait(false);
+
+        private async Task ApplyVoteAsync(ApplyVoteCommand.VoteDirection direction) 
         {
             var applyVoteCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
-                Id = FullName,
+                FullName = FullName,
                 Direction = direction
             });
 
             await Client.ExecuteCommandAsync(applyVoteCommand).ConfigureAwait(false);           
-        }         
+        }
+
+        private async Task SaveOrUnsaveAsync(bool unsave)
+        {
+            var saveOrUnsaveContentCommand = new SaveOrUnsaveContentCommand(new SaveOrUnsaveContentCommand.Parameters()
+            {
+                FullName = FullName,
+                Unsave = unsave
+            });
+
+            await Client.ExecuteCommandAsync(saveOrUnsaveContentCommand).ConfigureAwait(false);
+        }               
     }
 }

@@ -1,7 +1,7 @@
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Command.Users;
-using Reddit.NET.Client.Command.Vote;
+using Reddit.NET.Client.Command.UserContent;
 
 namespace Reddit.NET.Client
 {
@@ -57,6 +57,7 @@ namespace Reddit.NET.Client
                 nameof(GetUserDetailsCommand),
                 nameof(GetUserHistoryCommand),
                 nameof(ApplyVoteCommand),
+                nameof(SaveOrUnsaveContentCommand),
                 nameof(GetSubmissionDetailsWithCommentsCommand)
             };
         }
