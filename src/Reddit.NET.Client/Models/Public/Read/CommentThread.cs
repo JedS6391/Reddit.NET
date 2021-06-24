@@ -38,7 +38,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// Gets the replies to the top-level comment in the thread.
         /// </summary>
         /// <remarks>
-        /// A <see cref="CommentThreadNavigator" /> instance is provided to allow further navigation through,
+        /// A <see cref="CommentThreadNavigator" /> instance is provided to allow further navigation through
         /// the replies which themselves are threads.
         /// </remarks>
         public CommentThreadNavigator Replies => new CommentThreadNavigator(
