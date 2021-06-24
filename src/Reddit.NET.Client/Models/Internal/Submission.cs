@@ -120,16 +120,16 @@ namespace Reddit.NET.Client.Models.Internal
         internal class SubmissionWithComments
         {
             private readonly Submission.Listing _submissionListing;
-            private readonly Comment.Listing _commentListing;
+            private readonly Listing<IHasParent> _commentListing;
 
-            public SubmissionWithComments(Submission.Listing submissionListing, Comment.Listing commentListing)
+            public SubmissionWithComments(Submission.Listing submissionListing, Listing<IHasParent> commentListing)
             {
                 _submissionListing = submissionListing;
                 _commentListing = commentListing;
             }
 
             public Submission Submission => (Submission) (_submissionListing?.Data?.Children?[0]);
-            public Comment.Listing Comments => _commentListing;
+            public Listing<IHasParent> Comments => _commentListing;
         }
     }
 }

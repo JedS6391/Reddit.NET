@@ -47,24 +47,27 @@ namespace Reddit.NET.Client.Interactions
         }
 
         /// <summary>
-        /// Gets the comments on the submission.
-        /// </summary>
-        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
-        /// <returns>An asynchronous enumerator over the comments on the submission.</returns>
-        public IAsyncEnumerable<CommentDetails> GetCommentsAsync(
-            Action<SubmissionCommentsListingEnumerable.Options.Builder> configurationAction = null) 
+        /// Gets a <see cref="CommentThreadNavigator" /> over the comments on the submission.
+        /// </summary>        
+        /// <returns>
+        /// A task representing the asynchronous operation. The result contains a navigator over the comments.
+        /// </returns>
+        public async Task<CommentThreadNavigator> GetCommentsAsync() 
         {
-            var optionsBuilder = new SubmissionCommentsListingEnumerable.Options.Builder();
+            var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
+            {
+                SubmissionId = Id
+            };
 
-            configurationAction?.Invoke(optionsBuilder);
+            var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
 
-            return new SubmissionCommentsListingEnumerable(
-                Client,
-                optionsBuilder.Options,
-                new SubmissionCommentsListingEnumerable.ListingParameters()
-                {                    
-                    SubmissionId = Id
-                });
+            var submissionWithComments = await Client
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
+                .ConfigureAwait(false);
+
+            return new CommentThreadNavigator(                
+                submission: submissionWithComments.Submission,
+                replies: submissionWithComments.Comments.Children);
         }  
     }
 }

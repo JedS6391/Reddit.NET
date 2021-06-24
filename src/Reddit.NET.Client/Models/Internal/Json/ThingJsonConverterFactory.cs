@@ -120,19 +120,29 @@ namespace Reddit.NET.Client.Models.Internal.Json
 
                 var kind = kindProperty.GetString();
 
-                // TODO: Check whether the deserialized type can actually be cast to IThing<TData>.
-                return kind switch
+                var type = kind switch
                 {
-                    Constants.Kind.Comment => JsonSerializer.Deserialize<Comment>(ref reader, options) as IThing<TData>,
-                    Constants.Kind.User => JsonSerializer.Deserialize<User>(ref reader, options) as IThing<TData>,
-                    Constants.Kind.Submission => JsonSerializer.Deserialize<Submission>(ref reader, options) as IThing<TData>,
-                    Constants.Kind.Subreddit => JsonSerializer.Deserialize<Subreddit>(ref reader, options) as IThing<TData>,
-                    _ => throw new JsonException($"Unsupported thing kind 'kind'."),
+                    Constants.Kind.Comment => typeof(Comment),
+                    Constants.Kind.User => typeof(User),
+                    Constants.Kind.Submission => typeof(Submission),
+                    Constants.Kind.Subreddit => typeof(Subreddit),
+                    Constants.Kind.MoreComments => typeof(MoreComments),
+                    _ => throw new JsonException($"Unsupported thing kind '{kind}'."),
                 };
+
+                var thing = JsonSerializer.Deserialize(ref reader, type, options);
+
+                if (thing is not IThing<TData>)
+                {
+                    throw new JsonException($"Unable to cast thing with type '{thing.GetType().FullName}' to '{typeof(IThing<TData>).FullName}'.");
+                }
+
+                return thing as IThing<TData>;
             }
             
             /// <inheritdoc />
-            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => throw new NotImplementedException();           
+            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => 
+                throw new NotImplementedException();           
         }
     }
 }

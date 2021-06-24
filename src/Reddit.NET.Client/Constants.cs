@@ -69,6 +69,7 @@ namespace Reddit.NET.Client
             public const string User = "t2";
             public const string Submission = "t3";
             public const string Subreddit = "t5";
+            public const string MoreComments = "more";
         }
     }
 }

@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.Json.Serialization;
 
@@ -27,6 +28,15 @@ namespace Reddit.NET.Client.Models.Internal.Base
         [JsonPropertyName("data")]
         [JsonInclude]
         public ListingData<TData> Data { get; private set; }
+
+        /// <summary>
+        /// Gets the children of the listing.
+        /// </summary>
+        /// <remarks>
+        /// This is provided as a convenience method to avoid an indirection.
+        /// </remarks>
+        [JsonIgnore]
+        public IReadOnlyList<IThing<TData>> Children => Data?.Children;
     }
 
     /// <summary>

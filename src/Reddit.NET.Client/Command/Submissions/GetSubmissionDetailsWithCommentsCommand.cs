@@ -32,7 +32,10 @@ namespace Reddit.NET.Client.Command.Submissions
             var uriBuilder = new UriBuilder(
                 RedditApiUrl.Submission.DetailsWithComments(_parameters.SubmissionId));
 
-            uriBuilder.Query = $"?limit={_parameters.Limit}";
+            if (_parameters.Limit.HasValue)
+            {
+                uriBuilder.Query = $"?limit={_parameters.Limit}";
+            }
 
             var request = new HttpRequestMessage()
             {
@@ -56,7 +59,7 @@ namespace Reddit.NET.Client.Command.Submissions
             /// <summary>
             /// Gets or sets the limit parameter.
             /// </summary>
-            public int Limit { get; set; }            
+            public int? Limit { get; set; }            
         }
     }
 }
