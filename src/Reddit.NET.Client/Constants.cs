@@ -63,6 +63,9 @@ namespace Reddit.NET.Client
                 .ToArray();
         }
 
+        /// <summary>
+        /// Constants used to determine reddit 'thing' kinds.
+        /// </summary>
         public static class Kind
         {
             public const string Comment = "t1";
