@@ -3,6 +3,7 @@ using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Models.Internal;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -45,15 +46,19 @@ namespace Reddit.NET.Client.Interactions
 
         /// <summary>
         /// Gets a <see cref="CommentThreadNavigator" /> over the comments on the submission.
-        /// </summary>        
+        /// </summary>
+        /// <param name="limit">The number of comments to retrieve.</param> 
+        /// <param name="sort">The sort order to retrieve comments with.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains a navigator over the comments.
         /// </returns>
-        public async Task<CommentThreadNavigator> GetCommentsAsync() 
+        public async Task<CommentThreadNavigator> GetCommentsAsync(int? limit = null, SubmissionsCommentSort sort = null) 
         {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
-                SubmissionId = Id
+                SubmissionId = Id,
+                Limit = limit,
+                Sort = sort?.Name ?? SubmissionsCommentSort.Confidence.Name
             };
 
             var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);

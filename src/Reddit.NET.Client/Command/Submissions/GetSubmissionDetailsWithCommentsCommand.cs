@@ -57,9 +57,14 @@ namespace Reddit.NET.Client.Command.Submissions
             public string SubmissionId { get; set; }
 
             /// <summary>
+            /// Gets or sets the sort option of the comments.
+            /// </summary>
+            public string Sort { get; set; }
+
+            /// <summary>
             /// Gets or sets the limit parameter.
             /// </summary>
-            public int? Limit { get; set; }            
+            public int? Limit { get; set; }
         }
     }
 }
