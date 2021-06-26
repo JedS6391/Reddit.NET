@@ -1,4 +1,3 @@
-using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -10,30 +9,24 @@ using Reddit.NET.Client.Command.Subreddits;
 namespace Reddit.NET.Client.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions of a subreddit. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over a search result of a subreddits submissions. 
     /// </summary>
-    public sealed class SubredditSubmissionsListingEnumerable
-        : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSubmissionsListingEnumerable.Options>
+    public sealed class SubredditSearchListingEnumerable
+        : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSearchListingEnumerable.Options>
     {
-        private static readonly SubredditSubmissionSort[] s_sortOptionsSupportTimeRange = new SubredditSubmissionSort[]
-        {
-            SubredditSubmissionSort.Controversial,
-            SubredditSubmissionSort.Top
-        };
-
         private readonly RedditClient _client;
-        private readonly SubredditSubmissionsListingEnumerable.ListingParameters _parameters;
+        private readonly SubredditSearchListingEnumerable.ListingParameters _parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="SubredditSubmissionsListingEnumerable" /> class.
+        /// Initializes a new instance of the <see cref="SubredditSearchListingEnumerable" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         /// <param name="options">The options available to the listing.</param>
         /// <param name="parameters">Parameters used when loading the listing data.</param>
-        public SubredditSubmissionsListingEnumerable(
+        public SubredditSearchListingEnumerable(
             RedditClient client,
-            SubredditSubmissionsListingEnumerable.Options options,
-            SubredditSubmissionsListingEnumerable.ListingParameters parameters)
+            SubredditSearchListingEnumerable.Options options,
+            SubredditSearchListingEnumerable.ListingParameters parameters)
             : base(options)
         {
             _client = client;
@@ -59,23 +52,21 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
         private async Task<Submission.Listing> GetListingAsync(string after = null)
         {
-            var commandParameters = new GetSubredditSubmissionsCommand.Parameters()
+            var commandParameters = new SearchSubredditSubmissionsCommand.Parameters()
             {
                 SubredditName = _parameters.SubredditName,
+                Query = _parameters.Query,
+                Syntax = ListingOptions.Syntax.Name,
                 Sort = ListingOptions.Sort.Name,
+                TimeRange = ListingOptions.TimeRange.Name,
                 Limit = ListingOptions.ItemsPerRequest,
                 After = after
             };
 
-            if (s_sortOptionsSupportTimeRange.Any(s => s.Name == ListingOptions.Sort.Name))
-            {
-                commandParameters.TimeRange = ListingOptions.TimeRange.Name;
-            }
-
-            var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(commandParameters);
+            var searchSubredditSubmissionsCommand = new SearchSubredditSubmissionsCommand(commandParameters);
 
             var submissions = await _client
-                .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand)
+                .ExecuteCommandAsync<Submission.Listing>(searchSubredditSubmissionsCommand)
                 .ConfigureAwait(false);
 
             return submissions;    
@@ -90,6 +81,11 @@ namespace Reddit.NET.Client.Models.Public.Listings
             /// Gets or sets the name of the subreddit to load submissions from.
             /// </summary>
             public string SubredditName { get; set; }
+
+            /// <summary>
+            /// Gets or sets the query to search.
+            /// </summary>
+            public string Query { get; set; }
         }
 
         /// <summary>
@@ -100,14 +96,20 @@ namespace Reddit.NET.Client.Models.Public.Listings
             /// <summary>
             /// Gets the option to use for sorting submissions.
             /// </summary>
-            /// <remarks>Defaults to hot.</remarks>
-            internal SubredditSubmissionSort Sort { get; set; } = SubredditSubmissionSort.Hot;
+            /// <remarks>Defaults to relevance.</remarks>
+            internal SubredditSearchSort Sort { get; set; } = SubredditSearchSort.Relevance;
 
             /// <summary>
             /// Gets the option to use for the time range of submissions.
             /// </summary>
-            /// <remarks>Defaults to day.</remarks>
-            internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.Day;
+            /// <remarks>Defaults to all time.</remarks>
+            internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.AllTime;
+
+            /// <summary>
+            /// Gets the search query syntax used.
+            /// </summary>
+            /// <remarks>Default to Lucene.</remarks>
+            internal SearchQuerySyntax Syntax = SearchQuerySyntax.Lucene;            
 
             /// <summary>
             /// Provides the ability to create <see cref="SubredditSubmissionsListingEnumerable.Options" /> instances.
@@ -122,7 +124,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// </summary>
                 /// <param name="sort">The option to use for sorting submissions.</param>
                 /// <returns>The updated builder.</returns>
-                public Builder WithSort(SubredditSubmissionSort sort)
+                public Builder WithSort(SubredditSearchSort sort)
                 {
                     Options.Sort = sort;
 
@@ -139,7 +141,19 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.TimeRange = timeRange;
 
                     return this;
-                }      
+                } 
+
+                /// <summary>
+                /// Sets the search query syntax option.
+                /// </summary>
+                /// <param name="syntax">The option to use for the search query syntax.</param>
+                /// <returns>The updated builder.</returns>
+                public Builder WithSyntax(SearchQuerySyntax syntax)
+                {
+                    Options.Syntax = syntax;
+
+                    return this;
+                }     
             }
         }
     }
