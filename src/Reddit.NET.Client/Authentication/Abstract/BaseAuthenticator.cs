@@ -43,7 +43,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// </returns>
         internal async Task<TResponse> ExecuteCommandAsync<TResponse>(ClientCommand command)
         {
-            var response = await ExecuteCommandAsync(command).ConfigureAwait(false);
+            HttpResponseMessage response = await ExecuteCommandAsync(command).ConfigureAwait(false);
 
             return await response
                 .Content

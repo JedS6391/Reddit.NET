@@ -1,5 +1,4 @@
 using Reddit.NET.Client.Models.Internal;
-using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {

@@ -20,17 +20,17 @@ namespace Reddit.NET.Client.Models.Public.Listings
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance used to load the listing data.</param>
         /// <param name="options">The options available to the listing.</param>
-        public MySubredditsListingEnumerable(RedditClient client, MySubredditsListingEnumerable.Options options)
+        public MySubredditsListingEnumerable(RedditClient client, Options options)
             : base(options)
         {
             _client = client;
         }
 
         /// <inheritdoc />
-        internal async override Task<Subreddit.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Subreddit.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal async override Task<Subreddit.Listing> GetNextListingAsync(Subreddit.Listing currentListing)
+        internal override async Task<Subreddit.Listing> GetNextListingAsync(Subreddit.Listing currentListing)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
@@ -64,7 +64,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         public class Options : ListingEnumerableOptions
         {
             /// <summary>
-            /// Provides the ability to create <see cref="MySubredditsListingEnumerable.Options" /> instances.
+            /// Provides the ability to create <see cref="Options" /> instances.
             /// </summary>
             public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
             {

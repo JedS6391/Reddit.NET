@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
-using System.Text;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
@@ -12,13 +11,13 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// </summary>
     public class GetSubredditSubmissionsCommand : ClientCommand
     {
-        private readonly GetSubredditSubmissionsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetSubredditSubmissionsCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public GetSubredditSubmissionsCommand(GetSubredditSubmissionsCommand.Parameters parameters)
+        public GetSubredditSubmissionsCommand(Parameters parameters)
         {
             _parameters = parameters;
         }

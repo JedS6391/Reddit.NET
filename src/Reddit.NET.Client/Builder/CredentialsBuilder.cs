@@ -1,8 +1,6 @@
 using System;
-using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft;
-using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Command;

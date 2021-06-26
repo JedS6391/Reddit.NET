@@ -38,9 +38,9 @@ namespace Reddit.NET.Client.Models.Internal.Json
         /// <inheritdoc />
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
-            var dataType = typeToConvert.GetGenericArguments().First();
+            Type dataType = typeToConvert.GetGenericArguments().First();
 
-            if (s_concreteThingTypes.TryGetValue(dataType, out var thingType))
+            if (s_concreteThingTypes.TryGetValue(dataType, out Type thingType))
             {
                 // We know there is a concrete implementation for this type of thing so use that.
                 // This path will be used for a conversion of a type such as IThing<Comment.Details> or IThing<Submission.Details>.
@@ -99,11 +99,11 @@ namespace Reddit.NET.Client.Models.Internal.Json
             public override IThing<TData> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 // Take a copy of the reader, so it can be deserialized after the initial parse to determine the type.            
-                var readerCopy = reader;
+                Utf8JsonReader readerCopy = reader;
 
                 // TODO: It would be more inefficient to read the 'kind' property directly via the reader.
                 // The down side is it is more complex, so for now we simply parse the entire data.
-                if (!JsonDocument.TryParseValue(ref readerCopy, out var document))
+                if (!JsonDocument.TryParseValue(ref readerCopy, out JsonDocument document))
                 {
                     throw new JsonException("Unable to parse JSON document.");
                 }
@@ -113,14 +113,14 @@ namespace Reddit.NET.Client.Models.Internal.Json
                     throw new JsonException($"Unexpected JSON value kind during dynamic conversion. Expected '{JsonValueKind.Object}' but was '{document.RootElement.ValueKind}'");
                 }
 
-                if (!document.RootElement.TryGetProperty("kind", out var kindProperty))
+                if (!document.RootElement.TryGetProperty("kind", out JsonElement kindPropertyElement))
                 {
                     throw new JsonException("Unable to find 'kind' property in JSON data.");
                 }
 
-                var kind = kindProperty.GetString();
+                var kind = kindPropertyElement.GetString();
 
-                var type = kind switch
+                Type type = kind switch
                 {
                     Constants.Kind.Comment => typeof(Comment),
                     Constants.Kind.User => typeof(User),
@@ -130,7 +130,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
                     _ => throw new JsonException($"Unsupported thing kind '{kind}'."),
                 };
 
-                var thing = JsonSerializer.Deserialize(ref reader, type, options);
+                object thing = JsonSerializer.Deserialize(ref reader, type, options);
 
                 if (thing is not IThing<TData>)
                 {

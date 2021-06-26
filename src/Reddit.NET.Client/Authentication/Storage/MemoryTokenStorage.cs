@@ -19,7 +19,7 @@ namespace Reddit.NET.Client.Authentication.Storage
         /// <inheritdoc />
         public Task<Token> GetTokenAsync(Guid sessionId)
         {
-            if (_tokens.TryGetValue(sessionId, out var token))
+            if (_tokens.TryGetValue(sessionId, out Token token))
             {
                 return Task.FromResult(token);
             }

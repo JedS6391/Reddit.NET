@@ -40,7 +40,7 @@ namespace Reddit.NET.Client.Command
         {        
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
 
-            var request = command.BuildRequest();
+            HttpRequestMessage request = command.BuildRequest();
 
             return await ExecuteRequestAsync(request).ConfigureAwait(false);
         }
@@ -60,7 +60,7 @@ namespace Reddit.NET.Client.Command
         /// <exception cref="CommandNotSupportedException">Thrown when the command cannot be executed in the available <see cref="AuthenticationContext" />.</exception>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, IAuthenticator authenticator)
         {
-            var authenticationContext = await authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
+            AuthenticationContext authenticationContext = await authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
 
             if (!authenticationContext.CanExecute(command))
             {
@@ -71,7 +71,7 @@ namespace Reddit.NET.Client.Command
 
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
 
-            var request = command.BuildRequest();
+            HttpRequestMessage request = command.BuildRequest();
             
             AddAuthorizationHeader(request, authenticationContext);            
 
@@ -83,10 +83,10 @@ namespace Reddit.NET.Client.Command
             _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
 
             AddDefaultHeaders(request);
-            
-            var client = _httpClientFactory.CreateClient();
 
-            var response = await client
+            HttpClient client = _httpClientFactory.CreateClient();
+
+            HttpResponseMessage response = await client
                 .SendAsync(request)
                 .ConfigureAwait(false);
 

@@ -77,7 +77,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             private Stage _stage;
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="InteractiveCredentials.Builder" /> class.
+            /// Initializes a new instance of the <see cref="Builder" /> class.
             /// </summary>
             /// <remarks>
             /// This constructor is intended to be used at the start of the interactive authentication process.
@@ -107,7 +107,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             }
 
             /// <summary>
-            /// Initializes a new instance of the <see cref="InteractiveCredentials.Builder" /> class.
+            /// Initializes a new instance of the <see cref="Builder" /> class.
             /// </summary>
             /// <remarks>
             /// This constructor is intended to be used when the interactive authentication process has been previously completed.
@@ -220,9 +220,9 @@ namespace Reddit.NET.Client.Authentication.Credential
 
                 var authenticateCommand = new AuthenticateWithAuthorizationCodeCommand(parameters);
 
-                var token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);                            
+                var token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
 
-                var sessionId = await tokenStorage.StoreTokenAsync(token);
+                Guid sessionId = await tokenStorage.StoreTokenAsync(token);
 
                 _token = token;
                 _sessionId = sessionId;
@@ -231,7 +231,7 @@ namespace Reddit.NET.Client.Authentication.Credential
 
             private async Task AuthenticateWithSessionIdAsync(ITokenStorage tokenStorage)
             {
-                var token = await tokenStorage.GetTokenAsync(_sessionId.Value);
+                Token token = await tokenStorage.GetTokenAsync(_sessionId.Value);
 
                 if (token == null)
                 {

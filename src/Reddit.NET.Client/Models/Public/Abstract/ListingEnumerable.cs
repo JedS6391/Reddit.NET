@@ -162,7 +162,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                     throw new InvalidOperationException("Cannot load initial listing has a listing has already been loaded.");
                 }
 
-                var initialListing = await _context
+                TListing initialListing = await _context
                     .InitialListingProvider
                     .Invoke()
                     .ConfigureAwait(false);
@@ -184,7 +184,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                     return false;
                 }
 
-                var nextListing = await _context
+                TListing nextListing = await _context
                     .NextListingProvider
                     .Invoke(_context.CurrentListing)
                     .ConfigureAwait(false);

@@ -8,13 +8,13 @@ namespace Reddit.NET.Client.Command.Users
     /// </summary>
     public sealed class GetMySubredditsCommand : ClientCommand
     {
-        private readonly GetMySubredditsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetMySubredditsCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public GetMySubredditsCommand(GetMySubredditsCommand.Parameters parameters)
+        public GetMySubredditsCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;
@@ -26,9 +26,10 @@ namespace Reddit.NET.Client.Command.Users
         /// <inheritdoc />
         public override HttpRequestMessage BuildRequest()
         {
-            var uriBuilder = new UriBuilder(RedditApiUrl.Me.Subreddits);
-
-            uriBuilder.Query = $"?limit={_parameters.Limit}";
+            var uriBuilder = new UriBuilder(RedditApiUrl.Me.Subreddits)
+            {
+                Query = $"?limit={_parameters.Limit}"
+            };
 
             if (!string.IsNullOrEmpty(_parameters.After))
             {

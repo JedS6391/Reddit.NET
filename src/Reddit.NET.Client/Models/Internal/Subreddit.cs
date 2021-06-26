@@ -52,7 +52,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines a listing over a collection of <see cref="Subreddit" /> things.
         /// </summary>
-        public class Listing : Listing<Subreddit.Details> 
+        public class Listing : Listing<Details> 
         {
         }
     }

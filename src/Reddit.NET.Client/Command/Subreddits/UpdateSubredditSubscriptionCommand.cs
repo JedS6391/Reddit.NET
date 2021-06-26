@@ -9,13 +9,13 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// </summary>
     public sealed class UpdateSubredditSubscriptionCommand : ClientCommand
     {
-        private readonly UpdateSubredditSubscriptionCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UpdateSubredditSubscriptionCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public UpdateSubredditSubscriptionCommand(UpdateSubredditSubscriptionCommand.Parameters parameters)
+        public UpdateSubredditSubscriptionCommand(Parameters parameters)
             : base()            
         {
             _parameters = parameters;

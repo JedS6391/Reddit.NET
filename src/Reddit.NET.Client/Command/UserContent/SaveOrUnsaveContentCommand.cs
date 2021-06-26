@@ -9,13 +9,13 @@ namespace Reddit.NET.Client.Command.UserContent
     /// </summary>
     public class SaveOrUnsaveContentCommand : ClientCommand
     {
-        private readonly SaveOrUnsaveContentCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SaveOrUnsaveContentCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public SaveOrUnsaveContentCommand(SaveOrUnsaveContentCommand.Parameters parameters)
+        public SaveOrUnsaveContentCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;

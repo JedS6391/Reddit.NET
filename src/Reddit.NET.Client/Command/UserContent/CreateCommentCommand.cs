@@ -9,13 +9,13 @@ namespace Reddit.NET.Client.Command.UserContent
     /// </summary>
     public sealed class CreateCommentCommand : ClientCommand
     {
-        private readonly CreateCommentCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommentCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public CreateCommentCommand(CreateCommentCommand.Parameters parameters)
+        public CreateCommentCommand(Parameters parameters)
             : base()            
         {
             _parameters = parameters;

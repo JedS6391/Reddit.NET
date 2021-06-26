@@ -5,6 +5,7 @@ using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication;
 using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
 
@@ -115,11 +116,11 @@ namespace Reddit.NET.Client.Builder
             _credentialsBuilderConfigurationAction.Invoke(credentialsBuilder);
 
             // Note that the credential builder may need to execute commands (e.g. for interactive credentials).            
-            var credentials = await credentialsBuilder
+            Credentials credentials = await credentialsBuilder
                 .BuildCredentialsAsync(commandExecutor, _tokenStorage)
                 .ConfigureAwait(false);
 
-            var authenticator = authenticatorFactory.GetAuthenticator(credentials);
+            IAuthenticator authenticator = authenticatorFactory.GetAuthenticator(credentials);
 
             return new RedditClient(commandExecutor, authenticator);
         }

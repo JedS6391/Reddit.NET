@@ -110,6 +110,6 @@ namespace Reddit.NET.Client.Models.Public.Read
             _comments.Select(c => new CommentThread(_submission, c)).GetEnumerator();
 
         /// <inheritdoc />
-        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }

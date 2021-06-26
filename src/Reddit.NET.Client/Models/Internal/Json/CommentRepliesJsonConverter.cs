@@ -6,7 +6,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 namespace Reddit.NET.Client.Models.Internal.Json
 {
     /// <summary>
-    /// A <see cref="JsonConverter{T}" /> implementation for reading JSON data to populate the <see cref="Internal.Comment.Details.Replies" /> property.
+    /// A <see cref="JsonConverter{T}" /> implementation for reading JSON data to populate the <see cref="Comment.Details.Replies" /> property.
     /// </summary>
     internal class CommentRepliesJsonConverter : JsonConverter<Listing<IHasParent>>
     {

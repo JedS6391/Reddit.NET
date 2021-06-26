@@ -8,13 +8,13 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// </summary>
     public sealed class GetSubredditDetailsCommand : ClientCommand
     {
-        private readonly GetSubredditDetailsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetSubredditDetailsCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public GetSubredditDetailsCommand(GetSubredditDetailsCommand.Parameters parameters)
+        public GetSubredditDetailsCommand(Parameters parameters)
             : base()            
         {
             _parameters = parameters;
@@ -30,7 +30,7 @@ namespace Reddit.NET.Client.Command.Subreddits
             {
                 Method = HttpMethod.Get,
                 RequestUri = new Uri(RedditApiUrl.Subreddit.Details(_parameters.SubredditName))
-        };
+            };
 
             return request;
         }

@@ -15,7 +15,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSearchListingEnumerable.Options>
     {
         private readonly RedditClient _client;
-        private readonly SubredditSearchListingEnumerable.ListingParameters _parameters;
+        private readonly ListingParameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditSearchListingEnumerable" /> class.
@@ -25,8 +25,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
         /// <param name="parameters">Parameters used when loading the listing data.</param>
         public SubredditSearchListingEnumerable(
             RedditClient client,
-            SubredditSearchListingEnumerable.Options options,
-            SubredditSearchListingEnumerable.ListingParameters parameters)
+            Options options,
+            ListingParameters parameters)
             : base(options)
         {
             _client = client;
@@ -34,10 +34,10 @@ namespace Reddit.NET.Client.Models.Public.Listings
         }
     
         /// <inheritdoc />
-        internal async override Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal async override Task<Submission.Listing> GetNextListingAsync(Submission.Listing currentListing)
+        internal override async Task<Submission.Listing> GetNextListingAsync(Submission.Listing currentListing)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {

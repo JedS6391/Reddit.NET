@@ -1,4 +1,5 @@
 using System;
+using System.Net.Http;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -26,7 +27,7 @@ namespace Reddit.NET.Client.Command
             this CommandExecutor executor, 
             ClientCommand command)
         {
-            var response = await executor.ExecuteCommandAsync(command).ConfigureAwait(false);
+            HttpResponseMessage response = await executor.ExecuteCommandAsync(command).ConfigureAwait(false);
 
             return await response
                 .Content
@@ -48,7 +49,7 @@ namespace Reddit.NET.Client.Command
             ClientCommand command,
             IAuthenticator authenticator)
         {
-            var response = await executor.ExecuteCommandAsync(command, authenticator).ConfigureAwait(false);
+            HttpResponseMessage response = await executor.ExecuteCommandAsync(command, authenticator).ConfigureAwait(false);
 
             return await response
                 .Content

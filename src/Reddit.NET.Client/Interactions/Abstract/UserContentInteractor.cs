@@ -1,8 +1,5 @@
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.UserContent;
-using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Read;
 

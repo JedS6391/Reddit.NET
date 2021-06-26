@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Console", "..\de
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.WebApi", "..\demos\Reddit.NET.WebApi\Reddit.NET.WebApi.csproj", "{334C74C7-A504-49C3-9FDF-5F7A0164D27C}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C0FFF2C1-0865-42A3-B905-5F4576B166CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,5 +60,9 @@ Global
 		{334C74C7-A504-49C3-9FDF-5F7A0164D27C}.Release|x64.Build.0 = Release|Any CPU
 		{334C74C7-A504-49C3-9FDF-5F7A0164D27C}.Release|x86.ActiveCfg = Release|Any CPU
 		{334C74C7-A504-49C3-9FDF-5F7A0164D27C}.Release|x86.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{5A72B17C-C081-4548-AE1F-FFD405A6621C} = {C0FFF2C1-0865-42A3-B905-5F4576B166CD}
+		{334C74C7-A504-49C3-9FDF-5F7A0164D27C} = {C0FFF2C1-0865-42A3-B905-5F4576B166CD}
 	EndGlobalSection
 EndGlobal

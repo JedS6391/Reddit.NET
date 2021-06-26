@@ -11,13 +11,13 @@ namespace Reddit.NET.Client.Command.Users
     /// </summary>
     public class GetUserHistoryCommand : ClientCommand
     {
-        private readonly GetUserHistoryCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetUserHistoryCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public GetUserHistoryCommand(GetUserHistoryCommand.Parameters parameters)
+        public GetUserHistoryCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;

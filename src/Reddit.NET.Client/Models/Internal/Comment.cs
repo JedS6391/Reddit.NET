@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Text.Json.Serialization;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Internal.Json;
@@ -87,7 +86,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines a listing over a collection of <see cref="Comment" /> things.
         /// </summary>
-        public class Listing : Listing<Comment.Details> 
+        public class Listing : Listing<Details> 
         {
         }        
     }

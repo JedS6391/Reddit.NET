@@ -10,13 +10,13 @@ namespace Reddit.NET.Client.Command.UserContent
     /// </summary>
     public class ApplyVoteCommand : ClientCommand
     {
-        private readonly ApplyVoteCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ApplyVoteCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public ApplyVoteCommand(ApplyVoteCommand.Parameters parameters)
+        public ApplyVoteCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;

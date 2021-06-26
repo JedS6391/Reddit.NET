@@ -99,9 +99,9 @@ namespace Reddit.NET.Client.Authentication.Abstract
                 AuthenticationContextCreationLock.Release();            
 
                 return;
-            } 
+            }
 
-            var context = await DoAuthenticateAsync().ConfigureAwait(false);
+            AuthenticationContext context = await DoAuthenticateAsync().ConfigureAwait(false);
 
             _authenticationContextCreatedAt = DateTimeOffset.UtcNow;
             _authenticationContext = context;
@@ -115,7 +115,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
         {
             await AuthenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
 
-            var context = await DoRefreshAsync(_authenticationContext).ConfigureAwait(false);
+            AuthenticationContext context = await DoRefreshAsync(_authenticationContext).ConfigureAwait(false);
 
             _authenticationContextCreatedAt = DateTimeOffset.UtcNow;
             _authenticationContext = context;

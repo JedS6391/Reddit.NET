@@ -44,7 +44,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines a listing over a collection of <see cref="MoreComments" /> things.
         /// </summary>
-        public class Listing : Listing<MoreComments.Details>
+        public class Listing : Listing<Details>
         {}
     }
 }

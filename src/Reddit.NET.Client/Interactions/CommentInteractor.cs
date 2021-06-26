@@ -7,8 +7,6 @@ namespace Reddit.NET.Client.Interactions
     /// </summary>
     public sealed class CommentInteractor : UserContentInteractor, IInteractor
     {
-
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentInteractor" /> class.
         /// </summary>        

@@ -1,5 +1,3 @@
-using System;
-
 namespace Reddit.NET.Client.Models.Public.Write
 {
     /// <summary>

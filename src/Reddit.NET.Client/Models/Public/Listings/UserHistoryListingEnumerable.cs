@@ -23,7 +23,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         };
 
         private readonly RedditClient _client;
-        private readonly UserHistoryListingEnumerable.ListingParameters _parameters;
+        private readonly ListingParameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UserHistoryListingEnumerable" /> class.
@@ -33,8 +33,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
         /// <param name="parameters">Parameters used when loading the listing data.</param>
         public UserHistoryListingEnumerable(
             RedditClient client, 
-            UserHistoryListingEnumerable.Options options,
-            UserHistoryListingEnumerable.ListingParameters parameters)
+            Options options,
+            ListingParameters parameters)
             : base(options)
         {
             _client = client;
@@ -42,10 +42,10 @@ namespace Reddit.NET.Client.Models.Public.Listings
         }
 
         /// <inheritdoc />
-        internal async override Task<Listing<IUserContent>> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Listing<IUserContent>> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal async override Task<Listing<IUserContent>> GetNextListingAsync(Listing<IUserContent> currentListing)
+        internal override async Task<Listing<IUserContent>> GetNextListingAsync(Listing<IUserContent> currentListing)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
@@ -145,7 +145,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.Day;            
 
             /// <summary>
-            /// Provides the ability to create <see cref="UserHistoryListingEnumerable.Options" /> instances.
+            /// Provides the ability to create <see cref="Options" /> instances.
             /// </summary>
             public class Builder : ListingEnumerableOptionsBuilder<Options, Builder>
             {

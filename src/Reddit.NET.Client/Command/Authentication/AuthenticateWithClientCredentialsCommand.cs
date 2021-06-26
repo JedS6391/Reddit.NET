@@ -11,12 +11,12 @@ namespace Reddit.NET.Client.Command.Authentication
     /// </summary>
     public class AuthenticateWithClientCredentialsCommand : ClientCommand
     {
-        private readonly AuthenticateWithClientCredentialsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticateWithClientCredentialsCommand" /> class.
         /// </summary>
-        public AuthenticateWithClientCredentialsCommand(AuthenticateWithClientCredentialsCommand.Parameters parameters)
+        public AuthenticateWithClientCredentialsCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;

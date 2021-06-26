@@ -1,7 +1,6 @@
 using System.Net.Http;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command;
-using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Interactions;
 
 namespace Reddit.NET.Client

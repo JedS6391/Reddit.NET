@@ -12,13 +12,13 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// </summary>
     public class SearchSubredditSubmissionsCommand : ClientCommand
     {
-        private readonly SearchSubredditSubmissionsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="SearchSubredditSubmissionsCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public SearchSubredditSubmissionsCommand(SearchSubredditSubmissionsCommand.Parameters parameters)
+        public SearchSubredditSubmissionsCommand(Parameters parameters)
         {
             _parameters = parameters;
         }

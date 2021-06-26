@@ -23,7 +23,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
 
             reader.Match(JsonTokenType.Number);
 
-            if (!reader.TryGetDouble(out var value))
+            if (!reader.TryGetDouble(out double value))
             {
                 throw new JsonException("Could not read raw epoch-second value as double type.");
             }

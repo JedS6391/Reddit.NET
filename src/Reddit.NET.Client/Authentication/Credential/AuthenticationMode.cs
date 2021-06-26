@@ -35,7 +35,7 @@ namespace Reddit.NET.Client.Authentication.Credential
         Script,
 
         /// <summary>
-        /// Similar to <see cref="AuthenticationMode.WebApp" /> and <see cref="AuthenticationMode.Script" />, 
+        /// Similar to <see cref="WebApp" /> and <see cref="Script" />, 
         /// but only able to access non-authenticated functionality.
         /// </summary>
         /// <remarks>
@@ -44,7 +44,7 @@ namespace Reddit.NET.Client.Authentication.Credential
         ReadOnly,
 
         /// <summary>
-        /// Similar to <see cref="AuthenticationMode.ReadOnly" /> but for app contexts.
+        /// Similar to <see cref="ReadOnly" /> but for app contexts.
         /// </summary>
         /// <remarks>
         /// Should be used in contexts where a secret cannot be kept (i.e. installed app, mobile device)

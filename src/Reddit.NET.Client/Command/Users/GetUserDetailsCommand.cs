@@ -8,12 +8,12 @@ namespace Reddit.NET.Client.Command.Users
     /// </summary>
     public sealed class GetUserDetailsCommand : ClientCommand
     {
-        private readonly GetUserDetailsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetUserDetailsCommand" /> class.
         /// </summary>
-        public GetUserDetailsCommand(GetUserDetailsCommand.Parameters parameters)
+        public GetUserDetailsCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;

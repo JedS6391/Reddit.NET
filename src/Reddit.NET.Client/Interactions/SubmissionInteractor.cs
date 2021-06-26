@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
-using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Command.Submissions;

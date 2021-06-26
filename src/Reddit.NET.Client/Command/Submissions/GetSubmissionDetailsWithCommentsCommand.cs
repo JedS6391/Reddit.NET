@@ -11,13 +11,13 @@ namespace Reddit.NET.Client.Command.Submissions
     /// </remarks>
     public class GetSubmissionDetailsWithCommentsCommand : ClientCommand
     {
-        private readonly GetSubmissionDetailsWithCommentsCommand.Parameters _parameters;
+        private readonly Parameters _parameters;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="GetSubmissionDetailsWithCommentsCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public GetSubmissionDetailsWithCommentsCommand(GetSubmissionDetailsWithCommentsCommand.Parameters parameters)
+        public GetSubmissionDetailsWithCommentsCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Text.Json.Serialization;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Internal.Json;
@@ -109,7 +108,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines a listing over a collection of <see cref="Submission" /> things.
         /// </summary>
-        public class Listing : Listing<Submission.Details> 
+        public class Listing : Listing<Details> 
         {
         }
 
@@ -119,10 +118,10 @@ namespace Reddit.NET.Client.Models.Internal
         [JsonConverter(typeof(SubmissionWithCommentsJsonConverter))]
         internal class SubmissionWithComments
         {
-            private readonly Submission.Listing _submissionListing;
+            private readonly Listing _submissionListing;
             private readonly Listing<IHasParent> _commentListing;
 
-            public SubmissionWithComments(Submission.Listing submissionListing, Listing<IHasParent> commentListing)
+            public SubmissionWithComments(Listing submissionListing, Listing<IHasParent> commentListing)
             {
                 _submissionListing = submissionListing;
                 _commentListing = commentListing;
