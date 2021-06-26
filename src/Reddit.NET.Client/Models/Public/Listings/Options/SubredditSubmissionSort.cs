@@ -1,9 +1,9 @@
-namespace Reddit.NET.Client.Models.Public.Listings.Sorting
+namespace Reddit.NET.Client.Models.Public.Listings.Options
 {
     /// <summary>
     /// Represents a sort option for submissions in a subreddit.
     /// </summary>
-    public sealed class SubredditSubmissionSort : Sort
+    public sealed class SubredditSubmissionSort : NamedOption
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditSubmissionSort" /> class.

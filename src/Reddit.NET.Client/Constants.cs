@@ -2,6 +2,7 @@ using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Command.UserContent;
+using System.Linq;
 
 namespace Reddit.NET.Client
 {
@@ -38,6 +39,7 @@ namespace Reddit.NET.Client
             {
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetSubredditSubmissionsCommand),
+                nameof(SearchSubredditSubmissionsCommand),
                 nameof(GetSubmissionDetailsWithCommentsCommand),
                 nameof(GetUserDetailsCommand)
             };
@@ -45,24 +47,25 @@ namespace Reddit.NET.Client
             /// <summary>
             /// The supported commands when using a user authentication mode.
             /// </summary>
-            public static string[] UserCommandIds = new string[]
-            {
-                nameof(GetSubredditDetailsCommand),
-                nameof(GetSubredditSubmissionsCommand),
-                nameof(UpdateSubredditSubscriptionCommand),
-                nameof(CreateSubredditSubmissionCommand),
-                nameof(GetMyDetailsCommand),
-                nameof(GetMySubredditsCommand),
-                nameof(GetMyKarmaBreakdownCommand),
-                nameof(GetUserDetailsCommand),
-                nameof(GetUserHistoryCommand),
-                nameof(ApplyVoteCommand),
-                nameof(SaveOrUnsaveContentCommand),
-                nameof(CreateCommentCommand),
-                nameof(GetSubmissionDetailsWithCommentsCommand)
-            };
+            public static string[] UserCommandIds = ReadOnlyCommandIds
+                .Union(new string[]
+                {                                
+                    nameof(UpdateSubredditSubscriptionCommand),
+                    nameof(CreateSubredditSubmissionCommand),                    
+                    nameof(GetMyDetailsCommand),
+                    nameof(GetMySubredditsCommand),
+                    nameof(GetMyKarmaBreakdownCommand),                
+                    nameof(GetUserHistoryCommand),
+                    nameof(ApplyVoteCommand),
+                    nameof(SaveOrUnsaveContentCommand),
+                    nameof(CreateCommentCommand),
+                })
+                .ToArray();
         }
 
+        /// <summary>
+        /// Constants used to determine reddit 'thing' kinds.
+        /// </summary>
         public static class Kind
         {
             public const string Comment = "t1";

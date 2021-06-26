@@ -1,9 +1,9 @@
-namespace Reddit.NET.Client.Models.Public.Listings.Sorting
+namespace Reddit.NET.Client.Models.Public.Listings.Options
 {
     /// <summary>
     /// Represents a sort option by time range.
     /// </summary>
-    public sealed class TimeRangeSort : Sort
+    public sealed class TimeRangeSort : NamedOption
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TimeRangeSort" /> class.

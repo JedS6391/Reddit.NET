@@ -4,8 +4,7 @@ using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Builder;
-using Reddit.NET.Client.Models.Public.Listings;
-using Reddit.NET.Client.Models.Public.Listings.Sorting;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Console.Examples
 {

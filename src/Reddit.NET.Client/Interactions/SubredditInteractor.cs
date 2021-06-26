@@ -7,9 +7,9 @@ using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Public.Write;
-using System.Net.Http.Json;
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Models.Internal.Base;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -112,6 +112,33 @@ namespace Reddit.NET.Client.Interactions
                 new SubredditSubmissionsListingEnumerable.ListingParameters()
                 {
                     SubredditName = _subredditName
+                });
+        }
+
+        /// <summary>
+        /// Searches the submissions of the subreddit.
+        /// </summary>
+        /// <remarks>
+        /// Note that the query is provided as a raw string, but can use the syntax of a particular <see cref="SearchQuerySyntax" /> option.
+        /// </remarks>
+        /// <param name="query">The search query.</param>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the submissions of the subreddit.</returns>
+        public IAsyncEnumerable<SubmissionDetails> SearchSubmissionsAsync(
+            string query,
+            Action<SubredditSearchListingEnumerable.Options.Builder> configurationAction = null)
+        {
+            var optionsBuilder = new SubredditSearchListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new SubredditSearchListingEnumerable(
+                _client,
+                optionsBuilder.Options,
+                new SubredditSearchListingEnumerable.ListingParameters()
+                {
+                    SubredditName = _subredditName,                    
+                    Query = query                
                 });
         }
 
