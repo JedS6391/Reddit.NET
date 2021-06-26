@@ -40,6 +40,7 @@ namespace Reddit.NET.Client
                 nameof(GetSubredditDetailsCommand),
                 nameof(GetSubredditSubmissionsCommand),
                 nameof(SearchSubredditSubmissionsCommand),
+                nameof(GetFrontPageSubmissionsCommand),
                 nameof(GetSubmissionDetailsWithCommentsCommand),
                 nameof(GetUserDetailsCommand)
             };

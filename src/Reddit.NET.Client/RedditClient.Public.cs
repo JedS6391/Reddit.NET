@@ -1,7 +1,11 @@
+using System;
+using System.Collections.Generic;
 using Microsoft;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Interactions;
+using Reddit.NET.Client.Models.Public.Listings;
+using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client
 {
@@ -46,5 +50,22 @@ namespace Reddit.NET.Client
         /// <param name="name">The name of the user to interact with.</param>
         /// <returns>An <see cref="UserInteractor" /> instance that provides mechanisms for interacting with the requested user.</returns>
         public UserInteractor User(string name) => new UserInteractor(this, name);
+
+        /// <summary>
+        /// Gets the submissions on the front page.
+        /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the submissions on the front page.</returns>
+        public IAsyncEnumerable<SubmissionDetails> GetFrontPageSubmissionsAsync(
+            Action<FrontPageSubmissionsListingEnumerable.Options.Builder> configurationAction = null)
+        {
+            var optionsBuilder = new FrontPageSubmissionsListingEnumerable.Options.Builder();            
+    
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new FrontPageSubmissionsListingEnumerable(
+                this,
+                optionsBuilder.Options);
+        }
     }
 }
