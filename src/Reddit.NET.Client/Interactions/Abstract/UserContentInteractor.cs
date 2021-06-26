@@ -108,6 +108,20 @@ namespace Reddit.NET.Client.Interactions.Abstract
             return new CommentDetails(thing: response.Data.Things[0]);
         }
 
+        /// <summary>
+        /// Deletes the content.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteAsync()
+        {
+            var deleteContentCommand = new DeleteContentCommand(new DeleteContentCommand.Parameters()
+            {
+                FullName = FullName,                
+            });
+
+            await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);            
+        }
+
         private async Task ApplyVoteAsync(ApplyVoteCommand.VoteDirection direction) 
         {
             var applyVoteCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()

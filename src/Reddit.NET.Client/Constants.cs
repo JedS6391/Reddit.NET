@@ -59,6 +59,7 @@ namespace Reddit.NET.Client
                     nameof(GetUserHistoryCommand),
                     nameof(ApplyVoteCommand),
                     nameof(SaveOrUnsaveContentCommand),
+                    nameof(DeleteContentCommand),
                     nameof(CreateCommentCommand),
                 })
                 .ToArray();
