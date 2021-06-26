@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Submissions
     /// <remarks>
     /// 
     /// </remarks>
-    public class GetSubmissionDetailsWithCommentsCommand : ClientCommand
+    public sealed class GetSubmissionDetailsWithCommentsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

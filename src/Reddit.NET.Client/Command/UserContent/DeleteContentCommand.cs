@@ -7,7 +7,7 @@ namespace Reddit.NET.Client.Command.UserContent
     /// <summary>
     /// Defines a command to delete a submission or comment.
     /// </summary>
-    public class DeleteContentCommand : ClientCommand
+    public sealed class DeleteContentCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

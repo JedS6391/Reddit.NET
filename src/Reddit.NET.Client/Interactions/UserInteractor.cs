@@ -14,7 +14,7 @@ namespace Reddit.NET.Client.Interactions
     /// <summary>
     /// Provides mechanisms for interacting with a user.
     /// </summary>
-    public class UserInteractor : IInteractor
+    public sealed class UserInteractor : IInteractor
     {
         private static readonly UserHistoryType[] s_unsupportedHistoryTypeOptions = new UserHistoryType[]
         {

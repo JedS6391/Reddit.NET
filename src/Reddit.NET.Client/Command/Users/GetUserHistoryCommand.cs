@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Users
     /// <summary>
     /// Defines a command to get history of a user.
     /// </summary>
-    public class GetUserHistoryCommand : ClientCommand
+    public sealed class GetUserHistoryCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

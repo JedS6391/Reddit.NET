@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Authentication
     /// <summary>
     /// Defines a command to authenticate using the <c>password</c> grant type.
     /// </summary>
-    public class AuthenticateWithUsernamePasswordCommand : ClientCommand
+    public sealed class AuthenticateWithUsernamePasswordCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

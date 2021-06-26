@@ -10,7 +10,7 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// <summary>
     /// Defines a command to search the submissions of a subreddit.
     /// </summary>
-    public class SearchSubredditSubmissionsCommand : ClientCommand
+    public sealed class SearchSubredditSubmissionsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

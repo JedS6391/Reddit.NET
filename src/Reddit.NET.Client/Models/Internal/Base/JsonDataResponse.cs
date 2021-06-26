@@ -6,7 +6,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// <summary>
     /// Represents a simple JSON data response returned by some reddit API endpoints.
     /// </summary>
-    public class JsonDataResponse<TDataNode>
+    internal class JsonDataResponse<TDataNode>
     {    
         /// <summary>
         /// Gets the 'json' node.
@@ -25,7 +25,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// <summary>
     /// Represents the data of the <see cref="JsonDataResponse{TDataNode}.Json" /> node.
     /// </summary>
-    public class JsonNode<TDataNode>
+    internal class JsonNode<TDataNode>
     {
         // TODO: Need to verify this type
         /// <summary>
@@ -62,7 +62,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// }
     /// </code>
     /// </example>
-    public class CreateSubmissionDataNode
+    internal class CreateSubmissionDataNode
     {
         /// <summary>
         /// Gets the 'url'.
@@ -110,7 +110,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// }
     /// </code>
     /// </example>
-    public class CreateCommentDataNode  
+    internal class CreateCommentDataNode  
     {
         /// <summary>
         /// Gets the 'things'.

@@ -8,7 +8,7 @@ namespace Reddit.NET.Client.Authentication.Storage
     /// <summary>
     /// An <see cref="ITokenStorage" /> that does not store tokens.
     /// </summary>
-    public class NullTokenStorage : ITokenStorage
+    public sealed class NullTokenStorage : ITokenStorage
     {
         /// <inheritdoc />
         public Task<Token> GetTokenAsync(Guid sessionId) => Task.FromResult<Token>(null);

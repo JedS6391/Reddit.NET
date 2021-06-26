@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// <summary>
     /// Defines a command to get the submissions on the front page.
     /// </summary>
-    public class GetFrontPageSubmissionsCommand : ClientCommand
+    public sealed class GetFrontPageSubmissionsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

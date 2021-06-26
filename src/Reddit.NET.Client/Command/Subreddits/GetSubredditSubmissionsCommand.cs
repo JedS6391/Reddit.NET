@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Subreddits
     /// <summary>
     /// Defines a command to get the submissions of a subreddit.
     /// </summary>
-    public class GetSubredditSubmissionsCommand : ClientCommand
+    public sealed class GetSubredditSubmissionsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Authentication
     /// <summary>
     /// Defines a command to authenticate using the <c>refresh_token</c> grant type.
     /// </summary>
-    public class AuthenticateWithRefreshTokenCommand : ClientCommand        
+    public sealed class AuthenticateWithRefreshTokenCommand : ClientCommand        
     {
         private readonly Parameters _parameters;
 

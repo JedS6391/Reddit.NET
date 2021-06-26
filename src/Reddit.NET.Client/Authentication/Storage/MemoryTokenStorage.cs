@@ -12,7 +12,7 @@ namespace Reddit.NET.Client.Authentication.Storage
     /// <remarks>
     /// A static <see cref="ConcurrentDictionary{TKey, TValue}" /> is used to safely manage tokens across threads.
     /// </remarks>
-    public class MemoryTokenStorage : ITokenStorage
+    public sealed class MemoryTokenStorage : ITokenStorage
     {
         private static readonly ConcurrentDictionary<Guid, Token> _tokens = new ConcurrentDictionary<Guid, Token>();
 

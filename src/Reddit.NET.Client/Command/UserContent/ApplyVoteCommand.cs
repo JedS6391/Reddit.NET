@@ -8,7 +8,7 @@ namespace Reddit.NET.Client.Command.UserContent
     /// <summary>
     /// Defines a command to apply a vote to a submission or comment.
     /// </summary>
-    public class ApplyVoteCommand : ClientCommand
+    public sealed class ApplyVoteCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 

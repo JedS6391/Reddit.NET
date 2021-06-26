@@ -7,7 +7,7 @@ namespace Reddit.NET.Client.Command.UserContent
     /// <summary>
     /// Defines a command to save or unsave a submission or comment.
     /// </summary>
-    public class SaveOrUnsaveContentCommand : ClientCommand
+    public sealed class SaveOrUnsaveContentCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 
