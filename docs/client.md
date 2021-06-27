@@ -15,7 +15,7 @@ RedditClient client = await builder.BuildAsync();
 
 ## Interactions
 
-The client provides its functionality through 'interactors', which are responsible for specific high-level concepts e.g. subreddits, users, etc. For example, to interact with a specific subreddit, a `SubredditInteractor` should be used:
+The client provides its functionality through *interactors*, which are responsible for specific high-level concepts e.g. subreddits, users, etc. For example, to interact with a specific subreddit, a `SubredditInteractor` should be used:
 
 ```cs
 // Interact with a subreddit
@@ -71,7 +71,7 @@ await foreach (var item in savedHistory)
 }
 ```
 
-Such an enumerator operates in a lazy-fashion and will only fetch data when:
+Such an enumerator operates in a *lazy-fashion* and will only fetch data when:
 
 1. The enumeration starts, i.e. the initial page needs to be loaded
 2. Enumeration of the current page is finished, i.e. the next page needs to be loaded
