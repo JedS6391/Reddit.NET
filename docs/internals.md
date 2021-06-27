@@ -4,7 +4,7 @@ This section details the internal components the client uses. Most of these won'
 
 ## HTTP
 
-The client relies on the `IHttpClientFactory` abstraction[^1] to obtain `HttpClient` instance for all HTTP communication. This ensures the pooling and lifetime of the underlying message handler is managed appropriately. 
+The client relies on the `IHttpClientFactory` abstraction to obtain `HttpClient` instance for all HTTP communication. This ensures the pooling and lifetime of the underlying message handler is managed appropriately. 
 
 All HTTP communication is performed asynchronously, making it clear which methods will perform a network request to obtain the data required.
 
@@ -23,7 +23,7 @@ The client has an internal set of models that map directly to the JSON structure
 
 ### Things
 
-A *Thing* is the reddit base class[^2] and has the following JSON structure:
+A *Thing* is the reddit base class and has the following JSON structure:
 
 ```json
 {
@@ -42,7 +42,8 @@ The `Thing<TData>` abstract class represents this structure and serves as a base
 
 ### Converters
 
+## References
 
-
-[^1]: [`IHttpClientFactory`](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.ihttpclientfactory?view=dotnet-plat-ext-5.0)
-[^2]: [Thing](https://github.com/reddit-archive/reddit/wiki/JSON#thing-reddit-base-class)
+- [`IHttpClientFactory` class](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.ihttpclientfactory?view=dotnet-plat-ext-5.0)
+- [`System.Text.Json` namespace](https://docs.microsoft.com/en-us/dotnet/api/system.text.json?view=net-5.0)
+- [Reddit JSON API](https://github.com/reddit-archive/reddit/wiki/JSON)
