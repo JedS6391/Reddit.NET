@@ -8,6 +8,7 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
+using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -78,6 +79,23 @@ namespace Reddit.NET.Client.Interactions
                     UseAuthenticatedUser = false,
                     Username = _username
                 });
-        }          
+        } 
+
+        /// <summary>
+        /// Sends a private message to the user.
+        /// </summary>
+        /// <param name="details">The details of the message to send.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SendMessageAsync(PrivateMessageDetails details)
+        {
+            var sendMessageCommand = new SendMessageCommand(new SendMessageCommand.Parameters()
+            {
+                Username = _username,
+                Subject = details.Subject,
+                Body = details.Body
+            });
+        
+            await _client.ExecuteCommandAsync(sendMessageCommand).ConfigureAwait(false);            
+        }                 
     }
 }
