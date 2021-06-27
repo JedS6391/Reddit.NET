@@ -42,7 +42,8 @@ namespace Reddit.NET.Client
                 nameof(SearchSubredditSubmissionsCommand),
                 nameof(GetFrontPageSubmissionsCommand),
                 nameof(GetSubmissionDetailsWithCommentsCommand),
-                nameof(GetUserDetailsCommand)
+                nameof(GetUserDetailsCommand),
+                nameof(GetUserTrophiesCommand)
             };
 
             /// <summary>
@@ -56,7 +57,8 @@ namespace Reddit.NET.Client
                     nameof(GetMyDetailsCommand),
                     nameof(GetMySubredditsCommand),
                     nameof(GetMyKarmaBreakdownCommand),
-                    nameof(GetMyInboxMessagesCommand),
+                    nameof(GetMyTrophiesCommand),
+                    nameof(GetMyInboxMessagesCommand),                    
                     nameof(SendMessageCommand),
                     nameof(GetUserHistoryCommand),
                     nameof(ApplyVoteCommand),
