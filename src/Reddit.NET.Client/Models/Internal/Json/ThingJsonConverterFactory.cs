@@ -27,8 +27,10 @@ namespace Reddit.NET.Client.Models.Internal.Json
             { typeof(User.Details), typeof(User) },
             { typeof(Submission.Details), typeof(Submission) },
             { typeof(Subreddit.Details), typeof(Subreddit) },
-            { typeof(KarmaBreakdown.Details), typeof(KarmaBreakdown) },
-            { typeof(Message.Details), typeof(Message) }
+            { typeof(KarmaList.Details), typeof(KarmaList) },
+            { typeof(Message.Details), typeof(Message) },
+            { typeof(TrophyList.Details), typeof(TrophyList) },
+            { typeof(Trophy.Details), typeof(Trophy) },
         };
 
         /// <inheritdoc />

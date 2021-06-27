@@ -96,6 +96,28 @@ namespace Reddit.NET.Client.Interactions
             });
         
             await _client.ExecuteCommandAsync(sendMessageCommand).ConfigureAwait(false);            
-        }                 
+        }    
+
+        /// <summary>
+        /// Gets the trophies of the user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation. The result contains the trophies of the user.</returns>
+        public async Task<IReadOnlyList<TrophyDetails>> GetTrophiesAsync()
+        {
+            var getUserTrophiesCommand = new GetUserTrophiesCommand(new GetUserTrophiesCommand.Parameters()
+            {
+                Username = _username
+            });
+
+            var trophyList = await _client
+                .ExecuteCommandAsync<TrophyList>(getUserTrophiesCommand)
+                .ConfigureAwait(false);
+            
+            return trophyList
+                .Data
+                .Trophies
+                .Select(t => new TrophyDetails(t))
+                .ToList();
+        }                      
     }
 }

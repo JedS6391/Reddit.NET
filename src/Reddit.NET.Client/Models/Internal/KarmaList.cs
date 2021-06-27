@@ -5,15 +5,15 @@ using Reddit.NET.Client.Models.Internal.Base;
 namespace Reddit.NET.Client.Models.Internal
 {
     /// <summary>
-    /// Represents the karma breakdown of a user.
+    /// Defines a container for the karma breakdown of a user.
     /// </summary>
     /// <remarks>
     /// Note that the data type of the thing is a list of details.
     /// </remarks>
-    public class KarmaBreakdown : Thing<IReadOnlyList<KarmaBreakdown.Details>>
+    public class KarmaList : Thing<IReadOnlyList<KarmaList.Details>>
     {
         /// <summary>
-        /// Defines the attributes of a <see cref="KarmaBreakdown" />.
+        /// Defines the attributes of a <see cref="KarmaList" /> entry.
         /// </summary>
         public class Details
         {

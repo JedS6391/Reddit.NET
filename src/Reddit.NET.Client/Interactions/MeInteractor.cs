@@ -92,13 +92,32 @@ namespace Reddit.NET.Client.Interactions
             var getMyKarmaBreakdownCommand = new GetMyKarmaBreakdownCommand();
 
             var karmaBreakdown = await _client
-                .ExecuteCommandAsync<KarmaBreakdown>(getMyKarmaBreakdownCommand)
+                .ExecuteCommandAsync<KarmaList>(getMyKarmaBreakdownCommand)
                 .ConfigureAwait(false);
             
             return karmaBreakdown
                 .Data
                 .Select(kb => new KarmaBreakdownDetails(kb))
                 .ToList();
-        }      
+        } 
+
+        /// <summary>
+        /// Gets the trophies of the authenticated user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation. The result contains the trophies of the authenticated user.</returns>
+        public async Task<IReadOnlyList<TrophyDetails>> GetTrophiesAsync()
+        {
+            var getMyTrophiesCommand = new GetMyTrophiesCommand();
+
+            var trophyList = await _client
+                .ExecuteCommandAsync<TrophyList>(getMyTrophiesCommand)
+                .ConfigureAwait(false);
+            
+            return trophyList
+                .Data
+                .Trophies
+                .Select(t => new TrophyDetails(t))
+                .ToList();
+        }          
     }
 }

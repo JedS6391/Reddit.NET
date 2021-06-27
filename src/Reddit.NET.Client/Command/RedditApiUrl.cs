@@ -18,6 +18,7 @@ namespace Reddit.NET.Client.Command
             public static string Details => $"{RedditOAuthPath}/api/v1/me";
             public static string Subreddits => $"{RedditOAuthPath}/subreddits/mine/subscriber";
             public static string KarmaBreakdown => $"{RedditOAuthPath}/api/v1/me/karma";
+            public static string Trophies => $"{RedditOAuthPath}/api/v1/me/trophies";
             public static string Inbox(string messageType) => $"{RedditOAuthPath}/message/{messageType}";
             public static string SendMessage => $"{RedditOAuthPath}/api/compose";
         }
@@ -26,6 +27,7 @@ namespace Reddit.NET.Client.Command
         {
             public static string Details(string username) => $"{RedditOAuthPath}/user/{username}/about";
             public static string History(string username, string type) => $"{RedditOAuthPath}/user/{username}/{type}";
+            public static string Trophies(string username) => $"{RedditOAuthPath}/api/v1/user/{username}/trophies";
         }
 
         public static class Subreddit 
