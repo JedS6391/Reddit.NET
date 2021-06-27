@@ -7,6 +7,8 @@ This documentation describes how to use the client and an overview of the compon
 ## Contents
 
 - [Client](./client.md)
+- [Authentication](./authentication.md)
+- [Internals](./internals.md)
 
 ## Demos
 
