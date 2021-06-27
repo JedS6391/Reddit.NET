@@ -8,8 +8,12 @@ The client relies on the `IHttpClientFactory` abstraction to obtain `HttpClient`
 
 All HTTP communication is performed asynchronously, making it clear which methods will perform a network request to obtain the data required.
 
+The only component that actually issues HTTP requests is the `CommandExecutor` class. The client operates in terms of *Commands* which describe a particular operation (e.g. get the details of a subreddit, get my saved history) and delegates to the executor to handle the intricacies of HTTP communication.
+
 ## Logging
 
+
+## Authentication
 
 
 ## JSON
