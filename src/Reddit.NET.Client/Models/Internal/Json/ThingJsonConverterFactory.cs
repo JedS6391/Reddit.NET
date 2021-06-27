@@ -27,7 +27,8 @@ namespace Reddit.NET.Client.Models.Internal.Json
             { typeof(User.Details), typeof(User) },
             { typeof(Submission.Details), typeof(Submission) },
             { typeof(Subreddit.Details), typeof(Subreddit) },
-            { typeof(KarmaBreakdown.Details), typeof(KarmaBreakdown) }
+            { typeof(KarmaBreakdown.Details), typeof(KarmaBreakdown) },
+            { typeof(Message.Details), typeof(Message) }
         };
 
         /// <inheritdoc />
@@ -125,6 +126,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
                     Constants.Kind.Comment => typeof(Comment),
                     Constants.Kind.User => typeof(User),
                     Constants.Kind.Submission => typeof(Submission),
+                    Constants.Kind.Message => typeof(Message),
                     Constants.Kind.Subreddit => typeof(Subreddit),
                     Constants.Kind.MoreComments => typeof(MoreComments),
                     _ => throw new JsonException($"Unsupported thing kind '{kind}'."),

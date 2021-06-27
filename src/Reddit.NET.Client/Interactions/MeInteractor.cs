@@ -27,6 +27,12 @@ namespace Reddit.NET.Client.Interactions
         }
 
         /// <summary>
+        /// Gets an interactor for operations relating to the authenticated user's inbox.
+        /// </summary>
+        /// <returns>A <see cref="InboxInteractor" /> instance that provides mechanisms for interacting with the authenticated user's inbox.</returns>
+        public InboxInteractor Inbox() => new InboxInteractor(_client);
+
+        /// <summary>
         /// Gets the details of the authenticated user.
         /// </summary>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the authenticated user.</returns>

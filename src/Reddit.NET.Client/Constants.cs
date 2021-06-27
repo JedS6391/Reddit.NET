@@ -55,12 +55,14 @@ namespace Reddit.NET.Client
                     nameof(CreateSubredditSubmissionCommand),                    
                     nameof(GetMyDetailsCommand),
                     nameof(GetMySubredditsCommand),
-                    nameof(GetMyKarmaBreakdownCommand),                
+                    nameof(GetMyKarmaBreakdownCommand),
+                    nameof(GetMyInboxMessagesCommand),
+                    nameof(SendMessageCommand),
                     nameof(GetUserHistoryCommand),
                     nameof(ApplyVoteCommand),
                     nameof(SaveOrUnsaveContentCommand),
                     nameof(DeleteContentCommand),
-                    nameof(CreateCommentCommand),
+                    nameof(CreateCommentCommand)
                 })
                 .ToArray();
         }
@@ -73,6 +75,7 @@ namespace Reddit.NET.Client
             public const string Comment = "t1";
             public const string User = "t2";
             public const string Submission = "t3";
+            public const string Message = "t4";
             public const string Subreddit = "t5";
             public const string MoreComments = "more";
         }
