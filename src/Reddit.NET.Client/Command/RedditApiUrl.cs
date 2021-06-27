@@ -18,6 +18,7 @@ namespace Reddit.NET.Client.Command
             public static string Details => $"{RedditOAuthPath}/api/v1/me";
             public static string Subreddits => $"{RedditOAuthPath}/subreddits/mine/subscriber";
             public static string KarmaBreakdown => $"{RedditOAuthPath}/api/v1/me/karma";
+            public static string Inbox(string messageType) => $"{RedditOAuthPath}/message/{messageType}";
         }
 
         public static class User 

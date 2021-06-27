@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.Authentication.Context
         }
 
         /// <inheritdoc />
-        public override string Id => "User Refresh Token";
+        public override string Id => "User Token";
         
         /// <inheritdoc />
         public override Token Token { get; }
