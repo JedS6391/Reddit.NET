@@ -3,19 +3,19 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.6.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Client", "Reddit.NET.Client\Reddit.NET.Client.csproj", "{EFA68DC6-A9D5-49C4-BCC2-69783793EEF7}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Client", "src\Reddit.NET.Client\Reddit.NET.Client.csproj", "{EFA68DC6-A9D5-49C4-BCC2-69783793EEF7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Console", "..\demos\Reddit.NET.Console\Reddit.NET.Console.csproj", "{5A72B17C-C081-4548-AE1F-FFD405A6621C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Console", "demos\Reddit.NET.Console\Reddit.NET.Console.csproj", "{5A72B17C-C081-4548-AE1F-FFD405A6621C}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.WebApi", "..\demos\Reddit.NET.WebApi\Reddit.NET.WebApi.csproj", "{334C74C7-A504-49C3-9FDF-5F7A0164D27C}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.WebApi", "demos\Reddit.NET.WebApi\Reddit.NET.WebApi.csproj", "{334C74C7-A504-49C3-9FDF-5F7A0164D27C}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Demos", "Demos", "{C0FFF2C1-0865-42A3-B905-5F4576B166CD}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{10C4158D-372E-414D-92D5-0BAE324BDB38}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Client.UnitTests", "..\tests\Reddit.NET.Client.UnitTests\Reddit.NET.Client.UnitTests.csproj", "{8EE44662-AF24-454E-AAD6-0761A27E426F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Client.UnitTests", "tests\Reddit.NET.Client.UnitTests\Reddit.NET.Client.UnitTests.csproj", "{8EE44662-AF24-454E-AAD6-0761A27E426F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Client.IntegrationTests", "..\tests\Reddit.NET.Client.IntegrationTests\Reddit.NET.Client.IntegrationTests.csproj", "{72F02592-4B0B-4916-8B79-910B8AFEC98F}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reddit.NET.Client.IntegrationTests", "tests\Reddit.NET.Client.IntegrationTests\Reddit.NET.Client.IntegrationTests.csproj", "{72F02592-4B0B-4916-8B79-910B8AFEC98F}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

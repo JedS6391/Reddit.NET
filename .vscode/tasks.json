@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "clean",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}"
             ],
             "problemMatcher": "$msCompile"
         },
@@ -17,10 +17,21 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/src"
+                "${workspaceFolder}"
             ],
             "problemMatcher": "$msCompile",
-            "dependsOn":["clean"]
-        }
+            "dependsOn": [ "clean" ]
+        },
+        {
+            "label": "test",
+            "command": "dotnet",
+            "type": "process",
+            "args": [
+                "test",
+                "${workspaceFolder}"
+            ],
+            "problemMatcher": "$msCompile",
+            "dependsOn": [ "clean" ]
+        }        
     ]
 }
