@@ -49,6 +49,6 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// <remarks>
         /// Should be used in contexts where a secret cannot be kept (i.e. installed app, mobile device)
         /// </remarks>
-        ReadOnlyInstalledApp
+        ReadOnlyInstalledApp,
     }
 }

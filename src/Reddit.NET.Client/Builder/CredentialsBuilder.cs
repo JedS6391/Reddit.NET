@@ -176,23 +176,29 @@ namespace Reddit.NET.Client.Builder
         /// 
         /// It can then be used to create interactive credentials without restarting the interaction authentication process.
         /// </remarks>
+        /// <param name="mode">The </param>
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="clientSecret">The client secret of the reddit app.</param>
         /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
         /// <param name="sessionId">A unique key generated at the end of the interactive authentication process.</param>
         /// <returns>A <see cref="InteractiveCredentials.Builder" /> instance to further configure the interactive credentials.</returns>
         public InteractiveCredentials.Builder Session(
+            AuthenticationMode mode,
             string clientId, 
             string clientSecret, 
             Uri redirectUri,
             Guid sessionId)
         {
+            Requires.Argument(
+                mode == AuthenticationMode.WebApp || mode == AuthenticationMode.InstalledApp,
+                nameof(mode),
+                "Mode must be web-app or installed app.");
             Requires.NotNull(clientId, nameof(clientId));
             Requires.NotNull(clientSecret, nameof(clientSecret));
             Requires.NotNull(redirectUri, nameof(redirectUri));
 
             var interactiveCredentialsBuilder = new InteractiveCredentials.Builder(
-                AuthenticationMode.WebApp,
+                mode,
                 clientId,
                 clientSecret,
                 redirectUri,

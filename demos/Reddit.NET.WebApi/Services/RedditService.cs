@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Reddit.NET.Client;
 using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Builder;
 using Reddit.NET.Client.Command;
 using Reddit.NET.WebApi.Services.Interfaces;
@@ -119,6 +120,7 @@ namespace Reddit.NET.WebApi.Services
                 {
                     // Use credentials based on the provided session.
                     credentialsBuilder.Session(
+                        AuthenticationMode.WebApp,
                         _options.ClientId,
                         _options.ClientSecret,
                         _options.RedirectUri,
