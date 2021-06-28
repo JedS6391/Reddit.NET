@@ -15,7 +15,7 @@ jobs:
         dotnet-version: '5.0.202'
 
     - name: Build with dotnet
-      run: dotnet build src --configuration Release
+      run: dotnet build --configuration Release
 
     - name: Run tests
       run: dotnet test /p:CollectCoverage=true /p:CoverletOutput='./' /p:CoverletOutputFormat=opencover      
