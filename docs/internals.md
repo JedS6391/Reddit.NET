@@ -1,6 +1,6 @@
 # Internals
 
-This section details the internal components the client uses. Most of these won't be directly consumed when using the client.
+This section details the internals of the client, including some of the components it uses. Most of these won't be directly consumed when using the client but it is worthwhile to describe their responsibilities and understand how they work/are used.
 
 ## HTTP
 
