@@ -43,6 +43,16 @@ namespace Reddit.NET.Client
         /// <param name="name">The name of the subreddit to interact with.</param>
         /// <returns>A <see cref="SubredditInteractor" /> instance that provides mechanisms for interacting with the requested subreddit.</returns>
         public SubredditInteractor Subreddit(string name) => new SubredditInteractor(this, name);
+        
+        /// <summary>
+        /// Gets an interactor for operations relating to a group of subreddits.
+        /// </summary>
+        /// <remarks>
+        /// Note that some operations will not be possible when combining subreddits, e.g. you cannot create a new submission.
+        /// </remarks>
+        /// <param name="names">The names of the subreddits to interact with.</param>
+        /// <returns>A <see cref="SubredditInteractor" /> instance that provides mechanisms for interacting with the requested subreddits.</returns>        
+        public SubredditInteractor Subreddits(params string[] names) => new SubredditInteractor(this, string.Join('+', names));
 
         /// <summary>
         /// Gets an interactor for operations relating to a specific user.
