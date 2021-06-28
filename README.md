@@ -4,11 +4,11 @@
 
 Provides a .NET client for interacting with [reddit](https://www.reddit.com).
 
-## Build
+The client was designed with the following goals in mind:
 
-```
-dotnet build src/
-```
+- Simple, modern, asynchronous API
+- Support for various authentication modes
+- Modular structure with simple re-usable components
 
 ## Usage
 
@@ -41,6 +41,30 @@ await foreach (var submission in topFiftyHotSubmissions)
 ```
 
 Further examples of usage can be found in the [demos](./demos/) folder.
+
+## Development
+
+Following the instructions below to get started with the project in a local development environment.
+
+### Prerequisites
+
+- [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
+
+### Building
+
+After cloning the source code to a destination of your choice, run the following command to build the solution:
+
+```
+dotnet build
+```
+
+### Tests
+
+The test suite can be run using the following command:
+
+```
+dotnet test
+```
 
 ## Documentation
 
