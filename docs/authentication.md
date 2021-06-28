@@ -65,7 +65,9 @@ var builder = await RedditClientBuilder
 
         var authorizationUri = interactiveCredentialsBuilder.GetAuthorizationUri();
 
-        // Send the user to the authorization URI
+        // Send the user to the authorization URI.
+        // This could be as simple as printing the authorization URI for the user to copy-paste into their browser,
+        // or a more involved process of opening a browser and then redirecting back to a mobile application.
         ...
 
         // On redirect back, validate the state and code parameters before authorizing the builder
