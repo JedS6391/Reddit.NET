@@ -9,24 +9,6 @@ namespace Reddit.NET.Client.Authentication.Credential
     public enum AuthenticationMode
     {
         /// <summary>
-        /// The app runs as the backend of a web server, on a server that only YOU have access to.
-        /// </summary>
-        /// <remarks>
-        /// Web applications are able to keep a secret and will use the authorization code grant type
-        /// to obtain an access token after the user has approved access on their behalf.
-        /// </remarks>
-        WebApp,
-
-        /// <summary>
-        /// An app installed on a computer that you don't own or control.
-        /// </summary>
-        /// <remarks>
-        /// Installed applications are not able to keep a secret and will use the authorization code grant type
-        /// to obtain an access token after the user has approved access on their behalf.
-        /// </remarks>
-        InstalledApp,
-
-        /// <summary>
         /// A single-user script.
         /// </summary>
         /// <remarks>
@@ -50,5 +32,23 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// Should be used in contexts where a secret cannot be kept (i.e. installed app, mobile device)
         /// </remarks>
         ReadOnlyInstalledApp,
+
+        /// <summary>
+        /// The app runs as the backend of a web server, on a server that only YOU have access to.
+        /// </summary>
+        /// <remarks>
+        /// Web applications are able to keep a secret and will use the authorization code grant type
+        /// to obtain an access token after the user has approved access on their behalf.
+        /// </remarks>
+        WebApp,
+
+        /// <summary>
+        /// An app installed on a computer that you don't own or control.
+        /// </summary>
+        /// <remarks>
+        /// Installed applications are not able to keep a secret and will use the authorization code grant type
+        /// to obtain an access token after the user has approved access on their behalf.
+        /// </remarks>
+        InstalledApp
     }
 }
