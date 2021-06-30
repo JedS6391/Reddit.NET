@@ -27,7 +27,7 @@ namespace Reddit.NET.Client.IntegrationTests
             var details = await subreddit.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-            Assert.AreEqual(details.Name, "AskReddit");
+            Assert.AreEqual("AskReddit", details.Name);
         }
 
         [Test]
@@ -157,7 +157,7 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(exception);
             Assert.IsNotNull(exception.Details);
-            Assert.AreEqual(exception.Details.Type, "ALREADY_SUB");
+            Assert.AreEqual("ALREADY_SUB", exception.Details.Type);
         }        
 
         [Test]

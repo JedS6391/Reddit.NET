@@ -26,15 +26,15 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
 
             // The value above should correspond to Sun Jun 13 2021 17:35:29 GMT+0000
             Assert.IsNotNull(convertedValue);
-            Assert.AreEqual(convertedValue.Date.Year, 2021);
-            Assert.AreEqual(convertedValue.Date.Month, 6);
-            Assert.AreEqual(convertedValue.Date.Day, 13);
-            Assert.AreEqual(convertedValue.Date.DayOfWeek, DayOfWeek.Sunday);
-            Assert.AreEqual(convertedValue.Date.Hour, 17);
-            Assert.AreEqual(convertedValue.Date.Minute, 35);
-            Assert.AreEqual(convertedValue.Date.Second, 29);
-            Assert.AreEqual(convertedValue.Date.Millisecond, 0);            
-            Assert.AreEqual(convertedValue.Date.Offset, TimeSpan.FromSeconds(0));
+            Assert.AreEqual(2021, convertedValue.Date.Year);
+            Assert.AreEqual(6, convertedValue.Date.Month);
+            Assert.AreEqual(13, convertedValue.Date.Day);
+            Assert.AreEqual(DayOfWeek.Sunday, convertedValue.Date.DayOfWeek);
+            Assert.AreEqual(17, convertedValue.Date.Hour);
+            Assert.AreEqual(35, convertedValue.Date.Minute);
+            Assert.AreEqual(29, convertedValue.Date.Second);
+            Assert.AreEqual(0, convertedValue.Date.Millisecond);            
+            Assert.AreEqual(TimeSpan.FromSeconds(0), convertedValue.Date.Offset);
         }
 
         [Test]
@@ -52,15 +52,15 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
             var convertedValue = _converter.Read(ref reader, typeof(DateTimeOffset), new JsonSerializerOptions());
 
             // The value above should correspond to Mon Jun 28 2021 07:06:35 GMT+0000
-            Assert.AreEqual(convertedValue.Year, 2021);
-            Assert.AreEqual(convertedValue.Month, 6);
-            Assert.AreEqual(convertedValue.Day, 28);
-            Assert.AreEqual(convertedValue.DayOfWeek, DayOfWeek.Monday);
-            Assert.AreEqual(convertedValue.Hour, 7);
-            Assert.AreEqual(convertedValue.Minute, 6);
-            Assert.AreEqual(convertedValue.Second, 35);
-            Assert.AreEqual(convertedValue.Millisecond, 0);            
-            Assert.AreEqual(convertedValue.Offset, TimeSpan.FromSeconds(0));
+            Assert.AreEqual(2021, convertedValue.Year);
+            Assert.AreEqual(6, convertedValue.Month);
+            Assert.AreEqual(28, convertedValue.Day);
+            Assert.AreEqual(DayOfWeek.Monday, convertedValue.DayOfWeek);
+            Assert.AreEqual(7, convertedValue.Hour);
+            Assert.AreEqual(6, convertedValue.Minute);
+            Assert.AreEqual(35, convertedValue.Second);
+            Assert.AreEqual(0, convertedValue.Millisecond);            
+            Assert.AreEqual(TimeSpan.FromSeconds(0), convertedValue.Offset);
         }
 
         [Test]

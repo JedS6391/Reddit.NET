@@ -17,7 +17,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetDetailsAsync_ValidUser_ShouldGetDetails()
+        public async Task GetMessagesAsync_ValidUser_ShouldGetMessages()
         {
             var inbox = _client.Me().Inbox();
 
