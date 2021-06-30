@@ -5,6 +5,12 @@ on: push
 jobs:
   build:
     runs-on: ubuntu-latest
+    
+    env:
+      TEST_REDDIT_USERNAME: ${{ secrets.TEST_REDDIT_USERNAME }}
+      TEST_REDDIT_PASSWORD: ${{ secrets.TEST_REDDIT_PASSWORD }}
+      TEST_REDDIT_CLIENT_ID: ${{ secrets.TEST_REDDIT_CLIENT_ID }}
+      TEST_REDDIT_CLIENT_SECRET: ${{ secrets.TEST_REDDIT_CLIENT_SECRET }}
 
     steps:
     - uses: actions/checkout@master
