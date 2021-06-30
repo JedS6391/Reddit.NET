@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Write;
@@ -125,13 +126,14 @@ namespace Reddit.NET.Client.IntegrationTests
         }        
 
         [Test]
-        public async Task CreateSubmissionAsync_LinkSubmission_ShouldCreateLinkSubmission()
+        public async Task CreateSubmissionAsync_LinkSubmissionWithResubmit_ShouldCreateLinkSubmission()
         {
             var subreddit = _client.Subreddit("redditclienttests1");
 
             var newSubmissionDetails = new LinkSubmissionDetails(
                 title: $"Test submission {Guid.NewGuid()}",
-                uri: new Uri("https://github.com/JedS6391/Reddit.NET"));
+                uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
+                resubmit: true);
 
             var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
 
@@ -139,6 +141,24 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
             Assert.IsTrue(createdSubmission.Url == newSubmissionDetails.Uri.AbsoluteUri);
         }
+
+        [Test]
+        public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsCreateSubmissionException()
+        {
+            var subreddit = _client.Subreddit("redditclienttests1");
+
+            var newSubmissionDetails = new LinkSubmissionDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
+                resubmit: false);
+
+            var exception = Assert.ThrowsAsync<CreateSubmissionException>(async () => 
+                await subreddit.CreateSubmissionAsync(newSubmissionDetails));
+
+            Assert.IsNotNull(exception);
+            Assert.IsNotNull(exception.Details);
+            Assert.AreEqual(exception.Details.Type, "ALREADY_SUB");
+        }        
 
         [Test]
         public async Task CreateSubmissionAsync_TextSubmission_ShouldCreateTextSubmission()
