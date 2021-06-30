@@ -1,3 +1,4 @@
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.IntegrationTests.Shared;
@@ -22,6 +23,19 @@ namespace Reddit.NET.Client.IntegrationTests
             var details = await me.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-        }       
+        }   
+
+        [Test]
+        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        {
+            var me = _client.Me();
+
+            var mySubreddits = await me
+                .GetSubredditsAsync()
+                .ToListAsync();
+
+            Assert.IsNotNull(mySubreddits);
+            Assert.IsNotEmpty(mySubreddits);
+        }            
     }
 }

@@ -1,6 +1,8 @@
+using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.IntegrationTests.Shared;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Client.IntegrationTests
 {
@@ -22,6 +24,92 @@ namespace Reddit.NET.Client.IntegrationTests
             var details = await subreddit.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-        }       
+            Assert.AreEqual(details.Name, "AskReddit");
+        }
+
+        [Test]
+        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var fiftyHotSubmissions = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.Hot) 
+                        .WithItemsPerRequest(25)                 
+                        .WithMaximumItems(50))
+                .ToListAsync();
+
+            Assert.IsNotNull(fiftyHotSubmissions);
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+        }
+
+        [Test]
+        public async Task GetSubmissionsAsync_FiftyBestSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var fiftyHotSubmissions = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.Best) 
+                        .WithItemsPerRequest(25)                 
+                        .WithMaximumItems(50))
+                .ToListAsync();
+
+            Assert.IsNotNull(fiftyHotSubmissions);
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+        } 
+
+        [Test]
+        public async Task GetSubmissionsAsync_FiftyNewSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var fiftyHotSubmissions = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.New) 
+                        .WithItemsPerRequest(25)                 
+                        .WithMaximumItems(50))
+                .ToListAsync();
+
+            Assert.IsNotNull(fiftyHotSubmissions);
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+        }
+
+        [Test]
+        public async Task GetSubmissionsAsync_FiftyRisingSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var fiftyHotSubmissions = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.Rising) 
+                        .WithItemsPerRequest(25)                 
+                        .WithMaximumItems(50))
+                .ToListAsync();
+
+            Assert.IsNotNull(fiftyHotSubmissions);
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+        }      
+
+        [Test]
+        public async Task GetSubmissionsAsync_FiftyTopSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var fiftyHotSubmissions = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.Top) 
+                        .WithItemsPerRequest(25)                 
+                        .WithMaximumItems(50))
+                .ToListAsync();
+
+            Assert.IsNotNull(fiftyHotSubmissions);
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+        }  
     }
 }
