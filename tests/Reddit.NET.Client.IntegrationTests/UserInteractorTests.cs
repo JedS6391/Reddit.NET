@@ -1,12 +1,14 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Client.IntegrationTests
 {
-    public class MeInteractorTests
+    public class UserInteractorTests
     {
         private RedditClient _client;
 
@@ -19,34 +21,19 @@ namespace Reddit.NET.Client.IntegrationTests
         [Test]
         public async Task GetDetailsAsync_ValidUser_ShouldGetDetails()
         {
-            var me = _client.Me();
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var details = await me.GetDetailsAsync();
+            var details = await user.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-        }   
-
-        [Test]
-        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
-        {
-            var me = _client.Me();
-
-            var mySubreddits = await me
-                .GetSubredditsAsync(builder =>
-                    builder
-                        .WithMaximumItems(100))
-                .ToListAsync();
-
-            Assert.IsNotNull(mySubreddits);
-            Assert.IsNotEmpty(mySubreddits);
-        } 
+        }
 
         [Test]
         public async Task GetHistoryAsync_Submissions_ShouldGetSubmissions()
         {
-            var me = _client.Me();
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var history = await me
+            var history = await user
                 .GetHistoryAsync(builder =>
                     builder
                         .WithType(UserHistoryType.Submitted)
@@ -58,19 +45,21 @@ namespace Reddit.NET.Client.IntegrationTests
         }                   
 
         [Test]
-        public async Task GetHistoryAsync_Saved_ShouldGetSavedHistory()
+        public void GetHistoryAsync_Saved_ThrowsInvalidUserHistoryTypeException()
         {
-            var me = _client.Me();
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var history = await me
+            var exception = Assert.ThrowsAsync<InvalidUserHistoryTypeException>(async () =>
+            {
+                var history = await user
                 .GetHistoryAsync(
                     builder => builder
                         .WithType(UserHistoryType.Saved)
                         .WithMaximumItems(10))
                 .ToListAsync();
+            });
 
-            Assert.IsNotNull(history);
-            Assert.IsNotEmpty(history);
+            Assert.IsNotNull(exception);            
         } 
     }
 }

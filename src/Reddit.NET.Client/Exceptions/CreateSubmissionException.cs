@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Exceptions
     public class CreateSubmissionException : RedditClientException
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="RedditClientException" /> class.
+        /// Initializes a new instance of the <see cref="CreateSubmissionException" /> class.
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         /// <param name="details">The details of the error.</param>

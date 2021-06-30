@@ -2,15 +2,22 @@ using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Logging.Abstractions;
 using Reddit.NET.Client.Builder;
 
 namespace Reddit.NET.Client.IntegrationTests.Shared
 {
+    /// <summary>
+    /// Responsible for managing the <see cref="RedditClient" /> instances used by the integration tests.
+    /// </summary>
     public static class TestRedditClientProvider
     {
+        // The client instance will only be created once.
         private static readonly Lazy<RedditClient> s_client = new Lazy<RedditClient>(BuildClient);
 
+        /// <summary>
+        /// Gets a client instance configured with the script authentication mode.
+        /// </summary>
+        /// <returns>A <see cref="RedditClient" /> instance.</returns>
         public static RedditClient GetClient() => s_client.Value;
 
         private static RedditClient BuildClient()
