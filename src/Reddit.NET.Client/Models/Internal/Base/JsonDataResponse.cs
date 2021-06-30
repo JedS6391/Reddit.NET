@@ -26,14 +26,17 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// Represents the data of the <see cref="JsonDataResponse{TDataNode}.Json" /> node.
     /// </summary>
     internal class JsonNode<TDataNode>
-    {
-        // TODO: Need to verify this type
+    {        
         /// <summary>
         /// Gets the 'errors' list.
         /// </summary>
+        /// <remarks>
+        /// Errors are represented as lists, which requires a nested list. An example of an error would be:
+        /// <c>["ALREADY_SUB", "This community doesn't allow links to be posted more than once, and this link has already been shared", "url"]</c>
+        /// </remarks>
         [JsonPropertyName("errors")]
         [JsonInclude]
-        public List<object> Errors { get; private set; }
+        public List<List<string>> Errors { get; private set; }
 
         /// <summary>
         /// Gets the 'data' node.

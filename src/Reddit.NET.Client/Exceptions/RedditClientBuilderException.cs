@@ -1,6 +1,6 @@
 using System;
 
-namespace Reddit.NET.Client.Builder
+namespace Reddit.NET.Client.Exceptions
 {
     /// <summary>
     /// Represents an error that occurs when building a <see cref="RedditClient" /> instance.
