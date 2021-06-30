@@ -82,9 +82,7 @@ namespace Reddit.NET.Client.Command
         {
             _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
 
-            AddDefaultHeaders(request);
-
-            HttpClient client = _httpClientFactory.CreateClient();
+            HttpClient client = _httpClientFactory.CreateClient(Constants.HttpClientName);
 
             HttpResponseMessage response = await client
                 .SendAsync(request)
@@ -94,9 +92,6 @@ namespace Reddit.NET.Client.Command
 
             return response;
         }
-
-        private static void AddDefaultHeaders(HttpRequestMessage request) =>
-            request.Headers.Add("User-Agent", Constants.Request.ClientName);
 
         private static void AddAuthorizationHeader(HttpRequestMessage request, AuthenticationContext authenticationContext) =>
             request.Headers.Authorization = new AuthenticationHeaderValue(

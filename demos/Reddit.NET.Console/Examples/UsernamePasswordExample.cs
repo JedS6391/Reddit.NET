@@ -101,11 +101,15 @@ namespace Reddit.NET.Console.Examples
             // when the authentication actually occurs.
             var code = PromptForValue("2FA Code");
 
+            password = string.IsNullOrEmpty(code) ?
+                password :
+                "{password}:{code}";
+
             credentialsBuilder.Script(
                 clientId,
                 clientSecret,
                 username,
-                $"{password}:{code}");
+                password);
         }
 
         private string PromptForValue(string valueName)

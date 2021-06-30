@@ -5,6 +5,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Storage;
+using Reddit.NET.Client.Builder;
 using Reddit.NET.Client.Command;
 using Reddit.NET.WebApi.Services;
 using Reddit.NET.WebApi.Services.Interfaces;
@@ -28,7 +29,7 @@ namespace Reddit.NET.WebApi
         {
             services.AddControllers();
 
-            services.AddHttpClient();
+            services.AddRedditHttpClient(userAgent: "macosx:Reddit.NET.WebApi:v0.1.0 (by JedS6391)");
 
             services.AddHttpContextAccessor();
 
