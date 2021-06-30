@@ -49,7 +49,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit("askreddit");
 
-            var fiftyHotSubmissions = await subreddit
+            var fiftyBestSubmissions = await subreddit
                 .GetSubmissionsAsync(builder => 
                     builder                    
                         .WithSort(SubredditSubmissionSort.Best) 
@@ -57,8 +57,8 @@ namespace Reddit.NET.Client.IntegrationTests
                         .WithMaximumItems(50))
                 .ToListAsync();
 
-            Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+            Assert.IsNotNull(fiftyBestSubmissions);
+            Assert.IsTrue(fiftyBestSubmissions.Count == 50);
         } 
 
         [Test]
@@ -66,7 +66,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit("askreddit");
 
-            var fiftyHotSubmissions = await subreddit
+            var fiftyNewSubmissions = await subreddit
                 .GetSubmissionsAsync(builder => 
                     builder                    
                         .WithSort(SubredditSubmissionSort.New) 
@@ -74,8 +74,8 @@ namespace Reddit.NET.Client.IntegrationTests
                         .WithMaximumItems(50))
                 .ToListAsync();
 
-            Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+            Assert.IsNotNull(fiftyNewSubmissions);
+            Assert.IsTrue(fiftyNewSubmissions.Count == 50);
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit("askreddit");
 
-            var fiftyHotSubmissions = await subreddit
+            var fiftyRisingSubmissions = await subreddit
                 .GetSubmissionsAsync(builder => 
                     builder                    
                         .WithSort(SubredditSubmissionSort.Rising) 
@@ -91,8 +91,8 @@ namespace Reddit.NET.Client.IntegrationTests
                         .WithMaximumItems(50))
                 .ToListAsync();
 
-            Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+            Assert.IsNotNull(fiftyRisingSubmissions);
+            Assert.IsTrue(fiftyRisingSubmissions.Count == 50);
         }      
 
         [Test]
@@ -100,7 +100,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit("askreddit");
 
-            var fiftyHotSubmissions = await subreddit
+            var fiftyTopSubmissions = await subreddit
                 .GetSubmissionsAsync(builder => 
                     builder                    
                         .WithSort(SubredditSubmissionSort.Top) 
@@ -108,8 +108,8 @@ namespace Reddit.NET.Client.IntegrationTests
                         .WithMaximumItems(50))
                 .ToListAsync();
 
-            Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
-        }  
+            Assert.IsNotNull(fiftyTopSubmissions);
+            Assert.IsTrue(fiftyTopSubmissions.Count == 50);
+        }
     }
 }
