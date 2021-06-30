@@ -18,7 +18,7 @@ namespace Reddit.NET.Client.IntegrationTests.Shared
             var services = new ServiceCollection();
 
             services
-                .AddLogging(builder => builder.AddProvider(NullLoggerProvider.Instance))
+                .AddLogging(builder => builder.AddDebug())
                 .AddRedditHttpClient(userAgent: "macosx:Reddit.NET.Client.IntegrationTests:v0.1.0 (by JedS6391)");
 
             var provider = services.BuildServiceProvider();
