@@ -128,7 +128,7 @@ namespace Reddit.NET.Client.IntegrationTests
         [Test]
         public async Task CreateSubmissionAsync_LinkSubmissionWithResubmit_ShouldCreateLinkSubmission()
         {
-            var subreddit = _client.Subreddit("redditclienttests1");
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             var newSubmissionDetails = new LinkSubmissionDetails(
                 title: $"Test submission {Guid.NewGuid()}",
@@ -145,7 +145,7 @@ namespace Reddit.NET.Client.IntegrationTests
         [Test]
         public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsCreateSubmissionException()
         {
-            var subreddit = _client.Subreddit("redditclienttests1");
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             var newSubmissionDetails = new LinkSubmissionDetails(
                 title: $"Test submission {Guid.NewGuid()}",
@@ -163,7 +163,7 @@ namespace Reddit.NET.Client.IntegrationTests
         [Test]
         public async Task CreateSubmissionAsync_TextSubmission_ShouldCreateTextSubmission()
         {
-            var subreddit = _client.Subreddit("redditclienttests1");
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             var newSubmissionDetails = new TextSubmissionDetails(
                 title: $"Test submission {Guid.NewGuid()}",
