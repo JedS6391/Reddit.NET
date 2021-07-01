@@ -34,20 +34,20 @@ namespace Reddit.NET.Client.IntegrationTests
 
             var submission = createdSubmission.Interact(_client);
 
-            var firstCommentDetails = await submission.ReplyAsync(
-                text: $"Test reply made by Reddit.NET client integration tests [{Guid.NewGuid()}].");
-        
+            var firstCommentText = $"Test reply made by Reddit.NET client integration tests [{Guid.NewGuid()}].";
+
+            var firstCommentDetails = await submission.ReplyAsync(firstCommentText);
+
+            var replyCommentText = $"Test reply made by Reddit.NET client integration tests. [{Guid.NewGuid()}]";
+
             var replyCommentDetails = await firstCommentDetails
                 .Interact(_client)
-                .ReplyAsync(text: $"Test reply made by Reddit.NET client integration tests. [{Guid.NewGuid()}]");            
+                .ReplyAsync(replyCommentText);
 
-            // Wait a little bit to ensure everything has been updated.
-            await Task.Delay(TimeSpan.FromSeconds(4));
-
-            var comments = await submission.GetCommentsAsync();
-
-            Assert.AreEqual(firstCommentDetails.Body, comments[0].Details.Body);
-            Assert.AreEqual(replyCommentDetails.Body, comments[0].Replies[0].Details.Body);
+            Assert.IsNotNull(firstCommentDetails);
+            Assert.IsNotNull(replyCommentDetails);
+            Assert.AreEqual(firstCommentText, firstCommentDetails.Body);
+            Assert.AreEqual(replyCommentText, replyCommentDetails.Body);
         }
     }
 }
