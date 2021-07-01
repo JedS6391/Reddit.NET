@@ -53,7 +53,7 @@ namespace Reddit.NET.Console.Examples
                 })     
                 .BuildAsync();
 
-            var askReddit = client.Subreddit("blah123");
+            var askReddit = client.Subreddit("askreddit");
 
             var askRedditDetails = await askReddit.GetDetailsAsync();            
 
