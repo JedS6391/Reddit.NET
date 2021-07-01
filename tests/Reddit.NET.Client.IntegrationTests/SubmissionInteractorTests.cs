@@ -97,6 +97,11 @@ namespace Reddit.NET.Client.IntegrationTests
 
             static async Task RunFuncAndAssertVote(SubmissionInteractor submission, VoteDirection expectedVoteDirection, Func<SubmissionInteractor, Task> func)
             {
+                // The vote endpoint seems to have a higher rate limit than others, and may be rate limited
+                // regardless of the 60 request/min limit.
+                // This delay is an attempt to avoid hitting that limit.
+                await Task.Delay(TimeSpan.FromSeconds(2));
+
                 await func.Invoke(submission);
 
                 var submissionDetails = await submission.GetDetailsAsync();
