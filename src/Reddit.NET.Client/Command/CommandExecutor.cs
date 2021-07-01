@@ -33,7 +33,7 @@ namespace Reddit.NET.Client.Command
             _logger = logger;
             _httpClientFactory = httpClientFactory;
             // TODO: Allow injection of rate limiter.
-            _rateLimiter = new FixedWindowRateLimiter(_logger, FixedWindowRateLimiterOptions.Default);
+            _rateLimiter = new TokenBucketRateLimiter(_logger, TokenBucketRateLimiterOptions.Default);
         }
 
         /// <summary>

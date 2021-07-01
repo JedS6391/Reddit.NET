@@ -7,22 +7,22 @@ using Microsoft.Extensions.Logging;
 namespace Reddit.NET.Client.Command.RateLimiting
 {
     /// <summary>
-    /// A <see cref="RateLimiter" /> implementation that allows a number of permits to occur in fixed interval windows.
+    /// A <see cref="RateLimiter" /> implementation using the <see href="https://en.wikipedia.org/wiki/Token_bucket">token bucket algorithm</see>. 
     /// 
     /// The limiter will periodically replenish its permits to allow further permits to be obtained.
-    /// </summary>
+    /// </summary>    
     /// <remarks>
     /// Note this implementation is based on the APIs defined in the following .NET proposal: https://github.com/dotnet/runtime/issues/52079
     /// 
     /// Once this API lands in the BCL, it would be preferred to use those implementations.
     /// </remarks>
-    internal class FixedWindowRateLimiter : RateLimiter
+    internal class TokenBucketRateLimiter : RateLimiter
     {
         private int _permitCount;
         private int _queueCount;
 
         private readonly ILogger _logger;
-        private readonly FixedWindowRateLimiterOptions _options;
+        private readonly TokenBucketRateLimiterOptions _options;
         private readonly Timer _renewTimer;
         private readonly object _lock = new();        
         private readonly Queue<RequestRegistration> _queue = new();
@@ -31,19 +31,19 @@ namespace Reddit.NET.Client.Command.RateLimiting
         private static readonly PermitLease s_failedLease = new RateLimitLease(false);
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FixedWindowRateLimiter" /> class.
+        /// Initializes a new instance of the <see cref="TokenBucketRateLimiter" /> class.
         /// </summary>
         /// <param name="logger">An <see cref="ILogger" /> instance used for writing log messages.</param>
         /// <param name="options">The options for the limiter to use.</param>
-        public FixedWindowRateLimiter(ILogger logger, FixedWindowRateLimiterOptions options)
+        public TokenBucketRateLimiter(ILogger logger, TokenBucketRateLimiterOptions options)
         {
             _logger = logger;
             _options = options;
             _renewTimer = new Timer(
                 Replenish, 
                 this, 
-                _options.Window,
-                _options.Window);
+                _options.ReplenishmentPeriod,
+                _options.ReplenishmentPeriod);
             
             _permitCount = _options.PermitLimit;
             _queueCount = 0;
@@ -104,7 +104,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
 
         private static void Replenish(object state)
         {                    
-            if (state is not FixedWindowRateLimiter limiter)
+            if (state is not TokenBucketRateLimiter limiter)
             {
                 return;
             }
@@ -113,24 +113,32 @@ namespace Reddit.NET.Client.Command.RateLimiting
             var availablePermits = limiter.GetAvailablePermits();
             var options = limiter._options;
             var maxPermits = options.PermitLimit;
-
-            logger.LogTrace($"Replenishing rate limiter... [Permits = {availablePermits}");
-        
+                
             if (availablePermits < maxPermits)
-            {                   
+            {
                 // Replenish the available permits.
-                Interlocked.Add(ref limiter._permitCount, maxPermits - availablePermits);
-            }
-            
-            var queue = limiter._queue;
+                var permitsToAdd = Math.Min(options.TokensPerPeriod, maxPermits - availablePermits);
 
-            logger.LogDebug($"Processing rate limiter queue...");
+                logger.LogDebug($"Replenishing rate limiter [Available Permits = {availablePermits}, Permits To Add = {permitsToAdd}]");
+
+                Interlocked.Add(ref limiter._permitCount, permitsToAdd);
+            }
+ 
+            ProcessPermitRequestQueue(limiter);
+        }
+
+        private static void ProcessPermitRequestQueue(TokenBucketRateLimiter limiter)
+        {
+            var logger = limiter._logger;
+            var queue = limiter._queue; 
 
             // Process queued requests.
             lock (limiter._lock)
             {
                 while (queue.Count > 0)
                 {
+                    logger.LogDebug($"Processing rate limiter queue...");
+
                     var nextPendingRequest = queue.Peek();
 
                     if (Interlocked.Add(ref limiter._permitCount, -nextPendingRequest.Count) >= 0)
@@ -153,7 +161,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
                         
                         break;
                     }
-                }
+                }                
             }
         }
 
