@@ -20,6 +20,12 @@ namespace Reddit.NET.Client.Models.Public.Read
             Upvotes = thing.Data.Upvotes;
             Downvotes = thing.Data.Downvotes;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
+            Vote = thing.Data.LikedByUser switch
+            {
+                true => VoteDirection.Upvoted,
+                false => VoteDirection.Downvoted,
+                null => VoteDirection.NoVote
+            };            
         }
 
         /// <summary>

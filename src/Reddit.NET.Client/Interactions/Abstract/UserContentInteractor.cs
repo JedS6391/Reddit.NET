@@ -47,19 +47,19 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// Upvotes the content.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpvoteAsync() => await ApplyVoteAsync(ApplyVoteCommand.VoteDirection.Upvote).ConfigureAwait(false);
+        public async Task UpvoteAsync() => await ApplyVoteAsync(VoteDirection.Upvoted).ConfigureAwait(false);
 
         /// <summary>
         /// Downvotes the content.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DownvoteAsync() => await ApplyVoteAsync(ApplyVoteCommand.VoteDirection.Downvote).ConfigureAwait(false);
+        public async Task DownvoteAsync() => await ApplyVoteAsync(VoteDirection.Downvoted).ConfigureAwait(false);
 
         /// <summary>
         /// Removes any vote on the content.
         /// </summary>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UnvoteAsync() => await ApplyVoteAsync(ApplyVoteCommand.VoteDirection.Unvote).ConfigureAwait(false);
+        public async Task UnvoteAsync() => await ApplyVoteAsync(VoteDirection.NoVote).ConfigureAwait(false);
 
         /// <summary>
         /// Saves the content.
@@ -122,7 +122,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
             await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);            
         }
 
-        private async Task ApplyVoteAsync(ApplyVoteCommand.VoteDirection direction) 
+        private async Task ApplyVoteAsync(VoteDirection direction) 
         {
             var applyVoteCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
