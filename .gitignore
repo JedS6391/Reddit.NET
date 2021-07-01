@@ -369,6 +369,7 @@ FodyWeavers.xsd
 
 ### dotenv ###
 .env
+.test-env
 
 ### DotnetCore ###
 # .NET Core build folders
