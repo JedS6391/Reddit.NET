@@ -82,6 +82,22 @@ namespace Reddit.NET.Client.IntegrationTests
         } 
 
         [Test]
+        public async Task GetSubmissionsAsync_MultipleSubreddits_ShouldGetFiftySubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit+pics");
+
+            var fiftyHotSubmissions = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.Hot)                         
+                        .WithMaximumItems(50))
+                .ToListAsync();
+
+            Assert.IsNotNull(fiftyHotSubmissions);
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
+        }         
+
+        [Test]
         public async Task SearchSubmissionsAsync_FiftyRelevantSubmissions_ShouldGetFiftySubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
