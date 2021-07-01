@@ -6,6 +6,7 @@ using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
+using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.IntegrationTests
 {
@@ -108,6 +109,36 @@ namespace Reddit.NET.Client.IntegrationTests
 
                 Assert.AreEqual(expectedVoteDirection, submissionDetails.Vote);
             }
-        }          
+        }
+
+        [Test]
+        public async Task DeleteSubmissionAsync_TextSubmission_ShouldDeleteSubmission()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var newSubmissionDetails = new TextSubmissionDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                text: "Test submission made by Reddit.NET client integration tests.");
+
+            var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
+
+            Assert.IsNotNull(createdSubmission);
+
+            var submission = createdSubmission.Interact(_client);
+
+            await submission.DeleteAsync();
+
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.New) 
+                        .WithItemsPerRequest(1)                 
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(submissionDetails);
+
+            Assert.AreNotEqual(createdSubmission.Title, submissionDetails.Title);
+        }                   
     }
 }
