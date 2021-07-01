@@ -112,6 +112,37 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
+        public async Task SaveUnsaveAsync_ValidSubmission_ShouldSave()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));            
+
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder => 
+                    builder                    
+                        .WithSort(SubredditSubmissionSort.New) 
+                        .WithItemsPerRequest(1)                 
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(submissionDetails);            
+
+            var submission = submissionDetails.Interact(_client);
+
+            await RunFuncAndAssertSaved(submission, true, submission => submission.SaveAsync());
+
+            await RunFuncAndAssertSaved(submission, false, submission => submission.UnsaveAsync());
+
+            static async Task RunFuncAndAssertSaved(SubmissionInteractor submission, bool expectedSaved, Func<SubmissionInteractor, Task> func)
+            {
+                await func.Invoke(submission);
+
+                var submissionDetails = await submission.GetDetailsAsync();
+
+                Assert.AreEqual(expectedSaved, submissionDetails.Saved);
+            }
+        }
+
+        [Test]
         public async Task DeleteSubmissionAsync_TextSubmission_ShouldDeleteSubmission()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
