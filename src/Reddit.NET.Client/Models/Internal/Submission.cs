@@ -99,6 +99,11 @@ namespace Reddit.NET.Client.Models.Internal
             public bool? LikedByUser { get; private set; }
 
             /// <inheritdoc />
+            [JsonPropertyName("saved")]
+            [JsonInclude]
+            public bool IsSaved { get; private set; }               
+
+            /// <inheritdoc />
             [JsonPropertyName("created_utc")]
             [JsonInclude]
             [JsonConverter(typeof(EpochSecondJsonConverter))]
