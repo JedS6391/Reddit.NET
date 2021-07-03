@@ -42,3 +42,6 @@ jobs:
       uses: codecov/codecov-action@v1     
       with:
         token: ${{ secrets.CODECOV_TOKEN }} 
+
+    - name: Push package to Nuget
+      run: dotnet nuget push Reddit.NET.Client/bin/Release/Reddit.NET.Client.*.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json        
