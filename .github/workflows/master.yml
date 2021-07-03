@@ -3,6 +3,7 @@ name: Master branch workflow
 on:
   push:
     paths:
+      - .github/**    
       - src/**
       - tests/**
       - demos/**  
