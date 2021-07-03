@@ -1,5 +1,9 @@
 # Reddit .NET client
 
+[![status][status-image]][status-url]
+[![coverage][coverage-image]][coverage-url]
+
+
 ## About
 
 Provides a .NET client for interacting with [reddit](https://www.reddit.com).
@@ -69,3 +73,9 @@ dotnet test
 ## Documentation
 
 See the [docs](./docs/) folder for documentation on how to use the client and an overview of its internals.
+
+
+[status-image]: https://img.shields.io/github/workflow/status/JedS6391/Reddit.NET/Master%20branch%20workflow/master?style=flat-square
+[status-url]: https://github.com/JedS6391/Reddit.NET/actions/workflows/master.yml
+[coverage-image]: https://img.shields.io/codecov/c/github/JedS6391/Reddit.NET/master?style=flat-square
+[coverage-url]: https://codecov.io/gh/JedS6391/Reddit.NET
