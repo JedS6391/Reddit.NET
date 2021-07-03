@@ -74,7 +74,7 @@ namespace Reddit.NET.Client.Command
                 throw new CommandNotSupportedException($"'{command.Id}' not supported with the configured authentication scheme ('{authenticationContext.Id}')");
             }
 
-            _logger.LogDebug("Executing '{CommandId}' command", command.Id);
+            _logger.LogDebug("Executing '{CommandId}' command with authentication context '{AuthenticationContextId}'.", command.Id, authenticationContext.Id);
 
             HttpRequestMessage request = command.BuildRequest();
             
