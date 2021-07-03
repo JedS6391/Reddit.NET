@@ -1,4 +1,4 @@
-name: Feature and develop branch workflow
+name: Feature branch workflow
 
 on:
   push:
