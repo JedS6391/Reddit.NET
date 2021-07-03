@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
+using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Command.UserContent
 {
@@ -58,27 +59,6 @@ namespace Reddit.NET.Client.Command.UserContent
             /// Gets or sets the direction of the vote.
             /// </summary>
             public VoteDirection Direction { get; set; }
-        }
-
-        /// <summary>
-        /// Defines the voting directions.
-        /// </summary>
-        public enum VoteDirection
-        {
-            /// <summary>
-            /// Apply a downvote.
-            /// </summary>
-            Downvote = -1,
-
-            /// <summary>
-            /// Remove an existing vote.
-            /// </summary>
-            Unvote = 0,    
-
-            /// <summary>
-            /// Apply an upvote.
-            /// </summary>
-            Upvote = 1
         }
     }
 }

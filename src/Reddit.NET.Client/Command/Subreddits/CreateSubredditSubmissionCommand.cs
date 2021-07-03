@@ -32,6 +32,7 @@ namespace Reddit.NET.Client.Command.Subreddits
                 { "sr", _parameters.SubredditName },
                 { "kind", MapSubmissionType(_parameters.Type) },
                 { "title", _parameters.Title },
+                { "resubmit", _parameters.ForceResubmit.ToString() },
                 // These parameters are required to ensure a proper JSON response is returned.
                 { "api_type", "json" },
                 { "extension", "json" }
@@ -100,7 +101,12 @@ namespace Reddit.NET.Client.Command.Subreddits
             /// <remarks>
             /// Only applicable when <see cref="Type" /> is <see cref="SubmissionType.Self" />.
             /// </remarks>
-            public string Text { get; set; }            
+            public string Text { get; set; } 
+
+            /// <summary>
+            /// Gets or sets a value indicating whether the submission should be resubmitted if it already exists.
+            /// </summary>
+            public bool ForceResubmit { get; set; }
         }
 
         /// <summary>

@@ -20,6 +20,8 @@ namespace Reddit.NET.Client.Models.Public.Read
             Title = thing.Data.Title;
             Description = thing.Data.Description;
             Subscribers = thing.Data.Subscribers;
+            Url = thing.Data.Url;
+            IsSubscribed = thing.Data.IsSubscribed;
         }
 
         /// <summary>
@@ -40,7 +42,17 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the number of users subreddit to the subreddit.
         /// </summary>
-        public long Subscribers { get; }        
+        public long Subscribers { get; }
+
+        /// <summary>
+        /// Gets the relative URL of the subreddit e.g. <c>"/r/pics/".</c>
+        /// </summary>
+        public string Url { get; }
+
+        /// <summary>
+        /// Gets a value indicating whether the currently authenticated user is subscribed to the subreddit.
+        /// </summary>        
+        public bool IsSubscribed { get; }        
 
         /// <inheritdoc />
         public SubredditInteractor Interact(RedditClient client) => client.Subreddit(Name);

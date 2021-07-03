@@ -32,7 +32,17 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the number of downvotes on the content.
         /// </summary>
-        public int Downvotes { get; protected set; }     
+        public int Downvotes { get; protected set; }
+
+        /// <summary>
+        /// Gets the direction of the vote on the submission.
+        /// </summary>
+        public VoteDirection Vote { get; protected set; }    
+
+        /// <summary>
+        /// Gets a value indicating whether the content has been saved.
+        /// </summary>
+        public bool Saved { get; protected set; }
 
         /// <summary>
         /// Gets the date and time the content was created.

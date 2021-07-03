@@ -1,6 +1,8 @@
 ﻿using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Reddit.NET.Client.Builder;
 using Reddit.NET.Console.Examples;
 
 namespace Reddit.NET.Console
@@ -14,10 +16,11 @@ namespace Reddit.NET.Console
         {
             var host = Host
                 .CreateDefaultBuilder(args)
+                .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Debug))
                 .ConfigureServices((_, services) => 
-                {
-                    services.AddHttpClient();
-                    
+                {                    
+                    services.AddRedditHttpClient(userAgent: "macosx:Reddit.NET.Console:v0.1.0 (by JedS6391)");
+                
                     services.AddSingleton<EntryPoint>();
 
                     services.AddSingleton<IExample, AuthorizationCodeExample>();

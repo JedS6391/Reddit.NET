@@ -10,6 +10,8 @@ using Reddit.NET.Client.Models.Public.Write;
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Listings.Options;
+using System.Linq;
+using Reddit.NET.Client.Exceptions;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -75,7 +77,8 @@ namespace Reddit.NET.Client.Interactions
                 SubredditName = _subredditName,
                 Type = CreateSubredditSubmissionCommand.SubmissionType.Link,
                 Title = details.Title,
-                Url = details.Uri.AbsoluteUri
+                Url = details.Uri.AbsoluteUri,
+                ForceResubmit = details.Resubmit
             });        
 
         /// <summary>
@@ -162,6 +165,11 @@ namespace Reddit.NET.Client.Interactions
             var response = await _client
                 .ExecuteCommandAsync<JsonDataResponse<CreateSubmissionDataNode>>(createSubredditSubmissionCommand)
                 .ConfigureAwait(false);
+
+            if (response.Json.Errors.Any())
+            {
+                throw new CreateSubmissionException("Failed to create submission.", ErrorDetails.FromResponse(response));
+            }
 
             return await GetSubmissionDetailsAsync(submissionId: response.Data.Id);
         }

@@ -3,6 +3,7 @@ using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Command.UserContent;
 using System.Linq;
+using System.Net.Http;
 
 namespace Reddit.NET.Client
 {
@@ -17,15 +18,9 @@ namespace Reddit.NET.Client
         public const string Version = "0.1.0";
 
         /// <summary>
-        /// Constants used in requests made to reddit.
+        /// The named used for <see cref="HttpClient" /> instances.
         /// </summary>
-        public static class Request 
-        {
-            /// <summary>
-            /// The name the client will send in the <c>User-Agent</c> header when making HTTP requests.
-            /// </summary>
-            public static string ClientName = $"Reddit.NET.Client v{Version} (by JedS6391)";
-        }
+        public static string HttpClientName = $"Reddit.NET.Client";
 
         /// <summary>
         /// Constants used in commands.

@@ -47,6 +47,20 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonPropertyName("subscribers")]
             [JsonInclude]
             public long Subscribers { get; private set; }
+
+            /// <summary>
+            /// Gets the relative URL of the subreddit e.g. <c>"/r/pics/".</c>
+            /// </summary>
+            [JsonPropertyName("url")]
+            [JsonInclude]
+            public string Url { get; private set; }
+
+            /// <summary>
+            /// Gets a value indicating whether the currently authenticated user is subscribed to the subreddit.
+            /// </summary>
+            [JsonPropertyName("user_is_subscriber")]
+            [JsonInclude]        
+            public bool IsSubscribed { get; private set; }
         }
 
         /// <summary>

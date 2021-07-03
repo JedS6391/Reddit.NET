@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Users;
+using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings;
@@ -68,7 +69,8 @@ namespace Reddit.NET.Client.Interactions
 
             if (s_unsupportedHistoryTypeOptions.Any(t => t.Name == optionsBuilder.Options.Type.Name))
             {
-                throw new InvalidOperationException($"History type option {optionsBuilder.Options.Type.Name} is only supported for the currently authenticated user.");
+                throw new InvalidUserHistoryTypeException(
+                    $"History type option {optionsBuilder.Options.Type.Name} is only supported for the currently authenticated user.");
             }
 
             return new UserHistoryListingEnumerable(

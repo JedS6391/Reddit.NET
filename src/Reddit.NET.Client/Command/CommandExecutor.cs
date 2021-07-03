@@ -1,9 +1,11 @@
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication.Abstract;
-using Reddit.NET.Client.Command.Exceptions;
+using Reddit.NET.Client.Command.RateLimiting;
+using Reddit.NET.Client.Exceptions;
 
 namespace Reddit.NET.Client.Command
 {
@@ -19,6 +21,7 @@ namespace Reddit.NET.Client.Command
     {
         private readonly ILogger<CommandExecutor> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
+        private readonly RateLimiter _rateLimiter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandExecutor" /> class.
@@ -29,6 +32,8 @@ namespace Reddit.NET.Client.Command
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
+            // TODO: Allow injection of rate limiter.
+            _rateLimiter = new TokenBucketRateLimiter(_logger, TokenBucketRateLimiterOptions.Default);
         }
 
         /// <summary>
@@ -69,7 +74,7 @@ namespace Reddit.NET.Client.Command
                 throw new CommandNotSupportedException($"'{command.Id}' not supported with the configured authentication scheme ('{authenticationContext.Id}')");
             }
 
-            _logger.LogDebug("Executing '{CommandId}' command", command.Id);
+            _logger.LogDebug("Executing '{CommandId}' command with authentication context '{AuthenticationContextId}'.", command.Id, authenticationContext.Id);
 
             HttpRequestMessage request = command.BuildRequest();
             
@@ -82,25 +87,41 @@ namespace Reddit.NET.Client.Command
         {
             _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
 
-            AddDefaultHeaders(request);
+            using PermitLease lease = await _rateLimiter.AcquireAsync();
+            
+            if (!lease.IsAcquired)
+            {                
+                throw new RateLimitException("Failed to acquire lease to execute request.");
+            }
 
-            HttpClient client = _httpClientFactory.CreateClient();
+            HttpClient client = _httpClientFactory.CreateClient(Constants.HttpClientName);
 
             HttpResponseMessage response = await client
                 .SendAsync(request)
                 .ConfigureAwait(false);
 
-            response.EnsureSuccessStatusCode();
+            if (response.IsSuccessStatusCode)
+            {                
+                return response;
+            }
 
-            return response;
+            // Try to handle the failed response.
+            return HandleFailedResponse(response);
         }
-
-        private static void AddDefaultHeaders(HttpRequestMessage request) =>
-            request.Headers.Add("User-Agent", Constants.Request.ClientName);
 
         private static void AddAuthorizationHeader(HttpRequestMessage request, AuthenticationContext authenticationContext) =>
             request.Headers.Authorization = new AuthenticationHeaderValue(
                 "Bearer",
                 authenticationContext.Token.AccessToken);
+
+        private static HttpResponseMessage HandleFailedResponse(HttpResponseMessage response) =>        
+            response.StatusCode switch
+            {
+                HttpStatusCode.TooManyRequests => 
+                    throw new RateLimitException($"Rate limit has been met for '{response.RequestMessage.RequestUri}' endpoint."),
+
+                // Throw the standard HTTP request exception.                    
+                _ => response.EnsureSuccessStatusCode(),                                        
+            };                    
     }
 }

@@ -8,6 +8,7 @@ using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
+using Reddit.NET.Client.Exceptions;
 
 namespace Reddit.NET.Client.Builder
 {
@@ -36,20 +37,6 @@ namespace Reddit.NET.Client.Builder
         public static RedditClientBuilder New => new RedditClientBuilder();
 
         /// <summary>
-        /// Configures the builder to use the provided <see cref="ILoggerFactory" /> instance when logging messages.
-        /// </summary>
-        /// <param name="loggerFactory">A <see cref="ILoggerFactory" /> instance.</param>
-        /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithLoggerFactory(ILoggerFactory loggerFactory)
-        {
-            Requires.NotNull(loggerFactory, nameof(loggerFactory));
-
-            _loggerFactory = loggerFactory;
-
-            return this;
-        }
-
-        /// <summary>
         /// Configures the builder to use the provided <see cref="IHttpClientFactory" /> instance when making HTTP calls.
         /// </summary>
         /// <param name="httpClientFactory">A <see cref="IHttpClientFactory" /> instance.</param>
@@ -64,18 +51,18 @@ namespace Reddit.NET.Client.Builder
         }
 
         /// <summary>
-        /// Configures the builder to use the provided <see cref="ITokenStorage" /> instance to manage tokens.
+        /// Configures the builder to use the provided <see cref="ILoggerFactory" /> instance when logging messages.
         /// </summary>
-        /// <param name="tokenStorage">An <see cref="ITokenStorage" /> instance.</param>
+        /// <param name="loggerFactory">A <see cref="ILoggerFactory" /> instance.</param>
         /// <returns>The updated builder.</returns>
-        public RedditClientBuilder WithTokenStorage(ITokenStorage tokenStorage)
+        public RedditClientBuilder WithLoggerFactory(ILoggerFactory loggerFactory)
         {
-            Requires.NotNull(tokenStorage, nameof(tokenStorage));
+            Requires.NotNull(loggerFactory, nameof(loggerFactory));
 
-            _tokenStorage = tokenStorage;
+            _loggerFactory = loggerFactory;
 
             return this;
-        }
+        }        
 
         /// <summary>
         /// Configures the builder to use the provided <see cref="Action{T}" /> to configure the credentials used by the client.
@@ -92,6 +79,20 @@ namespace Reddit.NET.Client.Builder
         }
 
         /// <summary>
+        /// Configures the builder to use the provided <see cref="ITokenStorage" /> instance to manage tokens.
+        /// </summary>
+        /// <param name="tokenStorage">An <see cref="ITokenStorage" /> instance.</param>
+        /// <returns>The updated builder.</returns>
+        public RedditClientBuilder WithTokenStorage(ITokenStorage tokenStorage)
+        {
+            Requires.NotNull(tokenStorage, nameof(tokenStorage));
+
+            _tokenStorage = tokenStorage;
+
+            return this;
+        }        
+
+        /// <summary>
         /// Creates a <see cref="RedditClient" /> instance based on the builder configuration.
         /// </summary>
         /// <remarks>
@@ -102,7 +103,9 @@ namespace Reddit.NET.Client.Builder
         /// A task representing the asynchronous operation. The result contains a <see cref="RedditClient" /> instance configured based on the builder.
         /// </returns>
         public async Task<RedditClient> BuildAsync() 
-        {            
+        {
+            CheckValidity();
+
             var commandExecutor = new CommandExecutor(
                 _loggerFactory.CreateLogger<CommandExecutor>(),
                 _httpClientFactory);
@@ -123,6 +126,24 @@ namespace Reddit.NET.Client.Builder
             IAuthenticator authenticator = authenticatorFactory.GetAuthenticator(credentials);
 
             return new RedditClient(commandExecutor, authenticator);
+        }
+
+        private void CheckValidity()
+        {
+            if (_httpClientFactory == null)
+            {                
+                throw new RedditClientBuilderException("No HTTP client factory configured.");
+            }
+
+            if (_loggerFactory == null) 
+            {
+                throw new RedditClientBuilderException("No logger factory configured.");
+            }
+
+            if (_credentialsBuilderConfigurationAction == null)
+            {
+                throw new RedditClientBuilderException("No credentials configured.");    
+            }                     
         }
     }
 }
