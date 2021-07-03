@@ -1,10 +1,12 @@
 ---
 layout: default
-title: Client
+title: Concepts
 nav_order: 3
 ---
 
-# Client
+# Concepts
+
+## Client
 
 The `RedditClient` class is the main entry-point for accessing reddit's API.
 

@@ -62,4 +62,4 @@ IServiceCollection services = ...;
 services.AddRedditHttpClient(userAgent: "<platform>:<app ID>:<version string> (by /u/<reddit username>)");
 ```
 
-Continue to the [Client](./client.md) section for more details on the functionality provided by the `RedditClient` class.
+Continue to the [Concepts](./concepts.md) section for more details on the functionality provided by the `RedditClient` class.
