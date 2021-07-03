@@ -109,9 +109,10 @@ namespace Reddit.NET.Client.Command.RateLimiting
                 return;
             }
 
-            var logger = limiter._logger;
+            ILogger logger = limiter._logger;
+            TokenBucketRateLimiterOptions options = limiter._options;
+
             var availablePermits = limiter.GetAvailablePermits();
-            var options = limiter._options;
             var maxPermits = options.PermitLimit;
                 
             if (availablePermits < maxPermits)
@@ -129,8 +130,8 @@ namespace Reddit.NET.Client.Command.RateLimiting
 
         private static void ProcessPermitRequestQueue(TokenBucketRateLimiter limiter)
         {
-            var logger = limiter._logger;
-            var queue = limiter._queue; 
+            ILogger logger = limiter._logger;
+            Queue<RequestRegistration> queue = limiter._queue; 
 
             // Process queued requests.
             lock (limiter._lock)
@@ -139,14 +140,14 @@ namespace Reddit.NET.Client.Command.RateLimiting
                 {
                     logger.LogDebug($"Processing rate limiter queue...");
 
-                    var nextPendingRequest = queue.Peek();
+                    RequestRegistration nextPendingRequest = queue.Peek();
 
                     if (Interlocked.Add(ref limiter._permitCount, -nextPendingRequest.Count) >= 0)
                     {        
                         logger.LogDebug($"Lease for {nextPendingRequest.Count} permits successfully acquired.");  
 
                         // Request can be fulfilled.
-                        var request = queue.Dequeue();
+                        RequestRegistration request = queue.Dequeue();
 
                         Interlocked.Add(ref limiter._queueCount, -request.Count);                                              
                         

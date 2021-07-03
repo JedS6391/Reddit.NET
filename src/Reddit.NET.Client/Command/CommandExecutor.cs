@@ -87,7 +87,7 @@ namespace Reddit.NET.Client.Command
         {
             _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
 
-            using var lease = await _rateLimiter.AcquireAsync();
+            using PermitLease lease = await _rateLimiter.AcquireAsync();
             
             if (!lease.IsAcquired)
             {                
