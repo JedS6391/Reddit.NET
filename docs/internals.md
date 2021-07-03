@@ -16,6 +16,14 @@ All HTTP communication is performed asynchronously, making it clear which method
 
 The only component that actually issues HTTP requests is the `CommandExecutor` class. The client operates in terms of *Commands* which describe a particular operation (e.g. get the details of a subreddit, get my saved history, upvote a comment) and delegates to the executor to handle the intricacies of HTTP communication.
 
+## Rate limiting
+
+The reddit API imposes rate limits for its endpoints. The client aims to respect the 60 requests per minute limit through the `RateLimiter` abstraction. Before each HTTP request, the client will attempt to obtain a permit for making that request. If no permits are available, the client will wait until permits are replenished so it can make the request. 
+
+By default, permits are replenished at a rate of 1 permit per second. The client will allow up to a maximum of 5 permits to be leased at one time (i.e. 5 HTTP requests could be made at once).
+
+This strategy aims to stay well under the limit, but in future it may be possible to have a more dynamic limiter that reacts in response to the `X-Ratelimit-*` headers returned by the reddit API. See the [reddit API rules](https://github.com/reddit-archive/reddit/wiki/API#rules) for more details.
+
 ## Logging
 
 Components used by the client are provided loggers via an `ILoggerFactory`. 
