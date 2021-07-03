@@ -75,6 +75,8 @@ dotnet test
 
 See the [docs](./docs/) folder for documentation on how to use the client and an overview of its internals.
 
+The documentation is also hosted on [GitHub pages](https://jeds6391.github.io/Reddit.NET/).
+
 [nuget-image]: https://img.shields.io/nuget/v/Reddit.NET.Client?style=flat-square
 [nuget-url]: https://www.nuget.org/packages/Reddit.NET.Client
 [status-image]: https://img.shields.io/github/workflow/status/JedS6391/Reddit.NET/Master%20branch%20workflow/master?style=flat-square
