@@ -30,7 +30,7 @@ Or directly add a `PackageReference` element to your project, if preferred:
 
 To start interacting with reddit, the `RedditClientBuilder` class can be used to obtain a `RedditClient` instance.
 
-The builder requires an [`IHttpClientFactory` instance](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.ihttpclientfactory?view=dotnet-plat-ext-5.0) and [`ILoggerFactory` instance](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory?view=dotnet-plat-ext-5.0) to be provided, as well an action for configuring the credentials used by the client:
+The builder requires an [`IHttpClientFactory` instance](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.ihttpclientfactory?view=dotnet-plat-ext-5.0) and [`ILoggerFactory` instance](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory?view=dotnet-plat-ext-5.0) to be provided, as well as an action for configuring the credentials used by the client:
 
 ```cs
 using Reddit.NET.Client.Builder;

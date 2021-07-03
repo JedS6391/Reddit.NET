@@ -6,7 +6,7 @@ nav_order: 3
 
 # Client
 
-The `RedditClient` class provides the main entry-point for accessing reddit's API.
+The `RedditClient` class is the main entry-point for accessing reddit's API.
 
 ## Interactions
 

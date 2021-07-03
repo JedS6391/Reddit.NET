@@ -6,7 +6,7 @@ nav_order: 1
 
 # Reddit .NET Client
 
-Provides a .NET client for interacting with [reddit](https://www.reddit.com).
+A .NET client for interacting with [reddit](https://www.reddit.com).
 
 This documentation describes how to use the client and an overview of the components the client relies on.
 
