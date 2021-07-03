@@ -1,4 +1,4 @@
-name: Feature and develop branch workflow
+name: Master branch workflow
 
 on:
   push:
