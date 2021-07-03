@@ -1,18 +1,5 @@
 # Client
 
-The `RedditClient` class provides the ability to access reddit's API.
-
-To create a `RedditClient` instance, the `RedditClientBuilder` class can be used:
-
-```cs
-RedditClientBuilder builder = RedditClientBuilder.New;
-
-// Configure builder
-...
-
-RedditClient client = await builder.BuildAsync();
-```
-
 ## Interactions
 
 The client provides its functionality through *interactors*, which are responsible for specific high-level concepts e.g. subreddits, users, etc. For example, to interact with a specific subreddit, a `SubredditInteractor` should be used:

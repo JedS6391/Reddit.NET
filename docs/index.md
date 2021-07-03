@@ -6,6 +6,7 @@ This documentation describes how to use the client and an overview of the compon
 
 ## Contents
 
+- [Getting started](./getting-started.md)
 - [Client](./client.md)
 - [Authentication](./authentication.md)
 - [Internals](./internals.md)
@@ -20,4 +21,4 @@ The client was designed with the following goals in mind:
 
 ## Demos
 
-See the [demos](../demos/) folder for full demonstrations.
+See the project [demos](https://github.com/JedS6391/Reddit.NET/tree/master/demos) folder for complete usage examples.
