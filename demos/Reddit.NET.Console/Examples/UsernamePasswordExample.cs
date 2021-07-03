@@ -1,10 +1,10 @@
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Builder;
+using Reddit.NET.Client.Builder;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Console.Examples
 {
@@ -56,9 +56,12 @@ namespace Reddit.NET.Console.Examples
 
             _logger.LogInformation(askRedditDetails.ToString());
 
-            var topTenHotSubmissions = askReddit.GetHotSubmissionsAsync().Take(10);
+            var topFiftyHotSubmissions = askReddit.GetSubmissionsAsync(builder => 
+                builder                    
+                    .WithSort(SubredditSubmissionSort.Hot)                    
+                    .WithMaximumItems(50));
 
-            await foreach (var submission in topTenHotSubmissions)
+            await foreach (var submission in topFiftyHotSubmissions)
             {
                 _logger.LogInformation(submission.ToString());
             }
@@ -73,6 +76,18 @@ namespace Reddit.NET.Console.Examples
             {            
                 _logger.LogInformation(subreddit.ToString());
             }
+
+            var overviewHistory = me.GetHistoryAsync(builder =>
+                builder
+                    .WithType(UserHistoryType.Overview)
+                    .WithSort(UserHistorySort.Top)
+                    .WithTimeRange(TimeRangeSort.AllTime)
+                    .WithMaximumItems(50));
+
+            await foreach (var item in overviewHistory)
+            {
+                _logger.LogInformation(item.ToString());
+            }            
         }
 
         private void ConfigureScriptCredentials(CredentialsBuilder credentialsBuilder)
@@ -86,11 +101,15 @@ namespace Reddit.NET.Console.Examples
             // when the authentication actually occurs.
             var code = PromptForValue("2FA Code");
 
+            password = string.IsNullOrEmpty(code) ?
+                password :
+                "{password}:{code}";
+
             credentialsBuilder.Script(
                 clientId,
                 clientSecret,
                 username,
-                $"{password}:{code}");
+                password);
         }
 
         private string PromptForValue(string valueName)

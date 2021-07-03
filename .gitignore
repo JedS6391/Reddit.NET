@@ -8,6 +8,8 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 
+TODO.md
+
 # User-specific files
 *.rsuser
 *.suo
@@ -367,6 +369,7 @@ FodyWeavers.xsd
 
 ### dotenv ###
 .env
+.test-env
 
 ### DotnetCore ###
 # .NET Core build folders

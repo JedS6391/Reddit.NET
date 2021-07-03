@@ -1,12 +1,13 @@
 using System;
-using System.Linq;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft;
 using Microsoft.Extensions.Logging;
-using Reddit.NET.Core.Client.Builder;
+using Reddit.NET.Client.Builder;
+using Reddit.NET.Client.Models.Public.Listings.Options;
+using Reddit.NET.Client.Models.Public.Listings;
 
 namespace Reddit.NET.Console.Examples
 {
@@ -58,22 +59,35 @@ namespace Reddit.NET.Console.Examples
 
             _logger.LogInformation(askRedditDetails.ToString());
 
-            var topTenHotSubmissions = askReddit.GetHotSubmissionsAsync().Take(10);
-
-            await foreach (var submission in topTenHotSubmissions)
-            {
+            var topFiftyHotSubmissions = askReddit.GetSubmissionsAsync(builder => 
+                builder                    
+                    .WithSort(SubredditSubmissionSort.Hot)                  
+                    .WithMaximumItems(50));
+        
+            await foreach (var submission in topFiftyHotSubmissions)
+            {            
                 _logger.LogInformation(submission.ToString());
-            }
+            }  
 
             var me = client.Me(); 
 
             var meDetails = await me.GetDetailsAsync();
 
-            _logger.LogInformation(meDetails.ToString());
+            _logger.LogInformation(meDetails.ToString());            
 
             await foreach (var subreddit in me.GetSubredditsAsync())
             {            
                 _logger.LogInformation(subreddit.ToString());
+            }
+
+            var savedHistory = me.GetHistoryAsync(builder =>
+                builder
+                    .WithType(UserHistoryType.Saved)                    
+                    .WithMaximumItems(50));
+
+            await foreach (var item in savedHistory)
+            {
+                _logger.LogInformation(item.ToString());
             }
         }
 
@@ -93,12 +107,14 @@ namespace Reddit.NET.Console.Examples
                 clientId,
                 clientSecret,
                 new Uri(redirectUri),
-                state);                
+                state);
+
+            var authorizationUri = interactiveCredentialsBuilder.GetAuthorizationUri();
 
             // Send the user to the authorization URI.
             _logger.LogInformation("Please follow the steps to retrieve an access token and refresh token you can use with the Reddit.NET client.\n");                         
             _logger.LogInformation("1. Open the following link in your browser to complete the authorization process:\n");
-            _logger.LogInformation($"{interactiveCredentialsBuilder.AuthorizationUri}\n");            
+            _logger.LogInformation($"{authorizationUri}\n");            
             _logger.LogInformation("2. Once you've completed authorization in the browser, copy the final redirect URI and enter it below.\n");            
 
             var finalRedirectUriString = PromptForValue("Final Redirect URI");
