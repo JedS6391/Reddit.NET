@@ -8,6 +8,8 @@ nav_order: 4
 
 Reddit supports a number of different authentication modes via its OAuth2 implementation. The client supports all of these and aims to provide abstractions that make them straight-forward to use.
 
+For a full description of reddit authentication, see the [reddit OAuth2 wiki page](https://github.com/reddit-archive/reddit/wiki/OAuth2).
+
 ## Credentials
 
 When configuring a client instance with the `RedditClientBuilder` class, a `CredentialsBuilder` is exposed to allow configuration of the credentials used by the client:

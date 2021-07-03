@@ -28,9 +28,9 @@ Or directly add a `PackageReference` element to your project, if preferred:
 
 ## Usage
 
-The `RedditClient` class provides the main entry-point for accessing reddit's API.
+To start interacting with reddit, the `RedditClientBuilder` class can be used to obtain a `RedditClient` instance.
 
-To create a `RedditClient` instance, the `RedditClientBuilder` class can be used. The builder requires an `IHttpClientFactory` and `ILoggerFactory` to be configured, as well an action for configuring the credentials used by the client:
+The builder requires an [`IHttpClientFactory` instance](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.ihttpclientfactory?view=dotnet-plat-ext-5.0) and [`ILoggerFactory` instance](https://docs.microsoft.com/en-us/dotnet/api/microsoft.extensions.logging.iloggerfactory?view=dotnet-plat-ext-5.0) to be provided, as well an action for configuring the credentials used by the client:
 
 ```cs
 using Reddit.NET.Client.Builder;
@@ -44,9 +44,22 @@ builder
     .WithCredentialsConfiguration(credentialsBuilder => 
     {                    
         // Configure credentials
+        credentialsBuilder.Script(
+            clientId,
+            clientSecret,
+            username,
+            password);        
     });
 
 RedditClient client = await builder.BuildAsync();
 ```
 
-Continue to the [Client](./client.md) section for more details on the functionality provided by the `RedditClient` class
+An extension method is provided to configure a named `HttpClient` that the client will use for HTTP communication. This ensures that a unique and descriptive User-Agent is configured, as per the [reddit API rules](https://github.com/reddit-archive/reddit/wiki/API#rules).
+
+```cs 
+IServiceCollection services = ...;
+
+services.AddRedditHttpClient(userAgent: "<platform>:<app ID>:<version string> (by /u/<reddit username>)");
+```
+
+Continue to the [Client](./client.md) section for more details on the functionality provided by the `RedditClient` class.

@@ -1,6 +1,6 @@
 ---
 layout: default
-title: Home
+title: About
 nav_order: 1
 ---
 
@@ -9,13 +9,6 @@ nav_order: 1
 Provides a .NET client for interacting with [reddit](https://www.reddit.com).
 
 This documentation describes how to use the client and an overview of the components the client relies on.
-
-## Contents
-
-- [Getting started](./getting-started.md)
-- [Client](./client.md)
-- [Authentication](./authentication.md)
-- [Internals](./internals.md)
 
 ## Goals
 
