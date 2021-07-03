@@ -68,8 +68,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
         {
             const string rawValue = "{ \"date\": \"test\" }";
 
-            Assert.Throws<JsonException>(() =>
-                JsonSerializer.Deserialize<TestObject>(rawValue));
+            Assert.Throws<JsonException>(() => JsonSerializer.Deserialize<TestObject>(rawValue));
         }        
 
         [Test]
@@ -95,11 +94,13 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
         [Test]
         public void Read_OutsideOfRangeNegativeNumericValue_ThrowsJsonException()
         {
+            // 1 less than the range expected when converting Unix seconds to DateTimeOffset:
+            // https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.fromunixtimeseconds?view=net-5.0#exceptions
             const string rawValue = "-62135596801.0";
 
             // Note we have all the set up inside the anonymous method as ref parameters
             // cannot be used inside anonymous methods.
-            Assert.Throws<JsonException>(() =>
+            var exception = Assert.Throws<JsonException>(() =>
             {
                 var rawValueBytes = Encoding.UTF8.GetBytes(rawValue).AsSpan();
 
@@ -110,12 +111,41 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
 
                 _converter.Read(ref reader, typeof(DateTimeOffset), new JsonSerializerOptions());
             });
+
+            Assert.IsNotNull(exception.InnerException);
+            Assert.IsInstanceOf<ArgumentOutOfRangeException>(exception.InnerException);            
         } 
 
         [Test]
         public void Read_OutsideOfRangePositiveNumericValue_ThrowsJsonException()
         {
+            // 1 greater than the range expected when converting Unix seconds to DateTimeOffset:
+            // https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.fromunixtimeseconds?view=net-5.0#exceptions            
             const string rawValue = "253402300800.0";
+
+            // Note we have all the set up inside the anonymous method as ref parameters
+            // cannot be used inside anonymous methods.
+            var exception = Assert.Throws<JsonException>(() =>
+            {
+                var rawValueBytes = Encoding.UTF8.GetBytes(rawValue).AsSpan();
+
+                var reader = new Utf8JsonReader(rawValueBytes);
+
+                // Advance the reader so its on the first token
+                reader.Read();
+
+                _converter.Read(ref reader, typeof(DateTimeOffset), new JsonSerializerOptions());
+            });
+
+            Assert.IsNotNull(exception.InnerException);
+            Assert.IsInstanceOf<ArgumentOutOfRangeException>(exception.InnerException);
+        }
+
+
+        [Test]
+        public void Read_InvalidDoubleValue_ThrowsJsonException()
+        {            
+            string rawValue = $"{decimal.MinValue}";
 
             // Note we have all the set up inside the anonymous method as ref parameters
             // cannot be used inside anonymous methods.
@@ -130,7 +160,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
 
                 _converter.Read(ref reader, typeof(DateTimeOffset), new JsonSerializerOptions());
             });
-        }
+        }        
 
         private class TestObject
         {
