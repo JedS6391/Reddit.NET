@@ -29,7 +29,7 @@ namespace Reddit.NET.WebApi
         {
             services.AddControllers();
 
-            services.AddRedditHttpClient(userAgent: "macosx:Reddit.NET.WebApi:v0.1.0 (by JedS6391)");
+            services.AddRedditHttpClient(userAgent: $"{Environment.OSVersion.Platform}:Reddit.NET.WebApi:v0.1.0 (by JedS6391)");
 
             services.AddHttpContextAccessor();
 

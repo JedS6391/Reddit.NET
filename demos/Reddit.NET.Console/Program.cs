@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -19,7 +20,7 @@ namespace Reddit.NET.Console
                 .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Debug))
                 .ConfigureServices((_, services) => 
                 {                    
-                    services.AddRedditHttpClient(userAgent: "macosx:Reddit.NET.Console:v0.1.0 (by JedS6391)");
+                    services.AddRedditHttpClient(userAgent: $"{Environment.OSVersion.Platform}:Reddit.NET.Console:v0.1.0 (by JedS6391)");
                 
                     services.AddSingleton<EntryPoint>();
 
