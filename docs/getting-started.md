@@ -6,7 +6,7 @@ nav_order: 2
 
 # Getting started
 
-## Prerequsites
+## Prerequisites
 
 - [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
 
