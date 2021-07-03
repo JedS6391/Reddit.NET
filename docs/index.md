@@ -1,3 +1,9 @@
+---
+layout: default
+title: Home
+nav_order: 1
+---
+
 # Reddit .NET Client
 
 Provides a .NET client for interacting with [reddit](https://www.reddit.com).

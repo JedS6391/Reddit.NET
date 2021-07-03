@@ -1,3 +1,9 @@
+---
+layout: default
+title: Authentication
+nav_order: 4
+---
+
 # Authentication
 
 Reddit supports a number of different authentication modes via its OAuth2 implementation. The client supports all of these and aims to provide abstractions that make them straight-forward to use.

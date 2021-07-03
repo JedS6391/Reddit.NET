@@ -1,3 +1,9 @@
+---
+layout: default
+title: Client
+nav_order: 3
+---
+
 # Client
 
 ## Interactions
