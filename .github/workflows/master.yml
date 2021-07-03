@@ -2,6 +2,10 @@ name: Master branch workflow
 
 on:
   push:
+    paths:
+      - src/**
+      - tests/**
+      - demos/**  
     branches:      
       - master
 

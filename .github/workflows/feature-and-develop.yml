@@ -2,6 +2,10 @@ name: Feature and develop branch workflow
 
 on:
   push:
+    paths:
+      - src/**
+      - tests/**
+      - demos/**
     branches-ignore:      
       - master
 
