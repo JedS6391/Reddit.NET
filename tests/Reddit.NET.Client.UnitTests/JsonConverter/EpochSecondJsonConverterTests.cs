@@ -139,28 +139,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
 
             Assert.IsNotNull(exception.InnerException);
             Assert.IsInstanceOf<ArgumentOutOfRangeException>(exception.InnerException);
-        }
-
-
-        [Test]
-        public void Read_InvalidDoubleValue_ThrowsJsonException()
-        {            
-            string rawValue = $"{decimal.MinValue}";
-
-            // Note we have all the set up inside the anonymous method as ref parameters
-            // cannot be used inside anonymous methods.
-            Assert.Throws<JsonException>(() =>
-            {
-                var rawValueBytes = Encoding.UTF8.GetBytes(rawValue).AsSpan();
-
-                var reader = new Utf8JsonReader(rawValueBytes);
-
-                // Advance the reader so its on the first token
-                reader.Read();
-
-                _converter.Read(ref reader, typeof(DateTimeOffset), new JsonSerializerOptions());
-            });
-        }        
+        }       
 
         private class TestObject
         {
