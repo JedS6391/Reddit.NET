@@ -69,10 +69,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         {
             _submission = submission;
             _parent = parent;
-            _comments = replies
-                .Where(c => c is Comment)
-                .Select(c => c as Comment)
-                .ToList();
+            _comments = replies.OfType<Comment>().ToList();
             // TODO: Need to provide a way to resolve more comment instances to the comments they represent,
             // and update the internal state with those new comments.
             // This is complicated for a number of reasons:
@@ -82,10 +79,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             //      on the provided sort parameter)
             //   3. Because of (2), we can't just directly add comments as they may actually be descendants of other comments 
             //      (i.e. not necessarily attached to the parent thread the current instance refers to)
-            _moreComments = replies
-                .Where(c => c is MoreComments)
-                .Select(c => c as MoreComments)
-                .ToList();
+            _moreComments = replies.OfType<MoreComments>().ToList();
         }
 
         /// <summary>
