@@ -17,7 +17,7 @@ namespace Reddit.NET.Client.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _client = TestRedditClientProvider.GetClient();
+            _client = TestRedditClientProvider.GetScriptClient();
         }
 
         [Test]
