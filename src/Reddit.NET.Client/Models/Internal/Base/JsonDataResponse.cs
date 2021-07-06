@@ -120,6 +120,6 @@ namespace Reddit.NET.Client.Models.Internal.Base
         /// </summary>
         [JsonPropertyName("things")]
         [JsonInclude]
-        public IReadOnlyList<Comment> Things { get; private set; }
+        public IReadOnlyList<IThing<IHasParent>> Things { get; private set; }
     }
 }

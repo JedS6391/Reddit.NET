@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.UserContent;
+using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Read;
 
@@ -105,7 +106,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand)
                 .ConfigureAwait(false);
 
-            return new CommentDetails(thing: response.Data.Things[0]);
+            return new CommentDetails(thing: response.Data.Things[0] as IThing<Comment.Details>);
         }
 
         /// <summary>
