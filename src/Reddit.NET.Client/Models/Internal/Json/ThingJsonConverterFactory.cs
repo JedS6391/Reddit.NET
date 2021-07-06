@@ -9,14 +9,14 @@ using Reddit.NET.Client.Models.Internal.Base;
 namespace Reddit.NET.Client.Models.Internal.Json
 {
     /// <summary>
-    /// A factory for <see cref="JsonConverter{T}" /> instances responsible for converting <see cref="IThing{TData}" /> objects.
+    /// A factory for <see cref="JsonConverter{T}" /> instances responsible for converting JSON to <see cref="IThing{TData}" /> objects.
     /// </summary>
     /// <remarks>
     /// Internally, we use the <see cref="IThing{TData}" /> abstraction to represent the data returned by reddit. We can't
     /// convert to an abstract type though, so we need a converter to handle that.
     /// 
-    /// It would be possible to instead have a concrete 'thing' class instead of the interface and avoid this, but the 
-    /// interface allows us to the handle polymorphic data that certain reddit endpoints return.
+    /// This converter is also able to handle polymorphic data that sometimes reddit returns (e.g. an array of comments and submissions),
+    /// by dynamically determining the correct type based on the kind of the data.
     /// </remarks>
     internal class ThingJsonConverterFactory : JsonConverterFactory
     {
@@ -42,26 +42,24 @@ namespace Reddit.NET.Client.Models.Internal.Json
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
             Type dataType = typeToConvert.GetGenericArguments().First();
+            Type converterType;
 
             if (s_concreteThingTypes.TryGetValue(dataType, out Type thingType))
             {
                 // We know there is a concrete implementation for this type of thing so use that.
                 // This path will be used for a conversion of a type such as IThing<Comment.Details> or IThing<Submission.Details>.
-                return (JsonConverter) Activator.CreateInstance(
-                    typeof(ConcreteTypeThingJsonConverter<,>).MakeGenericType(
-                        new Type[] { dataType, thingType }),
-                    BindingFlags.Instance | BindingFlags.Public,
-                    binder: null,
-                    args: Array.Empty<object>(),
-                    culture: null);
+                converterType = typeof(ConcreteTypeThingJsonConverter<,>).MakeGenericType(new Type[] { dataType, thingType });
+            }
+            else 
+            {
+                // There is no concrete implementation for this data type, so we need to dynamically convert each value.
+                // This path will be used for a conversion of a type such as IThing<IUserContent> or IThing<IVoteable>.
+                // It must be ensured that any values processed can be cast to IThing<TData>.
+                converterType = typeof(DynamicTypeThingJsonConverter<>).MakeGenericType(new Type[] { dataType });
             }
 
-            // There is no concrete implementation for this data type, so we need to dynamically convert each value.
-            // This path will be used for a conversion of a type such as IThing<IUserContent> or IThing<IVoteable>.
-            // It must be ensured that any values processed can be cast to IThing<TData>.
             return (JsonConverter) Activator.CreateInstance(
-                typeof(DynamicTypeThingJsonConverter<>).MakeGenericType(
-                    new Type[] { dataType }),
+                converterType,
                 BindingFlags.Instance | BindingFlags.Public,
                 binder: null,
                 args: Array.Empty<object>(),
