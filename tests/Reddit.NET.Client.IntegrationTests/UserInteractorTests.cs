@@ -27,7 +27,27 @@ namespace Reddit.NET.Client.IntegrationTests
             var details = await user.GetDetailsAsync();
 
             Assert.IsNotNull(details);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name);
         }
+
+        [Test]
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
+        {
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
+
+            var details = await user.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name);            
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name); 
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc); 
+        }        
 
         [Test]
         public async Task GetHistoryAsync_Submissions_ShouldGetSubmissions()

@@ -21,27 +21,38 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetDetailsAsync_HotSubmission_ShouldGetDetails()
+        public async Task GetDetailsAsync_ValidSubmission_ShouldGetDetails()
         {
-            var subreddit = _client.Subreddit("askreddit");
-
-            var submissionDetails = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot) 
-                        .WithItemsPerRequest(1)                 
-                        .WithMaximumItems(1))
-                .FirstAsync();
-
-            Assert.IsNotNull(submissionDetails);
-
-            var submission = submissionDetails.Interact(_client);
+            // https://old.reddit.com/r/AskReddit/comments/9whgf4/stan_lee_has_passed_away_at_95_years_old/            
+            var submission = _client.Submission(submissionId: "9whgf4");
 
             var details = await submission.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-            Assert.AreEqual("AskReddit", details.Subreddit);            
-        }         
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
+        } 
+        
+        [Test]
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
+        {
+            var submission = _client.Submission("9whgf4");
+
+            var details = await submission.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc); 
+        }                
 
         [Test]
         public async Task GetCommentsAsync_HotSubmissions_ShouldGetComments()

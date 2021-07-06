@@ -31,6 +31,25 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var details = await subreddit.GetDetailsAsync();            
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Name); 
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Name);
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }        
+
+        [Test]
         public async Task GetSubmissionsAsync_OneHundredNewSubmissions_ShouldGetOneHundredSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
