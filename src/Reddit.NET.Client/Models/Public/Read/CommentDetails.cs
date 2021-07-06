@@ -3,7 +3,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
-using System.Linq;
+using System;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -29,7 +29,8 @@ namespace Reddit.NET.Client.Models.Public.Read
                 null => VoteDirection.NoVote
             };
             Saved = thing.Data.IsSaved;
-            CreatedAtUtc = thing.Data.CreatedAtUtc;            
+            CreatedAtUtc = thing.Data.CreatedAtUtc;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
@@ -46,6 +47,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// Gets the permanent link of the comment.
         /// </summary>
         public string Permalink { get; private set; }
+
+        /// <inheritdoc />
+        public DateTimeOffset LastLoadedAtUtc { get; private set; }
 
         /// <summary>
         /// Gets the full name of the submission the comment belongs to.
@@ -73,7 +77,8 @@ namespace Reddit.NET.Client.Models.Public.Read
             Downvotes = details.Downvotes;
             Vote = details.Vote;
             Saved = details.Saved;
-            CreatedAtUtc = details.CreatedAtUtc; 
+            CreatedAtUtc = details.CreatedAtUtc;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <inheritdoc />

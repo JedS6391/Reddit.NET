@@ -45,7 +45,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         public bool Saved { get; protected set; }
 
         /// <summary>
-        /// Gets the date and time the content was created.
+        /// Gets the date and time when the content was created.
         /// </summary>
         public DateTimeOffset CreatedAtUtc { get; protected set; }
 

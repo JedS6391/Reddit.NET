@@ -1,3 +1,4 @@
+using System;
 using System.Threading.Tasks;
 
 namespace Reddit.NET.Client.Models.Public.Abstract
@@ -7,6 +8,11 @@ namespace Reddit.NET.Client.Models.Public.Abstract
     /// </summary>
     public interface IReloadable
     {
+        /// <summary>
+        /// Gets the date and time when the model was last loaded.
+        /// </summary>
+        DateTimeOffset LastLoadedAtUtc { get; }
+
         /// <summary>
         /// Reloads the model.
         /// </summary>

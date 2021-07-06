@@ -34,6 +34,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             CommentKarma = user.CommentKarma;
             SubmissionKarma = user.LinkKarma;            
             CreatedAtUtc = user.CreatedAtUtc;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
@@ -57,6 +58,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public DateTimeOffset CreatedAtUtc { get; private set; }
 
         /// <inheritdoc />
+        public DateTimeOffset LastLoadedAtUtc { get; private set; }        
+
+        /// <inheritdoc />
         public UserInteractor Interact(RedditClient client) => client.User(Name);
 
         /// <inheritdoc />
@@ -68,6 +72,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             CommentKarma = details.CommentKarma;
             SubmissionKarma = details.SubmissionKarma;            
             CreatedAtUtc = details.CreatedAtUtc;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <inheritdoc />

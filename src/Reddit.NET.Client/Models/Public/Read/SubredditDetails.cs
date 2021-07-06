@@ -3,6 +3,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
+using System;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -23,6 +24,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Subscribers = thing.Data.Subscribers;
             Url = thing.Data.Url;
             IsSubscribed = thing.Data.IsSubscribed;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
@@ -53,7 +55,10 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets a value indicating whether the currently authenticated user is subscribed to the subreddit.
         /// </summary>        
-        public bool IsSubscribed { get; private set; }        
+        public bool IsSubscribed { get; private set; }
+
+        /// <inheritdoc />
+        public DateTimeOffset LastLoadedAtUtc { get; private set; }        
 
         /// <inheritdoc />
         public SubredditInteractor Interact(RedditClient client) => client.Subreddit(Name);
@@ -69,6 +74,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Subscribers = details.Subscribers;
             Url = details.Url;
             IsSubscribed = details.IsSubscribed;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <inheritdoc />

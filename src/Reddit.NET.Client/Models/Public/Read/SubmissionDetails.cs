@@ -3,6 +3,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
+using System;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -37,6 +38,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             };
             Saved = thing.Data.IsSaved;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <summary>
@@ -80,6 +82,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public string SelfText { get; private set; }
 
         /// <inheritdoc />
+        public DateTimeOffset LastLoadedAtUtc { get; private set; }        
+
+        /// <inheritdoc />
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(Id);
 
         /// <inheritdoc />
@@ -100,7 +105,8 @@ namespace Reddit.NET.Client.Models.Public.Read
             Downvotes = details.Downvotes;
             Vote = details.Vote;
             Saved = details.Saved;
-            CreatedAtUtc = details.CreatedAtUtc;            
+            CreatedAtUtc = details.CreatedAtUtc;
+            LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <inheritdoc />
