@@ -23,9 +23,10 @@ namespace Reddit.NET.Client
         /// <summary>
         /// Gets an interactor for operations relating to a specific comment.
         /// </summary>
-        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>            
+        /// <param name="submissionId">The base-36 ID of the submission the comment belongs to.</param>
+        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>
         /// <returns>A <see cref="CommentInteractor" /> instance that provides mechanisms for interacting with the provided comment.</returns>
-        internal CommentInteractor Comment(string commentId) => new CommentInteractor(this, commentId);
+        internal CommentInteractor Comment(string submissionId, string commentId) => new CommentInteractor(this, submissionId, commentId);
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />.

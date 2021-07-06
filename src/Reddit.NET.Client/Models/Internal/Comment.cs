@@ -28,6 +28,13 @@ namespace Reddit.NET.Client.Models.Internal
             public string ParentFullName { get; private set; }            
 
             /// <summary>
+            /// Gets the full name of the link the comment belongs to.
+            /// </summary>
+            [JsonPropertyName("link_id")]
+            [JsonInclude]
+            public string LinkFullName { get; private set; }   
+
+            /// <summary>
             /// Gets the body of the comment.
             /// </summary>
             [JsonPropertyName("body")]

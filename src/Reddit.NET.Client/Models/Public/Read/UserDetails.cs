@@ -1,13 +1,16 @@
 using System;
+using System.Threading.Tasks;
+using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
+using Reddit.NET.Client.Models.Public.Abstract;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// Defines a read-only view of a user.
     /// </summary>
-    public class UserDetails
+    public class UserDetails : IToInteractor<UserInteractor>, IReloadable
     {   
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDetails" /> class.
@@ -36,25 +39,38 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the name of the user.
         /// </summary>
-        public string Name { get; }
+        public string Name { get; private set; }
 
         /// <summary>
         /// Gets the karma of the user earned from comments.
         /// </summary>
-        public int CommentKarma { get; }
+        public int CommentKarma { get; private set; }
 
         /// <summary>
         /// Gets the link karma of the user earned from submissions.
         /// </summary>
-        public int SubmissionKarma { get; }           
+        public int SubmissionKarma { get; private set; }           
 
         /// <summary>
         /// Gets the date and time the user was created.
         /// </summary>
-        public DateTimeOffset CreatedAtUtc { get; }
+        public DateTimeOffset CreatedAtUtc { get; private set; }
 
         /// <inheritdoc />
+        public UserInteractor Interact(RedditClient client) => client.User(Name);
 
+        /// <inheritdoc />
+        public async Task ReloadAsync(RedditClient client)
+        {
+            var details = await Interact(client).GetDetailsAsync();
+
+            Name = details.Name;
+            CommentKarma = details.CommentKarma;
+            SubmissionKarma = details.SubmissionKarma;            
+            CreatedAtUtc = details.CreatedAtUtc;
+        }
+
+        /// <inheritdoc />
         public override string ToString() => $"User [Name = {Name}]";
     }
 }

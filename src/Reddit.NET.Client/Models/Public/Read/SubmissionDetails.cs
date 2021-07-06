@@ -2,13 +2,14 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
+using System.Threading.Tasks;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
     /// <summary>
     /// Defines a read-only view of a submission.
     /// </summary>
-    public class SubmissionDetails : UserContentDetails, IToInteractor<SubmissionInteractor>
+    public class SubmissionDetails : UserContentDetails, IToInteractor<SubmissionInteractor>, IReloadable
     {   
         /// <summary>
         /// Initializes a new instance of the <see cref="SubmissionDetails" /> class.
@@ -41,27 +42,27 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the title of the submission.
         /// </summary>
-        public string Title { get; }        
+        public string Title { get; private set; }        
 
         /// <summary>
         /// Gets the subreddit the submission belongs to.
         /// </summary>
-        public string Subreddit { get; }
+        public string Subreddit { get; private set; }
 
         /// <summary>
         /// Gets the permalink of the submission.
         /// </summary>
-        public string Permalink { get; }
+        public string Permalink { get; private set; }
         
         /// <summary>
         /// Gets the URL of the submission
         /// </summary>
-        public string Url { get;}
+        public string Url { get; private set; }
 
         /// <summary>
         /// Gets the domain of the submission.
         /// </summary>
-        public string Domain { get; }
+        public string Domain { get; private set; }
 
         /// <summary>
         /// Gets a value indicating whether the submission is a self post.
@@ -80,6 +81,27 @@ namespace Reddit.NET.Client.Models.Public.Read
 
         /// <inheritdoc />
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(Id);
+
+        /// <inheritdoc />
+        public async Task ReloadAsync(RedditClient client)
+        {
+            var details = await client.Submission(Id).GetDetailsAsync();
+
+            Title = details.Title;
+            Subreddit = details.Subreddit;
+            Permalink = details.Permalink;
+            Url = details.Url; 
+            Domain = details.Domain;
+            IsSelfPost = details.IsSelfPost;
+            IsNsfw = details.IsNsfw;
+            SelfText = details.SelfText;
+            Author = details.Author;
+            Upvotes = details.Upvotes;
+            Downvotes = details.Downvotes;
+            Vote = details.Vote;
+            Saved = details.Saved;
+            CreatedAtUtc = details.CreatedAtUtc;            
+        }
 
         /// <inheritdoc />
         public override string ToString() => 
