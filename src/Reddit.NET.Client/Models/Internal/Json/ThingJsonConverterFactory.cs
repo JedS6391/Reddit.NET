@@ -132,6 +132,8 @@ namespace Reddit.NET.Client.Models.Internal.Json
                     _ => throw new JsonException($"Unsupported thing kind '{kind}'."),
                 };
 
+                document.Dispose();
+
                 object thing = JsonSerializer.Deserialize(ref reader, type, options);
 
                 if (thing is not IThing<TData>)
