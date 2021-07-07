@@ -18,7 +18,7 @@ namespace Reddit.NET.WebApi.Services
         }
 
         /// <inheritdoc />
-        public string Get(string key) => 
+        public string Get(string key) =>
             _httpContextAccessor.HttpContext.Session.GetString(key);
 
         /// <inheritdoc />

@@ -6,7 +6,7 @@ namespace Reddit.NET.Console
     /// Defines the options for the console program.
     /// </summary>
     internal class Options
-    {     
+    {
         /// <summary>
         /// Gets or sets the name of the example to run.
         /// </summary>
