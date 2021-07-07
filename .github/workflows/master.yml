@@ -20,6 +20,7 @@ jobs:
       TEST_REDDIT_CLIENT_ID: ${{ secrets.TEST_REDDIT_CLIENT_ID }}
       TEST_REDDIT_CLIENT_SECRET: ${{ secrets.TEST_REDDIT_CLIENT_SECRET }}
       TEST_SUBREDDIT_NAME: ${{ secrets.TEST_SUBREDDIT_NAME }}
+      TEST_MULTIREDDIT_NAME: ${{ secrets.TEST_MULTIREDDIT_NAME }}
 
     steps:
     - uses: actions/checkout@master
