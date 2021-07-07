@@ -19,6 +19,7 @@ namespace Reddit.NET.Client.Command
             public static string Subreddits => $"{RedditOAuthPath}/subreddits/mine/subscriber";
             public static string KarmaBreakdown => $"{RedditOAuthPath}/api/v1/me/karma";
             public static string Trophies => $"{RedditOAuthPath}/api/v1/me/trophies";
+            public static string Multireddits => $"{RedditOAuthPath}/api/multi/mine";
             public static string Inbox(string messageType) => $"{RedditOAuthPath}/message/{messageType}";
             public static string SendMessage => $"{RedditOAuthPath}/api/compose";
         }
@@ -40,6 +41,15 @@ namespace Reddit.NET.Client.Command
                 => $"{RedditOAuthPath}/r/{subredditName}/search";
             public static string Subscription => $"{RedditOAuthPath}/api/subscribe";
             public static string Submit => $"{RedditOAuthPath}/api/submit";
+        }
+
+        public static class Multireddit
+        {
+            public static string Details(string username, string multiredditName) =>
+                $"{RedditOAuthPath}/api/multi/user/{username}/m/{multiredditName}";
+
+            public static string UpdateSubreddit(string username, string multiredditName, string subredditName) =>
+                $"{RedditOAuthPath}/api/multi/user/{username}/m/{multiredditName}/r/{subredditName}";
         }
 
         public static class Submission

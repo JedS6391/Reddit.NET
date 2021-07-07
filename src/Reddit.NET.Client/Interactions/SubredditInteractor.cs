@@ -168,7 +168,7 @@ namespace Reddit.NET.Client.Interactions
 
             if (response.Json.Errors.Any())
             {
-                throw new CreateSubmissionException("Failed to create submission.", ErrorDetails.FromResponse(response));
+                throw new RedditClientApiException("Failed to create submission.", ErrorDetails.FromResponse(response));
             }
 
             return await GetSubmissionDetailsAsync(submissionId: response.Data.Id);

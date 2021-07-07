@@ -13,7 +13,7 @@ namespace Reddit.NET.Client.Interactions
     /// <summary>
     /// Provides mechanisms for interacting with the authenticated user's inbox.
     /// </summary>
-    public class InboxInteractor : IInteractor
+    public sealed class InboxInteractor : IInteractor
     {
         private readonly RedditClient _client;
 

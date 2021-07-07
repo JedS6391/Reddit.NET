@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using Reddit.NET.Client.Models.Internal.Base;
 
@@ -16,12 +18,12 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// </summary>
         /// <param name="type">The unique type identifier of the error.</param>
         /// <param name="message">The message associated with the error.</param>
-        /// <param name="field">The input field associated with the error, if any.</param>
-        internal ErrorDetails(string type, string message, string field)
+        /// <param name="fields">The input fields associated with the error, if any.</param>
+        internal ErrorDetails(string type, string message, IReadOnlyList<string> fields)
         {
             Type = type;
             Message = message;
-            Field = field;
+            Fields = fields;
         }
 
         /// <summary>
@@ -35,9 +37,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public string Message { get; }
 
         /// <summary>
-        /// Gets the input field associated with the error, if any.
+        /// Gets the input fields associated with the error, if any.
         /// </summary>
-        public string Field { get; }
+        public IReadOnlyList<string> Fields { get; }
 
         /// <summary>
         /// Creates a new instance of the <see cref="ErrorDetails" /> class from the provided response object.
@@ -54,11 +56,14 @@ namespace Reddit.NET.Client.Models.Public.Read
 
             // We only care about the first error
             var error = response.Json.Errors.First();
+            var fields = error.Count > 2 ?
+                new string[] { error[2] } :
+                Array.Empty<string>();
 
             return new ErrorDetails(
                 type: error[0],
                 message: error[1],
-                field: error.Count > 2 ? error[2] : null);
+                fields: fields);
         }
     }
 }

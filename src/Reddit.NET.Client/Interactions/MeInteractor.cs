@@ -63,6 +63,21 @@ namespace Reddit.NET.Client.Interactions
         }
 
         /// <summary>
+        /// Gets the multireddits that belong to the authenticated user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation. The result contains the multireddits of the authenticated user.</returns>
+        public async Task<IReadOnlyList<MultiredditDetails>> GetMultiredditsAsync()
+        {
+            var getMyMultiredditsCommand = new GetMyMultiredditsCommand();
+
+            var multireddits = await _client
+                .ExecuteCommandAsync<IReadOnlyList<Multireddit>>(getMyMultiredditsCommand)
+                .ConfigureAwait(false);
+
+            return multireddits.Select(mr => new MultiredditDetails(mr)).ToList();
+        }
+
+        /// <summary>
         /// Gets the history of the authenticated user.
         /// </summary>
         /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
