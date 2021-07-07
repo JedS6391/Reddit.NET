@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
+using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.IntegrationTests
 {
@@ -82,6 +83,35 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(multireddits);
             Assert.IsNotEmpty(multireddits);
+        }
+
+        [Test]
+        public async Task CreateMultiredditAsync_ValidUser_ShouldCreateMultireddit()
+        {
+            var me = _client.Me();
+
+            var newMultiredditDetails = await me.CreateMultiredditAsync(new MultiredditCreationDetails(
+                name: "Test multireddit",
+                subreddits: new string[] { "askreddit", "pics", "askscience" }
+            ));
+
+            Assert.IsNotNull(newMultiredditDetails);
+            Assert.AreEqual("Test multireddit", newMultiredditDetails.Name);
+            Assert.IsNotEmpty(newMultiredditDetails.Subreddits);
+            CollectionAssert.AreEquivalent(
+                new string[] { "AskReddit", "pics", "askscience" },
+                newMultiredditDetails.Subreddits);
+
+            var multireddit = newMultiredditDetails.Interact(_client);
+
+            await multireddit.AddSubredditAsync("todayilearned");
+
+            await newMultiredditDetails.ReloadAsync(_client);
+
+            Assert.IsNotEmpty(newMultiredditDetails.Subreddits);
+            CollectionAssert.AreEquivalent(
+                new string[] { "AskReddit", "pics", "askscience", "todayilearned" },
+                newMultiredditDetails.Subreddits);
         }
     }
 }

@@ -88,7 +88,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var privateMessage = new PrivateMessageDetails(
+            var privateMessage = new PrivateMessageCreationDetails(
                 subject: $"Test message {Guid.NewGuid()}",
                 body: "Test message sent by Reddit.NET client integration tests.");
 
