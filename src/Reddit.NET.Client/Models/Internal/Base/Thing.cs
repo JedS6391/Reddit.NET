@@ -16,12 +16,12 @@ namespace Reddit.NET.Client.Models.Internal.Base
         /// <inheritdoc/>
         [JsonPropertyName("name")]
         [JsonInclude]
-        public string Name { get; private set; } 
+        public string Name { get; private set; }
 
         /// <inheritdoc/>
-        [JsonPropertyName("kind")]   
+        [JsonPropertyName("kind")]
         [JsonInclude]
-        public string Kind { get; private set; }    
+        public string Kind { get; private set; }
 
         /// <inheritdoc/>
         [JsonPropertyName("data")]

@@ -37,12 +37,12 @@ namespace Reddit.NET.Client.Command.Users
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the user.
             /// </summary>
-            public string Username { get; set; }           
-        }        
+            public string Username { get; set; }
+        }
     }
 }

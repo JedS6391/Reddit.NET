@@ -17,22 +17,22 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// <summary>
         /// Initializes a new instance of the <see cref="NonInteractiveCredentials" /> class.
         /// </summary>
-        /// <param name="mode">The mode of authentication this instance represents.</param>        
+        /// <param name="mode">The mode of authentication this instance represents.</param>
         /// <param name="clientId">The client ID of the reddit app.</param>
-        /// <param name="clientSecret">The client secret of the reddit app.</param> 
-        /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>                 
+        /// <param name="clientSecret">The client secret of the reddit app.</param>
+        /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
         /// <param name="sessionId">A unique key generated at the end of the interactive authentication process.</param>
         /// <param name="token">A token retrieved at the end of the interactive authentication process.</param>
         internal InteractiveCredentials(
-            AuthenticationMode mode, 
-            string clientId, 
-            string clientSecret, 
+            AuthenticationMode mode,
+            string clientId,
+            string clientSecret,
             Uri redirectUri,
             Guid sessionId,
             Token token)
             : base(mode, clientId, clientSecret, redirectUri: redirectUri)
         {
-            SessionId = sessionId;    
+            SessionId = sessionId;
             Token = Requires.NotNull(token, nameof(token));
         }
 
@@ -51,10 +51,10 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// </summary>
         public sealed class Builder
         {
-            private static readonly string[] Scopes = new string[]
-            {        
-                "subscribe",            
-                "vote",            
+            private static readonly string[] s_scopes = new string[]
+            {
+                "subscribe",
+                "vote",
                 "mysubreddits",
                 "submit",
                 "save",
@@ -65,7 +65,7 @@ namespace Reddit.NET.Client.Authentication.Credential
                 "edit",
                 "history"
             };
-    
+
             private readonly AuthenticationMode _mode;
             private readonly string _clientId;
             private readonly string _clientSecret;
@@ -73,7 +73,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             private readonly string _state;
             private string _code;
             private Guid? _sessionId;
-            private Token _token;            
+            private Token _token;
             private Stage _stage;
 
             /// <summary>
@@ -81,20 +81,20 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// </summary>
             /// <remarks>
             /// This constructor is intended to be used at the start of the interactive authentication process.
-            /// 
+            ///
             /// The builder will execute a command to retrieve a token in order to build the credentials.
-            /// 
+            ///
             /// The token obtained will be stored in token storage and associated with a session identifier for later usage.
             /// </remarks>
             /// <param name="mode">The mode of authentication this instance represents.</param>
             /// <param name="clientId">The client ID of the reddit app.</param>
-            /// <param name="clientSecret">The client secret of the reddit app.</param> 
+            /// <param name="clientSecret">The client secret of the reddit app.</param>
             /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
             /// <param name="state">A randomly generated value to use during the authorization flow.</param>
             internal Builder(
-                AuthenticationMode mode, 
-                string clientId, 
-                string clientSecret, 
+                AuthenticationMode mode,
+                string clientId,
+                string clientSecret,
                 Uri redirectUri,
                 string state)
             {
@@ -102,8 +102,8 @@ namespace Reddit.NET.Client.Authentication.Credential
                 _clientId = Requires.NotNull(clientId, nameof(clientId));
                 _clientSecret = Requires.NotNull(clientSecret, nameof(clientSecret));
                 _redirectUri = Requires.NotNull(redirectUri, nameof(redirectUri));
-                _state = Requires.NotNull(state, nameof(state));            
-                _stage = Stage.Initialised;                            
+                _state = Requires.NotNull(state, nameof(state));
+                _stage = Stage.Initialised;
             }
 
             /// <summary>
@@ -116,7 +116,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// </remarks>
             /// <param name="mode">The mode of authentication this instance represents.</param>
             /// <param name="clientId">The client ID of the reddit app.</param>
-            /// <param name="clientSecret">The client secret of the reddit app.</param> 
+            /// <param name="clientSecret">The client secret of the reddit app.</param>
             /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
             /// <param name="sessionId">A unique key generated at the end of the interactive authentication process.</param>
             internal Builder(
@@ -131,7 +131,7 @@ namespace Reddit.NET.Client.Authentication.Credential
                 _clientSecret = Requires.NotNull(clientSecret, nameof(clientSecret));
                 _redirectUri = Requires.NotNull(redirectUri, nameof(redirectUri));
                 _sessionId = sessionId;
-                _stage = Stage.AuthorizedWithSessionId;            
+                _stage = Stage.AuthorizedWithSessionId;
             }
 
             /// <summary>
@@ -144,14 +144,14 @@ namespace Reddit.NET.Client.Authentication.Credential
                     throw new InvalidOperationException("Builder has already been authorized for an existing session.");
                 }
 
-                return new Uri($"https://www.reddit.com/api/v1/authorize?client_id={HttpUtility.UrlEncode(_clientId)}&response_type=code&state={HttpUtility.UrlEncode(_state)}&redirect_uri={HttpUtility.UrlEncode(_redirectUri.AbsoluteUri)}&duration=permanent&scope={HttpUtility.UrlEncode(string.Join(' ', Scopes))}");            
+                return new Uri($"https://www.reddit.com/api/v1/authorize?client_id={HttpUtility.UrlEncode(_clientId)}&response_type=code&state={HttpUtility.UrlEncode(_state)}&redirect_uri={HttpUtility.UrlEncode(_redirectUri.AbsoluteUri)}&duration=permanent&scope={HttpUtility.UrlEncode(string.Join(' ', s_scopes))}");
             }
 
             /// <summary>
             /// Completes the interactive authentication flow.
             /// </summary>
             /// <param name="code">The authorization code returned on completion of interactive authentication.</param>
-            public void Authorize(string code) 
+            public void Authorize(string code)
             {
                 if (_stage != Stage.Initialised)
                 {
@@ -175,7 +175,7 @@ namespace Reddit.NET.Client.Authentication.Credential
             {
                 switch (_stage)
                 {
-                    case Stage.AuthorizedWithCode: 
+                    case Stage.AuthorizedWithCode:
                         await AuthenticateWithCodeAsync(commandExecutor, tokenStorage).ConfigureAwait(false);
                         break;
 
@@ -187,7 +187,7 @@ namespace Reddit.NET.Client.Authentication.Credential
                         throw new InvalidOperationException("Builder must be authorized with a code or session ID before authentication can be performed.");
                 };
             }
-            
+
             /// <summary>
             /// Builds an <see cref="InteractiveCredentials" /> instance based on the builder configuration.
             /// </summary>
@@ -199,8 +199,8 @@ namespace Reddit.NET.Client.Authentication.Credential
                     throw new InvalidOperationException("Builder must be authenticated before credentials can be built.");
                 }
 
-                 return new InteractiveCredentials(
-                    _mode,                    
+                return new InteractiveCredentials(
+                    _mode,
                     _clientId,
                     _clientSecret,
                     _redirectUri,
@@ -222,7 +222,7 @@ namespace Reddit.NET.Client.Authentication.Credential
 
                 var token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
 
-                Guid sessionId = await tokenStorage.StoreTokenAsync(token);
+                var sessionId = await tokenStorage.StoreTokenAsync(token);
 
                 _token = token;
                 _sessionId = sessionId;
@@ -231,7 +231,7 @@ namespace Reddit.NET.Client.Authentication.Credential
 
             private async Task AuthenticateWithSessionIdAsync(ITokenStorage tokenStorage)
             {
-                Token token = await tokenStorage.GetTokenAsync(_sessionId.Value);
+                var token = await tokenStorage.GetTokenAsync(_sessionId.Value);
 
                 if (token == null)
                 {
@@ -239,16 +239,16 @@ namespace Reddit.NET.Client.Authentication.Credential
                 }
 
                 _token = token;
-                _stage = Stage.Authenticated;               
+                _stage = Stage.Authenticated;
             }
 
-            private enum Stage 
+            private enum Stage
             {
                 Initialised,
                 AuthorizedWithCode,
                 AuthorizedWithSessionId,
                 Authenticated
             }
-        }   
+        }
     }
 }

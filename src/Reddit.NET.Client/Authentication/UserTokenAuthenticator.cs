@@ -14,7 +14,7 @@ namespace Reddit.NET.Client.Authentication
     /// An <see cref="IAuthenticator" /> implementation that uses a token retrieved via interactive authentication.
     /// </summary>
     public sealed class UserTokenAuthenticator : AutoRefreshAuthenticator
-    {        
+    {
         private readonly Token _token;
 
         /// <summary>
@@ -25,11 +25,11 @@ namespace Reddit.NET.Client.Authentication
         /// <param name="credentials">A <see cref="InteractiveCredentials" /> instance describing the credentials to use for authentication.</param>
         public UserTokenAuthenticator(
             ILogger<UserTokenAuthenticator> logger,
-            CommandExecutor commandExecutor, 
+            CommandExecutor commandExecutor,
             InteractiveCredentials credentials)
             : base(logger, commandExecutor, credentials)
-        {                    
-            _token = Requires.NotNull(credentials.Token, nameof(credentials.Token));            
+        {
+            _token = Requires.NotNull(credentials.Token, nameof(credentials.Token));
         }
 
         /// <inheritdoc />
@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);            
+            var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
 
             return new UserTokenAuthenticationContext(token);
         }

@@ -21,7 +21,7 @@ namespace Reddit.NET.Client.Builder
         /// Initializes a new instance of the <see cref="CredentialsBuilder" /> class.
         /// </summary>
         internal CredentialsBuilder()
-        {                
+        {
         }
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace Reddit.NET.Client.Builder
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="clientSecret">The client secret of the reddit app.</param>
         /// <param name="username">The username of the user the reddit app is for.</param>
-        /// <param name="password">The password of the user the reddit app is for.</param>        
+        /// <param name="password">The password of the user the reddit app is for.</param>
         public void Script(string clientId, string clientSecret, string username, string password)
         {
             Requires.NotNull(clientId, nameof(clientId));
@@ -47,8 +47,8 @@ namespace Reddit.NET.Client.Builder
             Requires.NotNull(password, nameof(password));
 
             _builderFunc = (_, _) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
-                AuthenticationMode.Script,            
-                clientId,            
+                AuthenticationMode.Script,
+                clientId,
                 clientSecret,
                 username: username,
                 password: password));
@@ -59,7 +59,7 @@ namespace Reddit.NET.Client.Builder
         /// </summary>
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="clientSecret">The client secret of the reddit app.</param>
-        /// <param name="deviceId">The identifier of the device.</param>        
+        /// <param name="deviceId">The identifier of the device.</param>
         public void ReadOnly(string clientId, string clientSecret, Guid deviceId)
         {
             Requires.NotNull(clientId, nameof(clientId));
@@ -67,23 +67,23 @@ namespace Reddit.NET.Client.Builder
 
             _builderFunc = (_, _) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
                 AuthenticationMode.ReadOnly,
-                clientId,            
+                clientId,
                 clientSecret,
                 deviceId: deviceId));
-        }   
+        }
 
         /// <summary>
         /// Configures the builder to create credentials for use in the context of an installed application (e.g. user's phone) where read-only access is required.
         /// </summary>
-        /// <param name="clientId">The client ID of the reddit app.</param>        
-        /// <param name="deviceId">The identifier of the device.</param>        
+        /// <param name="clientId">The client ID of the reddit app.</param>
+        /// <param name="deviceId">The identifier of the device.</param>
         public void ReadOnlyInstalledApp(string clientId, Guid deviceId)
         {
-            Requires.NotNull(clientId, nameof(clientId));        
+            Requires.NotNull(clientId, nameof(clientId));
 
             _builderFunc = (_, _) => Task.FromResult<Credentials>(new NonInteractiveCredentials(
                 AuthenticationMode.ReadOnlyInstalledApp,
-                clientId,            
+                clientId,
                 // No secret is expected for an installed app as the secret cannot be stored securely.
                 clientSecret: string.Empty,
                 deviceId: deviceId));
@@ -102,10 +102,10 @@ namespace Reddit.NET.Client.Builder
         /// <param name="state">A randomly generated value to use during the authorization flow.</param>
         /// <returns>A <see cref="InteractiveCredentials.Builder" /> instance to further configure the interactive credentials.</returns>
         public InteractiveCredentials.Builder WebApp(
-            string clientId, 
-            string clientSecret, 
+            string clientId,
+            string clientSecret,
             Uri redirectUri,
-            string state) 
+            string state)
         {
             Requires.NotNull(clientId, nameof(clientId));
             Requires.NotNull(clientSecret, nameof(clientSecret));
@@ -172,8 +172,8 @@ namespace Reddit.NET.Client.Builder
         /// Configures the builder to create credentials for use when an existing session identifier is available.
         /// </summary>
         /// <remarks>
-        /// A session identifier can be obtained at the end of the interactive authentication process. 
-        /// 
+        /// A session identifier can be obtained at the end of the interactive authentication process.
+        ///
         /// It can then be used to create interactive credentials without restarting the interaction authentication process.
         /// </remarks>
         /// <param name="mode">The </param>
@@ -184,8 +184,8 @@ namespace Reddit.NET.Client.Builder
         /// <returns>A <see cref="InteractiveCredentials.Builder" /> instance to further configure the interactive credentials.</returns>
         public InteractiveCredentials.Builder Session(
             AuthenticationMode mode,
-            string clientId, 
-            string clientSecret, 
+            string clientId,
+            string clientSecret,
             Uri redirectUri,
             Guid sessionId)
         {

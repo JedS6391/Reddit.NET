@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// </summary>
     public class MessageDetails
     {
-        internal MessageDetails(IThing<Message.Details> thing)            
+        internal MessageDetails(IThing<Message.Details> thing)
         {
             Author = thing.Data.Author;
             Body = thing.Data.Body;
@@ -25,12 +25,12 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the body of the message.
         /// </summary>
-        public string Body { get; private set; }        
+        public string Body { get; private set; }
 
         /// <summary>
         /// Gets the date and time the message was created.
         /// </summary>
-        public DateTimeOffset CreatedAtUtc { get; private set; }     
+        public DateTimeOffset CreatedAtUtc { get; private set; }
 
         /// <summary>
         /// Gets the identifier of the message.
@@ -45,7 +45,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         internal string FullName => $"{Constants.Kind.Message}_{Id}";
 
         /// <inheritdoc />
-        public override string ToString() => 
-            $"Message [Author = {Author}, Body = {Body}, CreatedAtUtc = {CreatedAtUtc}]";            
+        public override string ToString() =>
+            $"Message [Author = {Author}, Body = {Body}, CreatedAtUtc = {CreatedAtUtc}]";
     }
 }

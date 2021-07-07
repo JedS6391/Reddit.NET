@@ -13,7 +13,7 @@ namespace Reddit.NET.Client.Command
             public static string Token => $"{RedditBasePath}/api/v1/access_token";
         }
 
-        public static class Me 
+        public static class Me
         {
             public static string Details => $"{RedditOAuthPath}/api/v1/me";
             public static string Subreddits => $"{RedditOAuthPath}/subreddits/mine/subscriber";
@@ -23,26 +23,26 @@ namespace Reddit.NET.Client.Command
             public static string SendMessage => $"{RedditOAuthPath}/api/compose";
         }
 
-        public static class User 
+        public static class User
         {
             public static string Details(string username) => $"{RedditOAuthPath}/user/{username}/about";
             public static string History(string username, string type) => $"{RedditOAuthPath}/user/{username}/{type}";
             public static string Trophies(string username) => $"{RedditOAuthPath}/api/v1/user/{username}/trophies";
         }
 
-        public static class Subreddit 
+        public static class Subreddit
         {
             public static string Details(string subredditName) => $"{RedditOAuthPath}/r/{subredditName}/about";
-            public static string Submissions(string subredditName, string sort) 
+            public static string Submissions(string subredditName, string sort)
                 => $"{RedditOAuthPath}/r/{subredditName}/{sort}";
-            public static string FrontPageSubmissions(string sort) => $"{RedditOAuthPath}/{sort}";                
-            public static string Search(string subredditName) 
-                => $"{RedditOAuthPath}/r/{subredditName}/search";                
+            public static string FrontPageSubmissions(string sort) => $"{RedditOAuthPath}/{sort}";
+            public static string Search(string subredditName)
+                => $"{RedditOAuthPath}/r/{subredditName}/search";
             public static string Subscription => $"{RedditOAuthPath}/api/subscribe";
             public static string Submit => $"{RedditOAuthPath}/api/submit";
         }
 
-        public static class Submission 
+        public static class Submission
         {
             public static string DetailsWithComments(string submissionId) =>
                 $"{RedditOAuthPath}/comments/{submissionId}";

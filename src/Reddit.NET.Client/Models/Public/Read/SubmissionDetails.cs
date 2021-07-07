@@ -11,25 +11,25 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// Defines a read-only view of a submission.
     /// </summary>
     public class SubmissionDetails : UserContentDetails, IToInteractor<SubmissionInteractor>, IReloadable
-    {   
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="SubmissionDetails" /> class.
         /// </summary>
-        /// <param name="thing">A <see cref="Thing{TData}" /> containg a submission's data.</param>
+        /// <param name="thing">A <see cref="Thing{TData}" /> containing a submission's data.</param>
         internal SubmissionDetails(IThing<Submission.Details> thing)
             : base(thing.Kind, thing.Data.Id)
-        {             
+        {
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
-            Url = thing.Data.Url; 
+            Url = thing.Data.Url;
             Domain = thing.Data.Domain;
             IsSelfPost = thing.Data.IsSelfPost;
             IsNsfw = thing.Data.IsNsfw;
             SelfText = thing.Data.SelfText;
             Author = thing.Data.Author;
             Upvotes = thing.Data.Upvotes;
-            Downvotes = thing.Data.Downvotes;        
+            Downvotes = thing.Data.Downvotes;
             Vote = thing.Data.LikedByUser switch
             {
                 true => VoteDirection.Upvoted,
@@ -44,7 +44,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the title of the submission.
         /// </summary>
-        public string Title { get; private set; }        
+        public string Title { get; private set; }
 
         /// <summary>
         /// Gets the subreddit the submission belongs to.
@@ -55,7 +55,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// Gets the permalink of the submission.
         /// </summary>
         public string Permalink { get; private set; }
-        
+
         /// <summary>
         /// Gets the URL of the submission
         /// </summary>
@@ -68,7 +68,7 @@ namespace Reddit.NET.Client.Models.Public.Read
 
         /// <summary>
         /// Gets a value indicating whether the submission is a self post.
-        /// </summary>        
+        /// </summary>
         public bool IsSelfPost { get; private set; }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         public string SelfText { get; private set; }
 
         /// <inheritdoc />
-        public DateTimeOffset LastLoadedAtUtc { get; private set; }        
+        public DateTimeOffset LastLoadedAtUtc { get; private set; }
 
         /// <inheritdoc />
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(Id);
@@ -95,7 +95,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Title = details.Title;
             Subreddit = details.Subreddit;
             Permalink = details.Permalink;
-            Url = details.Url; 
+            Url = details.Url;
             Domain = details.Domain;
             IsSelfPost = details.IsSelfPost;
             IsNsfw = details.IsNsfw;
@@ -110,7 +110,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         }
 
         /// <inheritdoc />
-        public override string ToString() => 
+        public override string ToString() =>
             $"Submission [Subreddit = {Subreddit}, Title = {Title}, Author = {Author}, Permalink = {Permalink}, CreatedAtUtc = {CreatedAtUtc}]";
     }
 }

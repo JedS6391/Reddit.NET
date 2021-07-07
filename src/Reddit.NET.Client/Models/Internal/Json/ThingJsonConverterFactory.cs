@@ -14,7 +14,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
     /// <remarks>
     /// Internally, we use the <see cref="IThing{TData}" /> abstraction to represent the data returned by reddit. We can't
     /// convert to an abstract type though, so we need a converter to handle that.
-    /// 
+    ///
     /// This converter is also able to handle polymorphic data that sometimes reddit returns (e.g. an array of comments and submissions),
     /// by dynamically determining the correct type based on the kind of the data.
     /// </remarks>
@@ -36,21 +36,21 @@ namespace Reddit.NET.Client.Models.Internal.Json
         /// <inheritdoc />
         public override bool CanConvert(Type typeToConvert) =>
             typeToConvert.IsGenericType &&
-            typeToConvert.GetGenericTypeDefinition() == typeof(IThing<>);    
+            typeToConvert.GetGenericTypeDefinition() == typeof(IThing<>);
 
         /// <inheritdoc />
         public override JsonConverter CreateConverter(Type typeToConvert, JsonSerializerOptions options)
         {
-            Type dataType = typeToConvert.GetGenericArguments().First();
+            var dataType = typeToConvert.GetGenericArguments().First();
             Type converterType;
 
-            if (s_concreteThingTypes.TryGetValue(dataType, out Type thingType))
+            if (s_concreteThingTypes.TryGetValue(dataType, out var thingType))
             {
                 // We know there is a concrete implementation for this type of thing so use that.
                 // This path will be used for a conversion of a type such as IThing<Comment.Details> or IThing<Submission.Details>.
                 converterType = typeof(ConcreteTypeThingJsonConverter<,>).MakeGenericType(new Type[] { dataType, thingType });
             }
-            else 
+            else
             {
                 // There is no concrete implementation for this data type, so we need to dynamically convert each value.
                 // This path will be used for a conversion of a type such as IThing<IUserContent> or IThing<IVoteable>.
@@ -64,7 +64,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
                 binder: null,
                 args: Array.Empty<object>(),
                 culture: null);
-        }        
+        }
 
         /// <summary>
         /// A <see cref="JsonConverter{T}" /> implementation for converting JSON data to a concrete thing type as specified by <typeparamref name="TThing" />
@@ -77,34 +77,34 @@ namespace Reddit.NET.Client.Models.Internal.Json
             public override IThing<TData> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
                 var thing = JsonSerializer.Deserialize<TThing>(ref reader, options);
-                
+
                 if (thing is not IThing<TData>)
                 {
                     throw new JsonException($"Unable to cast thing with type '{typeof(TThing).FullName}' to '{typeof(IThing<TData>).FullName}'.");
                 }
 
-                return thing as IThing<TData>;                
+                return thing as IThing<TData>;
             }
-            
+
             /// <inheritdoc />
-            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => throw new NotImplementedException();            
+            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => throw new NotImplementedException();
         }
 
         /// <summary>
         /// A <see cref="JsonConverter{T}" /> implementation for converting JSON data to a thing type dynamically based on its kind.
         /// </summary>
-        /// <typeparam name="TData">The type of data the thing contains.</typeparam>        
+        /// <typeparam name="TData">The type of data the thing contains.</typeparam>
         internal class DynamicTypeThingJsonConverter<TData> : JsonConverter<IThing<TData>>
         {
             /// <inheritdoc />
             public override IThing<TData> Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
             {
-                // Take a copy of the reader, so it can be deserialized after the initial parse to determine the type.            
-                Utf8JsonReader readerCopy = reader;
+                // Take a copy of the reader, so it can be deserialized after the initial parse to determine the type.
+                var readerCopy = reader;
 
                 // TODO: It would be more inefficient to read the 'kind' property directly via the reader.
                 // The down side is it is more complex, so for now we simply parse the entire data.
-                if (!JsonDocument.TryParseValue(ref readerCopy, out JsonDocument document))
+                if (!JsonDocument.TryParseValue(ref readerCopy, out var document))
                 {
                     throw new JsonException("Unable to parse JSON document.");
                 }
@@ -114,14 +114,14 @@ namespace Reddit.NET.Client.Models.Internal.Json
                     throw new JsonException($"Unexpected JSON value kind during dynamic conversion. Expected '{JsonValueKind.Object}' but was '{document.RootElement.ValueKind}'");
                 }
 
-                if (!document.RootElement.TryGetProperty("kind", out JsonElement kindPropertyElement))
+                if (!document.RootElement.TryGetProperty("kind", out var kindPropertyElement))
                 {
                     throw new JsonException("Unable to find 'kind' property in JSON data.");
                 }
 
                 var kind = kindPropertyElement.GetString();
 
-                Type type = kind switch
+                var type = kind switch
                 {
                     Constants.Kind.Comment => typeof(Comment),
                     Constants.Kind.User => typeof(User),
@@ -134,7 +134,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
 
                 document.Dispose();
 
-                object thing = JsonSerializer.Deserialize(ref reader, type, options);
+                var thing = JsonSerializer.Deserialize(ref reader, type, options);
 
                 if (thing is not IThing<TData>)
                 {
@@ -143,10 +143,10 @@ namespace Reddit.NET.Client.Models.Internal.Json
 
                 return thing as IThing<TData>;
             }
-            
+
             /// <inheritdoc />
-            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) => 
-                throw new NotImplementedException();           
+            public override void Write(Utf8JsonWriter writer, IThing<TData> value, JsonSerializerOptions options) =>
+                throw new NotImplementedException();
         }
     }
 }

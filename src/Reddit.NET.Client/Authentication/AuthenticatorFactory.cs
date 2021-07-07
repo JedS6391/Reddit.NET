@@ -48,13 +48,13 @@ namespace Reddit.NET.Client.Authentication
         {
             return credentials.Mode switch
             {
-                AuthenticationMode.Script => 
+                AuthenticationMode.Script =>
                     new UsernamePasswordAuthenticator(
                         _loggerFactory.CreateLogger<UsernamePasswordAuthenticator>(),
-                        _commandExecutor,                    
+                        _commandExecutor,
                         credentials),
 
-                AuthenticationMode.ReadOnly => 
+                AuthenticationMode.ReadOnly =>
                     new ClientCredentialsAuthenticator(
                         _loggerFactory.CreateLogger<ClientCredentialsAuthenticator>(),
                         _commandExecutor,
@@ -62,9 +62,9 @@ namespace Reddit.NET.Client.Authentication
 
                 // TODO: Should use the installed_client grant as described here:
                 // https://github.com/reddit-archive/reddit/wiki/OAuth2#application-only-oauth
-                AuthenticationMode.ReadOnlyInstalledApp => 
+                AuthenticationMode.ReadOnlyInstalledApp =>
                     throw new NotSupportedException($"Mode '{credentials.Mode}' is not supported for non-interactive authentication."),
-                    
+
                 _ => throw new ArgumentException($"Mode '{credentials.Mode}' is not supported for non-interactive authentication.", nameof(credentials)),
             };
         }
@@ -73,10 +73,10 @@ namespace Reddit.NET.Client.Authentication
         {
             return credentials.Mode switch
             {
-                AuthenticationMode.WebApp or AuthenticationMode.WebApp => 
+                AuthenticationMode.WebApp or AuthenticationMode.WebApp =>
                     new UserTokenAuthenticator(
                         _loggerFactory.CreateLogger<UserTokenAuthenticator>(),
-                        _commandExecutor,                        
+                        _commandExecutor,
                         credentials),
 
                 _ => throw new ArgumentException($"Mode '{credentials.Mode}' is not supported for interactive authentication.", nameof(credentials)),

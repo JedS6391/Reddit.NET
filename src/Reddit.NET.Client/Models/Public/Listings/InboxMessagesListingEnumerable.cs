@@ -40,7 +40,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
             return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
         }
-        
+
         /// <inheritdoc />
         internal override MessageDetails MapThing(IThing<Message.Details> thing) => new MessageDetails(thing);
 
@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         {
             var getMyInboxMessagesCommand = new GetMyInboxMessagesCommand(new GetMyInboxMessagesCommand.Parameters()
             {
-                MessageType = ListingOptions.MessageType.Name,                
+                MessageType = ListingOptions.MessageType.Name,
                 Limit = ListingOptions.ItemsPerRequest,
                 After = after
             });

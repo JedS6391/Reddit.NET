@@ -25,7 +25,7 @@ namespace Reddit.NET.Client.Authentication
             CommandExecutor commandExecutor,
             Credentials credentials)
             : base(logger, commandExecutor, credentials)
-        {            
+        {
         }
 
         /// <inheritdoc />
@@ -39,15 +39,15 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);            
+            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
 
-            return new UsernamePasswordAuthenticationContext(token); 
+            return new UsernamePasswordAuthenticationContext(token);
         }
 
         /// <inheritdoc />
         protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)
         {
-            // The password grant type does not support refresh tokens, so we need to completely re-authenticate.        
+            // The password grant type does not support refresh tokens, so we need to completely re-authenticate.
             // TODO: Find a better way to support 2-FA, as any provided 2-FA code will have expired by the point we need to refresh.
             return await DoAuthenticateAsync().ConfigureAwait(false);
         }

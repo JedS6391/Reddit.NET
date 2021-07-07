@@ -12,14 +12,14 @@ namespace Reddit.NET.Client.Models.Internal
         /// Defines the attributes of a <see cref="Subreddit" />.
         /// </summary>
         public class Details
-        {            
+        {
             /// <summary>
             /// Gets the identifier of the subreddit.
             /// </summary>
             [JsonPropertyName("id")]
             [JsonInclude]
-            public string Id { get; private set; }         
-        
+            public string Id { get; private set; }
+
             /// <summary>
             /// Gets the title of the subreddit.
             /// </summary>
@@ -59,14 +59,14 @@ namespace Reddit.NET.Client.Models.Internal
             /// Gets a value indicating whether the currently authenticated user is subscribed to the subreddit.
             /// </summary>
             [JsonPropertyName("user_is_subscriber")]
-            [JsonInclude]        
+            [JsonInclude]
             public bool IsSubscribed { get; private set; }
         }
 
         /// <summary>
         /// Defines a listing over a collection of <see cref="Subreddit" /> things.
         /// </summary>
-        public class Listing : Listing<Details> 
+        public class Listing : Listing<Details>
         {
         }
     }

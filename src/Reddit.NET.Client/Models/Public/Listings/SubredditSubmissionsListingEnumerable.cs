@@ -10,7 +10,7 @@ using Reddit.NET.Client.Command.Subreddits;
 namespace Reddit.NET.Client.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions of a subreddit. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions of a subreddit.
     /// </summary>
     public sealed class SubredditSubmissionsListingEnumerable
         : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSubmissionsListingEnumerable.Options>
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             _client = client;
             _parameters = parameters;
         }
-    
+
         /// <inheritdoc />
         internal override async Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
@@ -78,13 +78,13 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand)
                 .ConfigureAwait(false);
 
-            return submissions;    
+            return submissions;
         }
 
         /// <summary>
         /// Defines parameters used when loading the listing data
         /// </summary>
-        public class ListingParameters 
+        public class ListingParameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit to load submissions from.
@@ -127,7 +127,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.Sort = sort;
 
                     return this;
-                } 
+                }
 
                 /// <summary>
                 /// Sets the time range option.
@@ -139,7 +139,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.TimeRange = timeRange;
 
                     return this;
-                }      
+                }
             }
         }
     }

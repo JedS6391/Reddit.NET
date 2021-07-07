@@ -50,7 +50,7 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonPropertyName("granted_at")]
             [JsonInclude]
             [JsonConverter(typeof(EpochSecondJsonConverter))]
-            public DateTimeOffset? AwardedAtUtc { get; private set; }            
+            public DateTimeOffset? AwardedAtUtc { get; private set; }
         }
     }
 

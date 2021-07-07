@@ -10,10 +10,10 @@ namespace Reddit.NET.Client.Models.Internal.Json
     /// </summary>
     /// <remarks>
     /// A <c>GET /r/{subreddit}/comments/{article}</c> request returns an array with two elements:
-    ///   
+    ///
     ///   1. Listing of submission things (with a single child for the submission in question)
     ///   2. Listing of comment things
-    ///   
+    ///
     /// This converter will read both parts from the array and encapsulate them in a <see cref="Submission.SubmissionWithComments" /> instance.
     /// </remarks>
     internal class SubmissionWithCommentsJsonConverter : JsonConverter<Submission.SubmissionWithComments>
@@ -39,13 +39,13 @@ namespace Reddit.NET.Client.Models.Internal.Json
             // Read submission listing.
             var submissions = JsonSerializer.Deserialize<Submission.Listing>(ref reader, options);
 
-            // End first object.        
+            // End first object.
             reader.Consume(JsonTokenType.EndObject);
 
             // Start second object.
             reader.Match(JsonTokenType.StartObject);
 
-            // Read comment listing. 
+            // Read comment listing.
             // Note we treat the comment listing as a very generic IHasParent model, as it will
             // contain both Comment and MoreChildren objects.
             var comments = JsonSerializer.Deserialize<Listing<IHasParent>>(ref reader, options);
@@ -62,7 +62,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
         }
 
         /// <inheritdoc />
-        public override void Write(Utf8JsonWriter writer, Submission.SubmissionWithComments value, JsonSerializerOptions options) =>        
+        public override void Write(Utf8JsonWriter writer, Submission.SubmissionWithComments value, JsonSerializerOptions options) =>
             throw new NotImplementedException();
     }
 }

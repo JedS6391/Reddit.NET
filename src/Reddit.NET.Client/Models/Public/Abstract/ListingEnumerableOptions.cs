@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// Initializes a new instance of the <see cref="ListingEnumerableOptions" /> class.
         /// </summary>
         protected ListingEnumerableOptions()
-        {            
+        {
         }
 
         /// <summary>

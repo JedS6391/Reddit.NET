@@ -10,14 +10,14 @@ namespace Reddit.NET.Client.Authentication.Abstract
     /// Provides base functionality for <see cref="IAuthenticator" /> implementations.
     /// </summary>
     public abstract class BaseAuthenticator : IAuthenticator
-    {        
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="BaseAuthenticator" /> class.
         /// </summary>
         /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         protected BaseAuthenticator(CommandExecutor commandExecutor)
-        {        
-            CommandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));            
+        {
+            CommandExecutor = Requires.NotNull(commandExecutor, nameof(commandExecutor));
         }
 
         /// <summary>
@@ -43,7 +43,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// </returns>
         internal async Task<TResponse> ExecuteCommandAsync<TResponse>(ClientCommand command)
         {
-            HttpResponseMessage response = await ExecuteCommandAsync(command).ConfigureAwait(false);
+            var response = await ExecuteCommandAsync(command).ConfigureAwait(false);
 
             return await response
                 .Content

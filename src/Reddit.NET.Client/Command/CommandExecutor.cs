@@ -42,21 +42,21 @@ namespace Reddit.NET.Client.Command
         /// <param name="command">The command to execute.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command)
-        {        
+        {
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
 
-            HttpRequestMessage request = command.BuildRequest();
+            var request = command.BuildRequest();
 
             return await ExecuteRequestAsync(request).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> instance with authentication.
-        /// </summary>    
+        /// </summary>
         /// <remarks>
         /// The command will be validated to determine whether it can be executed in the <see cref="AuthenticationContext" /> provided
         /// by the supplied <see cref="IAuthenticator" /> instance.
-        /// 
+        ///
         /// If the command can execute in the available context, an <c>Authorization</c> header will be added to the request <paramref name="command" /> describes.
         /// </remarks>
         /// <param name="command">The command to execute.</param>
@@ -65,43 +65,43 @@ namespace Reddit.NET.Client.Command
         /// <exception cref="CommandNotSupportedException">Thrown when the command cannot be executed in the available <see cref="AuthenticationContext" />.</exception>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, IAuthenticator authenticator)
         {
-            AuthenticationContext authenticationContext = await authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
+            var authenticationContext = await authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
 
             if (!authenticationContext.CanExecute(command))
             {
                 _logger.LogError("'{CommandId}' not supported with the configured authentication scheme ('{AuthenticationContextId}').", command.Id, authenticationContext.Id);
-                
+
                 throw new CommandNotSupportedException($"'{command.Id}' not supported with the configured authentication scheme ('{authenticationContext.Id}')");
             }
 
             _logger.LogDebug("Executing '{CommandId}' command with authentication context '{AuthenticationContextId}'.", command.Id, authenticationContext.Id);
 
-            HttpRequestMessage request = command.BuildRequest();
-            
-            AddAuthorizationHeader(request, authenticationContext);            
+            var request = command.BuildRequest();
 
-            return await ExecuteRequestAsync(request).ConfigureAwait(false);  
+            AddAuthorizationHeader(request, authenticationContext);
+
+            return await ExecuteRequestAsync(request).ConfigureAwait(false);
         }
 
         private async Task<HttpResponseMessage> ExecuteRequestAsync(HttpRequestMessage request)
         {
             _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
 
-            using PermitLease lease = await _rateLimiter.AcquireAsync();
-            
+            using var lease = await _rateLimiter.AcquireAsync();
+
             if (!lease.IsAcquired)
-            {                
+            {
                 throw new RateLimitException("Failed to acquire lease to execute request.");
             }
 
-            HttpClient client = _httpClientFactory.CreateClient(Constants.HttpClientName);
+            var client = _httpClientFactory.CreateClient(Constants.HttpClientName);
 
-            HttpResponseMessage response = await client
+            var response = await client
                 .SendAsync(request)
                 .ConfigureAwait(false);
 
             if (response.IsSuccessStatusCode)
-            {                
+            {
                 return response;
             }
 
@@ -114,14 +114,14 @@ namespace Reddit.NET.Client.Command
                 "Bearer",
                 authenticationContext.Token.AccessToken);
 
-        private static HttpResponseMessage HandleFailedResponse(HttpResponseMessage response) =>        
+        private static HttpResponseMessage HandleFailedResponse(HttpResponseMessage response) =>
             response.StatusCode switch
             {
-                HttpStatusCode.TooManyRequests => 
+                HttpStatusCode.TooManyRequests =>
                     throw new RateLimitException($"Rate limit has been met for '{response.RequestMessage.RequestUri}' endpoint."),
 
-                // Throw the standard HTTP request exception.                    
-                _ => response.EnsureSuccessStatusCode(),                                        
-            };                    
+                // Throw the standard HTTP request exception.
+                _ => response.EnsureSuccessStatusCode(),
+            };
     }
 }
