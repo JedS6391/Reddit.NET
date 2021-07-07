@@ -20,6 +20,7 @@ namespace Reddit.NET.Client.Command
             public static string KarmaBreakdown => $"{RedditOAuthPath}/api/v1/me/karma";
             public static string Trophies => $"{RedditOAuthPath}/api/v1/me/trophies";
             public static string Multireddits => $"{RedditOAuthPath}/api/multi/mine";
+            public static string CreateMultireddit => $"{RedditOAuthPath}/api/multi";
             public static string Inbox(string messageType) => $"{RedditOAuthPath}/message/{messageType}";
             public static string SendMessage => $"{RedditOAuthPath}/api/compose";
         }

@@ -7,6 +7,8 @@ using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
 using System.Linq;
+using Reddit.NET.Client.Models.Public.Write;
+using Reddit.NET.Client.Command.Multireddits;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -133,6 +135,28 @@ namespace Reddit.NET.Client.Interactions
                 .Trophies
                 .Select(t => new TrophyDetails(t))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Creates a new multireddit belonging to the authenticated user.
+        /// </summary>
+        /// <param name="details">The details of a multireddit to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created multireddit details.
+        /// </returns>
+        public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details)
+        {
+            var commandParameters = new CreateMultiredditCommand.Parameters()
+            {
+                Name = details.Name,
+                Subreddits = details.Subreddits
+            };
+
+            var createMultiredditCommand = new CreateMultiredditCommand(commandParameters);
+
+            var multireddit = await _client.ExecuteCommandAsync<Multireddit>(createMultiredditCommand).ConfigureAwait(false);
+
+            return new MultiredditDetails(multireddit);
         }
     }
 }

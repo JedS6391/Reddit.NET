@@ -17,6 +17,13 @@ namespace Reddit.NET.Client.Models.Internal
         public class Details : ICreated
         {
             /// <summary>
+            /// Gets the name of the multireddit.
+            /// </summary>
+            [JsonPropertyName("name")]
+            [JsonInclude]
+            public string Name { get; private set; }
+
+            /// <summary>
             /// Gets the display name of the multireddit.
             /// </summary>
             [JsonPropertyName("display_name")]

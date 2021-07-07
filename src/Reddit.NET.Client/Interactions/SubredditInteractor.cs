@@ -51,53 +51,6 @@ namespace Reddit.NET.Client.Interactions
         }
 
         /// <summary>
-        /// Subscribes to the subreddit.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SubscribeAsync() =>
-            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Subscribe);
-
-        /// <summary>
-        /// Unsubscribes from the subreddit.
-        /// </summary>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UnsubscribeAsync() =>
-            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Unubscribe);
-
-        /// <summary>
-        /// Creates a link submission in the subreddit.
-        /// </summary>
-        /// <param name="details">The details of a link submission to create.</param>
-        /// <returns>
-        /// A task representing the asynchronous operation. The task result contains the created submission details.
-        /// </returns>
-        public async Task<SubmissionDetails> CreateSubmissionAsync(LinkSubmissionDetails details) =>
-            await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
-            {
-                SubredditName = _subredditName,
-                Type = CreateSubredditSubmissionCommand.SubmissionType.Link,
-                Title = details.Title,
-                Url = details.Uri.AbsoluteUri,
-                ForceResubmit = details.Resubmit
-            });
-
-        /// <summary>
-        /// Creates a text submission in the subreddit.
-        /// </summary>
-        /// <param name="details">The details of a text submission to create.</param>
-        /// <returns>
-        /// A task representing the asynchronous operation. The task result contains the created submission details.
-        /// </returns>
-        public async Task<SubmissionDetails> CreateSubmissionAsync(TextSubmissionDetails details) =>
-            await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
-            {
-                SubredditName = _subredditName,
-                Type = CreateSubredditSubmissionCommand.SubmissionType.Self,
-                Title = details.Title,
-                Text = details.Text
-            });
-
-        /// <summary>
         /// Gets the submissions of the subreddit.
         /// </summary>
         /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
@@ -144,6 +97,53 @@ namespace Reddit.NET.Client.Interactions
                     Query = query
                 });
         }
+
+        /// <summary>
+        /// Subscribes to the subreddit.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SubscribeAsync() =>
+            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Subscribe);
+
+        /// <summary>
+        /// Unsubscribes from the subreddit.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UnsubscribeAsync() =>
+            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Unubscribe);
+
+        /// <summary>
+        /// Creates a link submission in the subreddit.
+        /// </summary>
+        /// <param name="details">The details of a link submission to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created submission details.
+        /// </returns>
+        public async Task<SubmissionDetails> CreateSubmissionAsync(LinkSubmissionCreationDetails details) =>
+            await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
+            {
+                SubredditName = _subredditName,
+                Type = CreateSubredditSubmissionCommand.SubmissionType.Link,
+                Title = details.Title,
+                Url = details.Uri.AbsoluteUri,
+                ForceResubmit = details.Resubmit
+            });
+
+        /// <summary>
+        /// Creates a text submission in the subreddit.
+        /// </summary>
+        /// <param name="details">The details of a text submission to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created submission details.
+        /// </returns>
+        public async Task<SubmissionDetails> CreateSubmissionAsync(TextSubmissionCreationDetails details) =>
+            await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
+            {
+                SubredditName = _subredditName,
+                Type = CreateSubredditSubmissionCommand.SubmissionType.Self,
+                Title = details.Title,
+                Text = details.Text
+            });
 
         private async Task UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction action)
         {

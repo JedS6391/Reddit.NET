@@ -1,16 +1,16 @@
 namespace Reddit.NET.Client.Models.Public.Write
 {
     /// <summary>
-    /// Represents the details to send a message to a user.
+    /// Represents the details to create a private message to another user.
     /// </summary>
-    public class PrivateMessageDetails
+    public class PrivateMessageCreationDetails
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="PrivateMessageDetails" /> class.
+        /// Initializes a new instance of the <see cref="PrivateMessageCreationDetails" /> class.
         /// </summary>
         /// <param name="subject">The subject of the message.</param>
         /// <param name="body">The message content.</param>
-        public PrivateMessageDetails(string subject, string body)
+        public PrivateMessageCreationDetails(string subject, string body)
         {
             Subject = subject;
             Body = body;

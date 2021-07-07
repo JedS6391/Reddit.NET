@@ -5,15 +5,15 @@ namespace Reddit.NET.Client.Models.Public.Write
     /// <summary>
     /// Represents the details to create a link submission.
     /// </summary>
-    public class LinkSubmissionDetails
+    public class LinkSubmissionCreationDetails
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="LinkSubmissionDetails" /> class.
+        /// Initializes a new instance of the <see cref="LinkSubmissionCreationDetails" /> class.
         /// </summary>
         /// <param name="title">The title of the submission to create.</param>
         /// <param name="uri">The URI of the submission to create.</param>
         /// <param name="resubmit">Whether the submission should be resubmitted if it already exists..</param>
-        public LinkSubmissionDetails(string title, Uri uri, bool resubmit = false)
+        public LinkSubmissionCreationDetails(string title, Uri uri, bool resubmit = false)
         {
             Title = title;
             Uri = uri;

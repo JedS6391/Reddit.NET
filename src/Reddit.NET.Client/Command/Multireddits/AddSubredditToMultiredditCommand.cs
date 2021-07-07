@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.Command.Multireddits
         {
             // The reddit API requires us to send a JSON object as a URL-encoded form content parameter.
             // I'm not sure why it requires this when the subreddit to add is also in the URL, but it is what it is...
-            var model = new SubredditToAddModel()
+            var model = new SubredditNameModel()
             {
                 Name = _parameters.SubredditName
             };
@@ -75,7 +75,7 @@ namespace Reddit.NET.Client.Command.Multireddits
             public string SubredditName { get; set; }
         }
 
-        private class SubredditToAddModel
+        private class SubredditNameModel
         {
             [JsonPropertyName("name")]
             public string Name { get; set; }
