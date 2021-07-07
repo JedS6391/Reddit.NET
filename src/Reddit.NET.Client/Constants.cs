@@ -4,6 +4,7 @@ using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Command.UserContent;
 using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Command.Multireddits;
 
 namespace Reddit.NET.Client
 {
@@ -49,10 +50,14 @@ namespace Reddit.NET.Client
                 {
                     nameof(UpdateSubredditSubscriptionCommand),
                     nameof(CreateSubredditSubmissionCommand),
+                    nameof(AddSubredditToMultiredditCommand),
+                    nameof(RemoveSubredditFromMultiredditCommand),
+                    nameof(GetMultiredditDetailsCommand),
                     nameof(GetMyDetailsCommand),
                     nameof(GetMySubredditsCommand),
                     nameof(GetMyKarmaBreakdownCommand),
                     nameof(GetMyTrophiesCommand),
+                    nameof(GetMyMultiredditsCommand),
                     nameof(GetMyInboxMessagesCommand),
                     nameof(SendMessageCommand),
                     nameof(ReplyToMessageCommand),

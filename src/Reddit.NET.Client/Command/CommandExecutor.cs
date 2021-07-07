@@ -1,11 +1,15 @@
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Net.Http.Json;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
+using Reddit.NET.Client.Models.Internal.Base;
+using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Command
 {
@@ -105,8 +109,8 @@ namespace Reddit.NET.Client.Command
                 return response;
             }
 
-            // Try to handle the failed response.
-            return HandleFailedResponse(response);
+            // Try to handle the failed request.
+            return await HandleFailedRequestAsync(response);
         }
 
         private static void AddAuthorizationHeader(HttpRequestMessage request, AuthenticationContext authenticationContext) =>
@@ -114,14 +118,38 @@ namespace Reddit.NET.Client.Command
                 "Bearer",
                 authenticationContext.Token.AccessToken);
 
-        private static HttpResponseMessage HandleFailedResponse(HttpResponseMessage response) =>
+        private async Task<HttpResponseMessage> HandleFailedRequestAsync(HttpResponseMessage response) =>
             response.StatusCode switch
             {
                 HttpStatusCode.TooManyRequests =>
                     throw new RateLimitException($"Rate limit has been met for '{response.RequestMessage.RequestUri}' endpoint."),
 
+                HttpStatusCode.BadRequest => await HandleBadRequestAsync(response),
+
                 // Throw the standard HTTP request exception.
                 _ => response.EnsureSuccessStatusCode(),
             };
+
+        private async Task<HttpResponseMessage> HandleBadRequestAsync(HttpResponseMessage response)
+        {
+            try
+            {
+                var error = await response.Content.ReadFromJsonAsync<Error>();
+
+                throw new RedditClientApiException(
+                    message: $"Request to '{response.RequestMessage.RequestUri}' endpoint failed.",
+                    details: new ErrorDetails(
+                        type: error.Reason,
+                        message: error.Explanation,
+                        fields: error.Fields));
+            }
+            catch (JsonException jsonException)
+            {
+                _logger.LogError("Failed to read error details from response.", jsonException);
+
+                // Failed to read error details from response. Just throw the standard HTTP request exception.
+                return response.EnsureSuccessStatusCode();
+            }
+        }
     }
 }
