@@ -72,5 +72,16 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(history);
             Assert.IsNotEmpty(history);
         }
+
+        [Test]
+        public async Task GetMultiredditsAsync_ValidUser_ShouldGetMultireddits()
+        {
+            var me = _client.Me();
+
+            var multireddits = await me.GetMultiredditsAsync();
+
+            Assert.IsNotNull(multireddits);
+            Assert.IsNotEmpty(multireddits);
+        }
     }
 }
