@@ -178,7 +178,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsCreateSubmissionException()
+        public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsRedditClientApiException()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
@@ -187,7 +187,7 @@ namespace Reddit.NET.Client.IntegrationTests
                 uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
                 resubmit: false);
 
-            var exception = Assert.ThrowsAsync<CreateSubmissionException>(async () =>
+            var exception = Assert.ThrowsAsync<RedditClientApiException>(async () =>
                 await subreddit.CreateSubmissionAsync(newSubmissionDetails));
 
             Assert.IsNotNull(exception);
