@@ -9,14 +9,14 @@ using Reddit.NET.Client.Command;
 namespace Reddit.NET.Client.Authentication.Abstract
 {
     /// <summary>
-    /// Provides base auto-refresh functionality for <see cref="IAuthenticator" /> implementations. 
+    /// Provides base auto-refresh functionality for <see cref="IAuthenticator" /> implementations.
     /// </summary>
     public abstract class AutoRefreshAuthenticator : BaseAuthenticator
-    {        
-        private static readonly SemaphoreSlim AuthenticationContextCreationLock = new SemaphoreSlim(1, 1);        
+    {
+        private static readonly SemaphoreSlim s_authenticationContextCreationLock = new SemaphoreSlim(1, 1);
 
         private AuthenticationContext _authenticationContext;
-        private DateTimeOffset? _authenticationContextCreatedAt;        
+        private DateTimeOffset? _authenticationContextCreatedAt;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AutoRefreshAuthenticator" /> class.
@@ -25,11 +25,11 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         /// <param name="credentials">A <see cref="Credentials" /> instance describing the credentials to use for authentication.</param>
         protected AutoRefreshAuthenticator(
-            ILogger<AutoRefreshAuthenticator> logger, 
+            ILogger<AutoRefreshAuthenticator> logger,
             CommandExecutor commandExecutor,
             Credentials credentials)
             : base(commandExecutor)
-        {                    
+        {
             Logger = Requires.NotNull(logger, nameof(logger));
             Credentials = Requires.NotNull(credentials, nameof(credentials));
         }
@@ -68,7 +68,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
             {
                 Logger.LogDebug("Creating authentication context...");
 
-                await CreateContextAsync().ConfigureAwait(false); 
+                await CreateContextAsync().ConfigureAwait(false);
             }
 
             if (ShouldRefreshContext())
@@ -83,46 +83,46 @@ namespace Reddit.NET.Client.Authentication.Abstract
 
         private bool ShouldCreateContext() => _authenticationContext == null;
 
-        private bool ShouldRefreshContext() => 
-            _authenticationContext != null && 
+        private bool ShouldRefreshContext() =>
+            _authenticationContext != null &&
             _authenticationContextCreatedAt.Value.Add(TimeSpan.FromSeconds(_authenticationContext.Token.ExpiresIn)) < DateTimeOffset.UtcNow;
 
         private async Task CreateContextAsync()
         {
-            await AuthenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
+            await s_authenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
 
-            if (!ShouldCreateContext()) 
+            if (!ShouldCreateContext())
             {
                 Logger.LogDebug("Authentication context created already - skipping.");
 
                 // Context created while waiting for the lock, nothing to do.
-                AuthenticationContextCreationLock.Release();            
+                s_authenticationContextCreationLock.Release();
 
                 return;
             }
 
-            AuthenticationContext context = await DoAuthenticateAsync().ConfigureAwait(false);
+            var context = await DoAuthenticateAsync().ConfigureAwait(false);
 
             _authenticationContextCreatedAt = DateTimeOffset.UtcNow;
             _authenticationContext = context;
 
             Logger.LogDebug("Authentication context created at {CreatedAt}.", _authenticationContextCreatedAt);
 
-            AuthenticationContextCreationLock.Release();            
+            s_authenticationContextCreationLock.Release();
         }
 
         private async Task RefreshContextAsync()
         {
-            await AuthenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
+            await s_authenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
 
-            AuthenticationContext context = await DoRefreshAsync(_authenticationContext).ConfigureAwait(false);
+            var context = await DoRefreshAsync(_authenticationContext).ConfigureAwait(false);
 
             _authenticationContextCreatedAt = DateTimeOffset.UtcNow;
             _authenticationContext = context;
 
             Logger.LogDebug("Authentication context refreshed at {CreatedAt}.", _authenticationContextCreatedAt);
 
-            AuthenticationContextCreationLock.Release();  
+            s_authenticationContextCreationLock.Release();
         }
     }
 }

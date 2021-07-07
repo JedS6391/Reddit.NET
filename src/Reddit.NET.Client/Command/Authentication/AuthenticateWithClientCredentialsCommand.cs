@@ -46,13 +46,13 @@ namespace Reddit.NET.Client.Command.Authentication
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(
                     $"{_parameters.ClientId}:{_parameters.ClientSecret}")));
 
-            return request;            
+            return request;
         }
 
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the client identifier.

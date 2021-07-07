@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.Command.UserContent
         {
             _parameters = parameters;
         }
-        
+
         /// <inheritdoc />
         public override string Id => nameof(ApplyVoteCommand);
 
@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Command.UserContent
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the full name of the submission or comment to vote on.

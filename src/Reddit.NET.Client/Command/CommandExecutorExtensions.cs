@@ -24,10 +24,10 @@ namespace Reddit.NET.Client.Command
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
         public static async Task<TResponse> ExecuteCommandAsync<TResponse>(
-            this CommandExecutor executor, 
+            this CommandExecutor executor,
             ClientCommand command)
         {
-            HttpResponseMessage response = await executor.ExecuteCommandAsync(command).ConfigureAwait(false);
+            var response = await executor.ExecuteCommandAsync(command).ConfigureAwait(false);
 
             return await response
                 .Content
@@ -45,11 +45,11 @@ namespace Reddit.NET.Client.Command
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
         public static async Task<TResponse> ExecuteCommandAsync<TResponse>(
-            this CommandExecutor executor, 
+            this CommandExecutor executor,
             ClientCommand command,
             IAuthenticator authenticator)
         {
-            HttpResponseMessage response = await executor.ExecuteCommandAsync(command, authenticator).ConfigureAwait(false);
+            var response = await executor.ExecuteCommandAsync(command, authenticator).ConfigureAwait(false);
 
             return await response
                 .Content

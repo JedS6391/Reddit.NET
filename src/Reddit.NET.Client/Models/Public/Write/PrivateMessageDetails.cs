@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <param name="subject">The subject of the message.</param>
         /// <param name="body">The message content.</param>
         public PrivateMessageDetails(string subject, string body)
-        {        
+        {
             Subject = subject;
             Body = body;
         }

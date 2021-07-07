@@ -45,7 +45,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         }
 
         private string BuildQueryString()
-        {            
+        {
             var parameters = new Dictionary<string, string>()
             {
                 { "limit", _parameters.Limit.ToString(CultureInfo.InvariantCulture) },
@@ -57,13 +57,13 @@ namespace Reddit.NET.Client.Command.Subreddits
                 .Where(p => !string.IsNullOrEmpty(p.Value))
                 .Select(p => $"{p.Key}={p.Value}");
 
-            return string.Join('&', queryStringParameters);            
+            return string.Join('&', queryStringParameters);
         }
 
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit to get submissions for.

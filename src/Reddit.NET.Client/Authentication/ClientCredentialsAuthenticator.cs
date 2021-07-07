@@ -13,7 +13,7 @@ namespace Reddit.NET.Client.Authentication
     /// An <see cref="IAuthenticator" /> implementation that uses the <c>client_credentials</c> grant type to authenticate.
     /// </summary>
     public sealed class ClientCredentialsAuthenticator : AutoRefreshAuthenticator
-    {        
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientCredentialsAuthenticator" /> class.
         /// </summary>
@@ -22,17 +22,17 @@ namespace Reddit.NET.Client.Authentication
         /// <param name="credentials">A <see cref="Credentials" /> instance describing the credentials to use for authentication.</param>
         public ClientCredentialsAuthenticator(
             ILogger<ClientCredentialsAuthenticator> logger,
-            CommandExecutor commandExecutor,             
+            CommandExecutor commandExecutor,
             Credentials credentials)
             : base(logger, commandExecutor, credentials)
-        {          
+        {
         }
 
         /// <inheritdoc />
         protected override async Task<AuthenticationContext> DoAuthenticateAsync()
         {
             var authenticateCommand = new AuthenticateWithClientCredentialsCommand(new AuthenticateWithClientCredentialsCommand.Parameters()
-            {                
+            {
                 ClientId = Credentials.ClientId,
                 ClientSecret = Credentials.ClientSecret
             });

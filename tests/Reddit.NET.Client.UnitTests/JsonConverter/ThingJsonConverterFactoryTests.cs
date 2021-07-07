@@ -7,13 +7,13 @@ using Reddit.NET.Client.Models.Internal.Json;
 namespace Reddit.NET.Client.UnitTests.JsonConverter
 {
     public class ThingJsonConverterFactoryTests
-    {                
+    {
         private ThingJsonConverterFactory _converterFactory;
 
         [SetUp]
         public void Setup()
-        {            
-            _converterFactory = new ThingJsonConverterFactory();            
+        {
+            _converterFactory = new ThingJsonConverterFactory();
         }
 
         [Test]
@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
             var typeToConvert = typeof(IThing<Subreddit.Details>);
 
             Assert.IsTrue(_converterFactory.CanConvert(typeToConvert));
-        }           
+        }
 
         [Test]
         public void CanConvert_IThingTypeWithAbstractGeneric_ReturnsTrue()
@@ -30,7 +30,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
             var typeToConvert = typeof(IThing<IHasParent>);
 
             Assert.IsTrue(_converterFactory.CanConvert(typeToConvert));
-        }       
+        }
 
         [Test]
         public void CanConvert_NotIThingType_ReturnsFalse()
@@ -38,7 +38,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
             var typeToConvert = typeof(object);
 
             Assert.IsFalse(_converterFactory.CanConvert(typeToConvert));
-        } 
+        }
 
         [Test]
         public void CreateConverter_IThingTypeWithConcreteGeneric_ReturnsConcreteTypeThingJsonConverter()
@@ -60,6 +60,6 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
 
             Assert.IsNotNull(converter);
             Assert.IsInstanceOf<ThingJsonConverterFactory.DynamicTypeThingJsonConverter<IHasParent>>(converter);
-        }                             
+        }
     }
 }

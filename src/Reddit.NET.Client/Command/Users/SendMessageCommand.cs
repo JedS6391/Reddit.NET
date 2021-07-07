@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.Command.Users
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public SendMessageCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }

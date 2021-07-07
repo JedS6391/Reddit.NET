@@ -12,11 +12,11 @@ namespace Reddit.NET.Client.Command.RateLimiting
         /// </summary>
         /// <param name="limiter">The <see cref="RateLimiter" /> instance to acquire the lease from.</param>
         /// <returns>
-        /// A <see cref="ValueTask{TResult}" /> representing the asynchronous operation. 
-        /// 
+        /// A <see cref="ValueTask{TResult}" /> representing the asynchronous operation.
+        ///
         /// The result will contain the lease obtained for the requested number of permits.
         /// </returns>
-        public static ValueTask<PermitLease> AcquireAsync(this RateLimiter limiter) => 
+        public static ValueTask<PermitLease> AcquireAsync(this RateLimiter limiter) =>
             limiter.AcquireAsync(permitCount: 1);
     }
 }

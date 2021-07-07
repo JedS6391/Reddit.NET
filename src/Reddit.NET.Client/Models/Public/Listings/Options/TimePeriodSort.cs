@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// <param name="name">The name of the sort option.</param>
         private TimeRangeSort(string name)
             : base(name)
-        {            
+        {
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// Gets the 'month' sort option.
         /// </summary>
         public static TimeRangeSort Month => new TimeRangeSort("month");
-        
+
         /// <summary>
         /// Gets the 'year' sort option.
         /// </summary>
@@ -41,7 +41,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
 
         /// <summary>
         /// Gets the 'all' sort option.
-        /// </summary>        
+        /// </summary>
         public static TimeRangeSort AllTime => new TimeRangeSort("all");
     }
 }

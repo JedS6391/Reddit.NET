@@ -20,15 +20,15 @@ namespace Reddit.NET.Client.IntegrationTests
         public async Task GetFrontPageSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
         {
             var fiftyHotSubmissions = await _client
-                .GetFrontPageSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot) 
-                        .WithItemsPerRequest(25)                 
+                .GetFrontPageSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.Hot)
+                        .WithItemsPerRequest(25)
                         .WithMaximumItems(50))
                 .ToListAsync();
 
             Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 50);            
+            Assert.IsTrue(fiftyHotSubmissions.Count == 50);
         }
     }
 }

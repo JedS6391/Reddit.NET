@@ -5,7 +5,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
     /// </summary>
     public sealed class InboxMessageType : NamedOption
     {
-        private InboxMessageType(string name) 
+        private InboxMessageType(string name)
             : base(name)
         {
         }
@@ -13,36 +13,36 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// <summary>
         /// Gets the 'all' message type.
         /// </summary>
-        public static InboxMessageType All = new InboxMessageType("inbox");
+        public static InboxMessageType All => new InboxMessageType("inbox");
 
         /// <summary>
         /// Gets the 'inbox' message type.
-        /// </summary> 
-        public static InboxMessageType Unread = new InboxMessageType("unread");
+        /// </summary>
+        public static InboxMessageType Unread => new InboxMessageType("unread");
 
         /// <summary>
         /// Gets the 'sent' message type.
-        /// </summary>         
-        public static InboxMessageType Sent = new InboxMessageType("sent");
+        /// </summary>
+        public static InboxMessageType Sent => new InboxMessageType("sent");
 
         /// <summary>
         /// Gets the 'mentions' message type.
-        /// </summary>         
-        public static InboxMessageType Mentions = new InboxMessageType("mentions");
+        /// </summary>
+        public static InboxMessageType Mentions => new InboxMessageType("mentions");
 
         /// <summary>
         /// Gets the 'private messages' message type.
-        /// </summary>         
-        public static InboxMessageType PrivateMessages = new InboxMessageType("messages");
+        /// </summary>
+        public static InboxMessageType PrivateMessages => new InboxMessageType("messages");
 
         /// <summary>
         /// Gets the 'comment replies' message type.
-        /// </summary>         
-        public static InboxMessageType CommentReplies = new InboxMessageType("comments");
+        /// </summary>
+        public static InboxMessageType CommentReplies => new InboxMessageType("comments");
 
         /// <summary>
         /// Gets the 'submission replies' message type.
-        /// </summary>         
-        public static InboxMessageType SubmissionReplies = new InboxMessageType("selfreply");
+        /// </summary>
+        public static InboxMessageType SubmissionReplies => new InboxMessageType("selfreply");
     }
 }

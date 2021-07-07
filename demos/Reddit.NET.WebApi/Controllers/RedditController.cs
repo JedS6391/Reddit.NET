@@ -22,14 +22,14 @@ namespace Reddit.NET.WebApi.Controllers
         /// </summary>
         /// <param name="redditService">A service for interacting with reddit.</param>
         public RedditController(IRedditService redditService)
-        {            
+        {
             _redditService = redditService;
         }
 
         /// <summary>
         /// Gets the details of the user associated with the provided session.
         /// </summary>
-        /// <param name="sessionId">The session identifier obtained upon completion of the login process.</param>    
+        /// <param name="sessionId">The session identifier obtained upon completion of the login process.</param>
         [HttpGet]
         [Route("user/details")]
         public async Task<IActionResult> GetUserDetails([Required, FromQuery] Guid sessionId)
@@ -48,7 +48,7 @@ namespace Reddit.NET.WebApi.Controllers
         /// <summary>
         /// Gets the subscribed subreddits of the user associated with the provided session.
         /// </summary>
-        /// <param name="sessionId">The session identifier obtained upon completion of the login process.</param>   
+        /// <param name="sessionId">The session identifier obtained upon completion of the login process.</param>
         [HttpGet]
         [Route("user/subreddits")]
         public async Task<IActionResult> GetUserSubreddits([Required, FromQuery] Guid sessionId)
@@ -57,9 +57,9 @@ namespace Reddit.NET.WebApi.Controllers
 
             var userSubreddits = await client
                 .Me()
-                .GetSubredditsAsync()                
+                .GetSubredditsAsync()
                 .ToListAsync();
-            
+
             return Ok(userSubreddits);
         }
     }

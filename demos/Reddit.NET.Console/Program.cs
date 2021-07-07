@@ -12,16 +12,16 @@ namespace Reddit.NET.Console
     /// The main console example program.
     /// </summary>
     public class Program
-    {        
+    {
         public static async Task Main(string[] args)
         {
             var host = Host
                 .CreateDefaultBuilder(args)
                 .ConfigureLogging(logging => logging.SetMinimumLevel(LogLevel.Debug))
-                .ConfigureServices((_, services) => 
-                {                    
+                .ConfigureServices((_, services) =>
+                {
                     services.AddRedditHttpClient(userAgent: $"{Environment.OSVersion.Platform}:Reddit.NET.Console:v0.1.0 (by JedS6391)");
-                
+
                     services.AddSingleton<EntryPoint>();
 
                     services.AddSingleton<IExample, AuthorizationCodeExample>();

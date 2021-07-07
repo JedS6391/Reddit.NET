@@ -13,7 +13,7 @@ namespace Reddit.NET.Client.Models.Internal
         [JsonPropertyName("access_token")]
         [JsonInclude]
         public string AccessToken { get; private set; }
-        
+
         /// <summary>
         /// Gets the refresh token.
         /// </summary>
@@ -40,6 +40,6 @@ namespace Reddit.NET.Client.Models.Internal
         /// </summary>
         [JsonPropertyName("scope")]
         [JsonInclude]
-        public string Scope { get; private set; } 
+        public string Scope { get; private set; }
     }
 }

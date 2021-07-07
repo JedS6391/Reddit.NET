@@ -25,7 +25,7 @@ namespace Reddit.NET.Client
         /// <summary>
         /// Constants used in commands.
         /// </summary>
-        public static class Command 
+        public static class Command
         {
             /// <summary>
             /// The supported commands when using a read-only authentication mode.
@@ -46,14 +46,14 @@ namespace Reddit.NET.Client
             /// </summary>
             public static string[] UserCommandIds = ReadOnlyCommandIds
                 .Union(new string[]
-                {                                
+                {
                     nameof(UpdateSubredditSubscriptionCommand),
-                    nameof(CreateSubredditSubmissionCommand),                    
+                    nameof(CreateSubredditSubmissionCommand),
                     nameof(GetMyDetailsCommand),
                     nameof(GetMySubredditsCommand),
                     nameof(GetMyKarmaBreakdownCommand),
                     nameof(GetMyTrophiesCommand),
-                    nameof(GetMyInboxMessagesCommand),                    
+                    nameof(GetMyInboxMessagesCommand),
                     nameof(SendMessageCommand),
                     nameof(ReplyToMessageCommand),
                     nameof(GetUserHistoryCommand),

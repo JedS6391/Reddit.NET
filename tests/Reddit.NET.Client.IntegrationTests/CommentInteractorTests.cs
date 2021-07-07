@@ -27,8 +27,8 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(details);
             Assert.AreEqual("AskReddit", details.Subreddit);
             Assert.IsNotNull(details.Body);
-        } 
-        
+        }
+
         [Test]
         public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
         {
@@ -47,13 +47,13 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(details);
             Assert.AreEqual("AskReddit", details.Subreddit);
             Assert.IsNotNull(details.Body);
-            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);             
-        }        
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }
 
         [Test]
         public async Task ReplyAsync_ValidSubmissionValidComment_ShouldAddRepliesToSubmission()
         {
-            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));            
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             // Create a submission to comment on.
             var newSubmissionDetails = new TextSubmissionDetails(
@@ -62,7 +62,7 @@ namespace Reddit.NET.Client.IntegrationTests
 
             var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
 
-            Assert.IsNotNull(createdSubmission);            
+            Assert.IsNotNull(createdSubmission);
 
             var submission = createdSubmission.Interact(_client);
 

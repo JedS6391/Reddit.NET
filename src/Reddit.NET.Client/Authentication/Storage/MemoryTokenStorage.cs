@@ -14,25 +14,25 @@ namespace Reddit.NET.Client.Authentication.Storage
     /// </remarks>
     public sealed class MemoryTokenStorage : ITokenStorage
     {
-        private static readonly ConcurrentDictionary<Guid, Token> _tokens = new ConcurrentDictionary<Guid, Token>();
+        private static readonly ConcurrentDictionary<Guid, Token> s_tokens = new ConcurrentDictionary<Guid, Token>();
 
         /// <inheritdoc />
         public Task<Token> GetTokenAsync(Guid sessionId)
         {
-            if (_tokens.TryGetValue(sessionId, out Token token))
+            if (s_tokens.TryGetValue(sessionId, out var token))
             {
                 return Task.FromResult(token);
             }
 
             return Task.FromResult<Token>(null);
-        }     
+        }
 
         /// <inheritdoc />
         public Task<Guid> StoreTokenAsync(Token token)
         {
             var sessionId = Guid.NewGuid();
 
-            _tokens[sessionId] = token;
+            s_tokens[sessionId] = token;
 
             return Task.FromResult(sessionId);
         }
@@ -40,7 +40,7 @@ namespace Reddit.NET.Client.Authentication.Storage
         /// <inheritdoc />
         public Task RemoveTokenAsync(Guid sessionId)
         {
-            _tokens.TryRemove(sessionId, out _);
+            s_tokens.TryRemove(sessionId, out _);
 
             return Task.CompletedTask;
         }

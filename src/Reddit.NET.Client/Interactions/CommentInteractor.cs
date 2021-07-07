@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.Interactions
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentInteractor" /> class.
-        /// </summary>        
+        /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="submissionId">The base-36 ID of the submission the comment belongs to.</param>
         /// <param name="commentId">The base-36 ID of the comment to interact with.</param>
@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.Interactions
             : base(client, kind: Constants.Kind.Comment, id: commentId)
         {
             _submissionId = submissionId;
-        }  
+        }
 
         /// <summary>
         /// Gets the details of the comment.
@@ -55,6 +55,6 @@ namespace Reddit.NET.Client.Interactions
                 .First(c => c.Data.Id == Id);
 
             return new CommentDetails(comment);
-        }            
+        }
     }
 }

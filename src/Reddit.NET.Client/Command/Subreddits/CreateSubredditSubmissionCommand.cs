@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public CreateSubredditSubmissionCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }
@@ -46,7 +46,7 @@ namespace Reddit.NET.Client.Command.Subreddits
 
                 case SubmissionType.Self:
                     requestParameters["text"] = _parameters.Text;
-                    break;                
+                    break;
             }
 
             var request = new HttpRequestMessage()
@@ -70,7 +70,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit to create the submission in.
@@ -80,7 +80,7 @@ namespace Reddit.NET.Client.Command.Subreddits
             /// <summary>
             /// Gets or sets the type of submission to create.
             /// </summary>
-            public SubmissionType Type { get; set; }  
+            public SubmissionType Type { get; set; }
 
             /// <summary>
             /// Gets or sets the title of the submission to create.
@@ -101,7 +101,7 @@ namespace Reddit.NET.Client.Command.Subreddits
             /// <remarks>
             /// Only applicable when <see cref="Type" /> is <see cref="SubmissionType.Self" />.
             /// </remarks>
-            public string Text { get; set; } 
+            public string Text { get; set; }
 
             /// <summary>
             /// Gets or sets a value indicating whether the submission should be resubmitted if it already exists.

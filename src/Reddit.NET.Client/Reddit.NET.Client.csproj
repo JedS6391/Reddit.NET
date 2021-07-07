@@ -16,6 +16,11 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>    
   </PropertyGroup>
 
+  <PropertyGroup>
+    <AnalysisMode>Default</AnalysisMode>
+    <EnforceCodeStyleInBuild>true</EnforceCodeStyleInBuild>
+  </PropertyGroup>
+
   <ItemGroup>
     <None Remove="Microsoft.Extensions.Http" />
     <None Remove="System.Text.Json" />

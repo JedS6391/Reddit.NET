@@ -7,13 +7,13 @@ using Microsoft.Extensions.Logging;
 namespace Reddit.NET.Client.Command.RateLimiting
 {
     /// <summary>
-    /// A <see cref="RateLimiter" /> implementation using the <see href="https://en.wikipedia.org/wiki/Token_bucket">token bucket algorithm</see>. 
-    /// 
+    /// A <see cref="RateLimiter" /> implementation using the <see href="https://en.wikipedia.org/wiki/Token_bucket">token bucket algorithm</see>.
+    ///
     /// The limiter will periodically replenish its permits to allow further permits to be obtained.
-    /// </summary>    
+    /// </summary>
     /// <remarks>
     /// Note this implementation is based on the APIs defined in the following .NET proposal: https://github.com/dotnet/runtime/issues/52079
-    /// 
+    ///
     /// Once this API lands in the BCL, it would be preferred to use those implementations.
     /// </remarks>
     internal class TokenBucketRateLimiter : RateLimiter
@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
         private readonly ILogger _logger;
         private readonly TokenBucketRateLimiterOptions _options;
         private readonly Timer _renewTimer;
-        private readonly object _lock = new();        
+        private readonly object _lock = new();
         private readonly Queue<RequestRegistration> _queue = new();
 
         private static readonly PermitLease s_successfulLease = new RateLimitLease(true);
@@ -40,11 +40,11 @@ namespace Reddit.NET.Client.Command.RateLimiting
             _logger = logger;
             _options = options;
             _renewTimer = new Timer(
-                Replenish, 
-                this, 
+                Replenish,
+                this,
                 _options.ReplenishmentPeriod,
                 _options.ReplenishmentPeriod);
-            
+
             _permitCount = _options.PermitLimit;
             _queueCount = 0;
         }
@@ -61,7 +61,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
             {
                 throw new ArgumentOutOfRangeException(nameof(permitCount));
             }
-            
+
             // A permit count of zero may be used to check whether there are permits.
             if (permitCount == 0 && GetAvailablePermits() > 0)
             {
@@ -71,7 +71,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
             }
 
             if (Interlocked.Add(ref _permitCount, -permitCount) >= 0)
-            {             
+            {
                 _logger.LogDebug($"Lease for {permitCount} permits successfully acquired. {_permitCount} permits remaining.");
 
                 // We were able to obtain the requested number of permits.
@@ -81,7 +81,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
             // Add the permits we removed back.
             Interlocked.Add(ref _permitCount, permitCount);
 
-            _logger.LogDebug($"Lease for {permitCount} permits not acquired.");                 
+            _logger.LogDebug($"Lease for {permitCount} permits not acquired.");
 
             if (_queueCount + permitCount > _options.QueueLimit)
             {
@@ -94,27 +94,27 @@ namespace Reddit.NET.Client.Command.RateLimiting
             // Enqueue the request for permits.
             // The request will be completed at a later point when the count is replenished.
             var registration = new RequestRegistration(permitCount);
-            
-            _queue.Enqueue(registration); 
+
+            _queue.Enqueue(registration);
 
             _logger.LogDebug($"Request for permits queued for later completion.");
-            
+
             return new ValueTask<PermitLease>(registration.Source.Task);
         }
 
         private static void Replenish(object state)
-        {                    
+        {
             if (state is not TokenBucketRateLimiter limiter)
             {
                 return;
             }
 
-            ILogger logger = limiter._logger;
-            TokenBucketRateLimiterOptions options = limiter._options;
+            var logger = limiter._logger;
+            var options = limiter._options;
 
             var availablePermits = limiter.GetAvailablePermits();
             var maxPermits = options.PermitLimit;
-                
+
             if (availablePermits < maxPermits)
             {
                 // Replenish the available permits.
@@ -124,14 +124,14 @@ namespace Reddit.NET.Client.Command.RateLimiting
 
                 Interlocked.Add(ref limiter._permitCount, permitsToAdd);
             }
- 
+
             ProcessPermitRequestQueue(limiter);
         }
 
         private static void ProcessPermitRequestQueue(TokenBucketRateLimiter limiter)
         {
-            ILogger logger = limiter._logger;
-            Queue<RequestRegistration> queue = limiter._queue; 
+            var logger = limiter._logger;
+            var queue = limiter._queue;
 
             // Process queued requests.
             lock (limiter._lock)
@@ -140,37 +140,37 @@ namespace Reddit.NET.Client.Command.RateLimiting
                 {
                     logger.LogDebug($"Processing rate limiter queue...");
 
-                    RequestRegistration nextPendingRequest = queue.Peek();
+                    var nextPendingRequest = queue.Peek();
 
                     if (Interlocked.Add(ref limiter._permitCount, -nextPendingRequest.Count) >= 0)
-                    {        
-                        logger.LogDebug($"Lease for {nextPendingRequest.Count} permits successfully acquired.");  
+                    {
+                        logger.LogDebug($"Lease for {nextPendingRequest.Count} permits successfully acquired.");
 
                         // Request can be fulfilled.
-                        RequestRegistration request = queue.Dequeue();
+                        var request = queue.Dequeue();
 
-                        Interlocked.Add(ref limiter._queueCount, -request.Count);                                              
-                        
+                        Interlocked.Add(ref limiter._queueCount, -request.Count);
+
                         request.Source.SetResult(s_successfulLease);
                     }
                     else
-                    {   
-                        logger.LogDebug($"Lease for {nextPendingRequest.Count} permits not acquired."); 
+                    {
+                        logger.LogDebug($"Lease for {nextPendingRequest.Count} permits not acquired.");
 
-                        // Request cannot be fulfilled.                     
+                        // Request cannot be fulfilled.
                         Interlocked.Add(ref limiter._permitCount, nextPendingRequest.Count);
-                        
+
                         break;
                     }
-                }                
+                }
             }
         }
 
         private class RateLimitLease : PermitLease
-        {            
+        {
             public RateLimitLease(bool isAcquired)
             {
-                IsAcquired = isAcquired;            
+                IsAcquired = isAcquired;
             }
 
             public override bool IsAcquired { get; }
@@ -182,7 +182,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
         {
             public RequestRegistration(int permitCount)
             {
-                Count = permitCount;                
+                Count = permitCount;
                 Source = new TaskCompletionSource<PermitLease>();
             }
 

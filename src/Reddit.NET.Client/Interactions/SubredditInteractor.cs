@@ -26,7 +26,7 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditInteractor" /> class.
         /// </summary>
-        /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>        
+        /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="subredditName">The name of the subreddit to interact with.</param>
         public SubredditInteractor(RedditClient client, string subredditName)
         {
@@ -79,7 +79,7 @@ namespace Reddit.NET.Client.Interactions
                 Title = details.Title,
                 Url = details.Uri.AbsoluteUri,
                 ForceResubmit = details.Resubmit
-            });        
+            });
 
         /// <summary>
         /// Creates a text submission in the subreddit.
@@ -95,7 +95,7 @@ namespace Reddit.NET.Client.Interactions
                 Type = CreateSubredditSubmissionCommand.SubmissionType.Self,
                 Title = details.Title,
                 Text = details.Text
-            });  
+            });
 
         /// <summary>
         /// Gets the submissions of the subreddit.
@@ -105,8 +105,8 @@ namespace Reddit.NET.Client.Interactions
         public IAsyncEnumerable<SubmissionDetails> GetSubmissionsAsync(
             Action<SubredditSubmissionsListingEnumerable.Options.Builder> configurationAction = null)
         {
-            var optionsBuilder = new SubredditSubmissionsListingEnumerable.Options.Builder();            
-    
+            var optionsBuilder = new SubredditSubmissionsListingEnumerable.Options.Builder();
+
             configurationAction?.Invoke(optionsBuilder);
 
             return new SubredditSubmissionsListingEnumerable(
@@ -140,8 +140,8 @@ namespace Reddit.NET.Client.Interactions
                 optionsBuilder.Options,
                 new SubredditSearchListingEnumerable.ListingParameters()
                 {
-                    SubredditName = _subredditName,                    
-                    Query = query                
+                    SubredditName = _subredditName,
+                    Query = query
                 });
         }
 
@@ -155,13 +155,13 @@ namespace Reddit.NET.Client.Interactions
 
             var updateSubredditSubscriptionCommand = new UpdateSubredditSubscriptionCommand(commandParameters);
 
-            await _client.ExecuteCommandAsync(updateSubredditSubscriptionCommand).ConfigureAwait(false);             
+            await _client.ExecuteCommandAsync(updateSubredditSubscriptionCommand).ConfigureAwait(false);
         }
 
         private async Task<SubmissionDetails> CreateSubmissionAsync(CreateSubredditSubmissionCommand.Parameters parameters)
         {
             var createSubredditSubmissionCommand = new CreateSubredditSubmissionCommand(parameters);
-        
+
             var response = await _client
                 .ExecuteCommandAsync<JsonDataResponse<CreateSubmissionDataNode>>(createSubredditSubmissionCommand)
                 .ConfigureAwait(false);
@@ -175,7 +175,7 @@ namespace Reddit.NET.Client.Interactions
         }
 
         private async Task<SubmissionDetails> GetSubmissionDetailsAsync(string submissionId)
-        {            
+        {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
                 SubmissionId = submissionId,

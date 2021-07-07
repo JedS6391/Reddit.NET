@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Type = type;
             Message = message;
             Field = field;
-        } 
+        }
 
         /// <summary>
         /// Gets the unique type identifier of the error.
@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         internal static ErrorDetails FromResponse<T>(JsonDataResponse<T> response)
         {
             if (response.Json.Errors == null || !response.Json.Errors.Any())
-            {                
+            {
                 return null;
             }
 

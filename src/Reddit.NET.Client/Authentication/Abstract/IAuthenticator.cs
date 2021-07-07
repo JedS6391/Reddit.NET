@@ -11,6 +11,6 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// Gets an authentication context which can be used to perform operations that require authentication.
         /// </summary>
         /// <returns>A task representing the asynchronous operation. The result contains the authentication context.</returns>
-         Task<AuthenticationContext> GetAuthenticationContextAsync();
+        Task<AuthenticationContext> GetAuthenticationContextAsync();
     }
 }

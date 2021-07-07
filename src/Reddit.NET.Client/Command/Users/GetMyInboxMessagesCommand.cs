@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Command.Users
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets message type parameter.
@@ -64,6 +64,6 @@ namespace Reddit.NET.Client.Command.Users
             /// Gets or sets the after parameter.
             /// </summary>
             public string After { get; set; }
-        }        
+        }
     }
 }

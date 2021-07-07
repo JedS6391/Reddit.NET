@@ -15,7 +15,7 @@ namespace Reddit.NET.Client.Models.Public.Write
             Title = title;
             Text = text;
         }
-        
+
         /// <summary>
         /// Gets the title of the submission to create.
         /// </summary>

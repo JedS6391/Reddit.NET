@@ -10,7 +10,7 @@ using Reddit.NET.Client.Command.Subreddits;
 namespace Reddit.NET.Client.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions on the front page. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the submissions on the front page.
     /// </summary>
     public sealed class FrontPageSubmissionsListingEnumerable
         : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, FrontPageSubmissionsListingEnumerable.Options>
@@ -33,7 +33,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         {
             _client = client;
         }
-    
+
         /// <inheritdoc />
         internal override async Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
@@ -54,7 +54,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         private async Task<Submission.Listing> GetListingAsync(string after = null)
         {
             var commandParameters = new GetFrontPageSubmissionsCommand.Parameters()
-            {                
+            {
                 Sort = ListingOptions.Sort.Name,
                 Limit = ListingOptions.ItemsPerRequest,
                 After = after
@@ -71,7 +71,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 .ExecuteCommandAsync<Submission.Listing>(getFrontPageSubmissionsCommand)
                 .ConfigureAwait(false);
 
-            return submissions;    
+            return submissions;
         }
 
         /// <summary>
@@ -109,7 +109,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.Sort = sort;
 
                     return this;
-                } 
+                }
 
                 /// <summary>
                 /// Sets the time range option.
@@ -121,7 +121,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.TimeRange = timeRange;
 
                     return this;
-                }      
+                }
             }
         }
     }

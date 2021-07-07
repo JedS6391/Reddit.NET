@@ -21,7 +21,7 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonPropertyName("id")]
             [JsonInclude]
             public string Id { get; private set; }
-         
+
             /// <summary>
             /// Gets the username of the user.
             /// </summary>
@@ -41,7 +41,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// </summary>
             [JsonPropertyName("link_karma")]
             [JsonInclude]
-            public int LinkKarma { get; private set; }   
+            public int LinkKarma { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("created_utc")]

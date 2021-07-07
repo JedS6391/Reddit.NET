@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(messages);
             Assert.IsNotEmpty(messages);
-        } 
+        }
 
         [Test]
         public async Task ReplyAsync_ValidMessage_ShouldAddRepliesToMessage()
@@ -55,6 +55,6 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(reply);
             Assert.AreEqual(replyText, reply.Body);
-        }                
+        }
     }
 }

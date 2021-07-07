@@ -10,7 +10,7 @@ namespace Reddit.NET.Client.Command.Submissions
     /// Defines a command to get the details of a submission and its comments.
     /// </summary>
     /// <remarks>
-    /// 
+    ///
     /// </remarks>
     public sealed class GetSubmissionDetailsWithCommentsCommand : ClientCommand
     {
@@ -49,7 +49,7 @@ namespace Reddit.NET.Client.Command.Submissions
         }
 
         private string BuildQueryString()
-        {            
+        {
             var parameters = new Dictionary<string, string>()
             {
                 { "limit", _parameters.Limit?.ToString(CultureInfo.InvariantCulture) },
@@ -61,14 +61,14 @@ namespace Reddit.NET.Client.Command.Submissions
                 .Where(p => !string.IsNullOrEmpty(p.Value))
                 .Select(p => $"{p.Key}={p.Value}");
 
-            return string.Join('&', queryStringParameters);            
-        }        
+            return string.Join('&', queryStringParameters);
+        }
 
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
-        {        
+        public class Parameters
+        {
             /// <summary>
             /// Gets or sets the identifier of the submission.
             /// </summary>

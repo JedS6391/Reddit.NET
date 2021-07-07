@@ -30,11 +30,11 @@ namespace Reddit.NET.Client.Models.Public.Read
 
         /// <summary>
         /// Gets the karma earned in the subreddit from submissions.
-        /// </summary> 
-        public int SubmissionKarma { get;  } 
+        /// </summary>
+        public int SubmissionKarma { get; }
 
         /// <inheritdoc />
-        public override string ToString() => 
+        public override string ToString() =>
             $"KarmaBreakdown [Subreddit = {Subreddit}, Comment Karma = {CommentKarma}, Submission Karma = {SubmissionKarma}]";
     }
 }

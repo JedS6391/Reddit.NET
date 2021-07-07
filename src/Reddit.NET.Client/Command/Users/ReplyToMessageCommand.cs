@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.Command.UserContent
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public ReplyToMessageCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }

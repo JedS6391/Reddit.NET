@@ -6,7 +6,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
     /// Defines the options for <see cref="TokenBucketRateLimiterOptions" />.
     /// </summary>
     internal class TokenBucketRateLimiterOptions
-    {      
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenBucketRateLimiterOptions" /> class.
         /// </summary>
@@ -15,8 +15,8 @@ namespace Reddit.NET.Client.Command.RateLimiting
         /// <param name="replenishmentPeriod">The duration of time between permit replenishments.</param>
         /// /// <param name="tokensPerPeriod">The number of permits to replenish each period.</param>
         public TokenBucketRateLimiterOptions(
-            int permitLimit, 
-            int queueLimit, 
+            int permitLimit,
+            int queueLimit,
             TimeSpan replenishmentPeriod,
             int tokensPerPeriod)
         {
@@ -38,7 +38,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
         /// Gets the maximum number of permit requests that will be queued while waiting for permits to become available.
         /// </summary>
         public int QueueLimit { get; }
-        
+
         /// <summary>
         /// Gets the duration of time between permit replenishments.
         /// </summary>
@@ -50,7 +50,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
         /// <summary>
         /// Gets the number of permits to replenish each period.
         /// </summary>
-        public int TokensPerPeriod { get; }        
+        public int TokensPerPeriod { get; }
 
         /// <summary>
         /// Gets a <see cref="TokenBucketRateLimiterOptions" /> configured with default values.
@@ -58,7 +58,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
         /// <remarks>
         /// The default options allow up to 5 permits to be obtained at once, replenishing at a rate of 1 permit per second.
         ///
-        /// When no more permits are available, up to 10 permit requests can be queued for completion as the permits are replenished. 
+        /// When no more permits are available, up to 10 permit requests can be queued for completion as the permits are replenished.
         /// </remarks>
         public static TokenBucketRateLimiterOptions Default => new TokenBucketRateLimiterOptions(
             permitLimit: 5,

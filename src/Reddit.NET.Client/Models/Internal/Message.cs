@@ -25,7 +25,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// <inheritdoc />
             [JsonPropertyName("parent_id")]
             [JsonInclude]
-            public string ParentFullName { get; private set; }              
+            public string ParentFullName { get; private set; }
 
             /// <summary>
             /// Gets the author of the message.
@@ -52,7 +52,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// Defines a listing over a collection of <see cref="Message" /> things.
         /// </summary>
         public class Listing : Listing<Details>
-        { 
+        {
         }
     }
 }

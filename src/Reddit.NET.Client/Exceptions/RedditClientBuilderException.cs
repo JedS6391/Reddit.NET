@@ -12,7 +12,7 @@ namespace Reddit.NET.Client.Exceptions
         /// </summary>
         /// <param name="message">The message that describes the error.</param>
         public RedditClientBuilderException(string message)
-            : base(message)            
+            : base(message)
         {
         }
     }

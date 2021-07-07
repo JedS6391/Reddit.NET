@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.IntegrationTests.Shared
     /// Responsible for managing the <see cref="RedditClient" /> instances used by the integration tests.
     /// </summary>
     public static class TestRedditClientProvider
-    {        
+    {
         private static readonly Lazy<RedditClient> s_scriptClient = new Lazy<RedditClient>(() => BuildClient(AuthenticationMode.Script));
         private static readonly Lazy<RedditClient> s_readOnlyClient = new Lazy<RedditClient>(() => BuildClient(AuthenticationMode.ReadOnly));
 
@@ -28,8 +28,8 @@ namespace Reddit.NET.Client.IntegrationTests.Shared
             var services = new ServiceCollection();
 
             services
-                .AddLogging(builder => 
-                    builder                    
+                .AddLogging(builder =>
+                    builder
                         .AddDebug()
                         .AddConsole()
                         .SetMinimumLevel(LogLevel.Error))

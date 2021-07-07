@@ -14,6 +14,6 @@ namespace Reddit.NET.Client.Exceptions
         public CommandNotSupportedException(string message)
             : base(message)
         {
-        }   
+        }
     }
 }

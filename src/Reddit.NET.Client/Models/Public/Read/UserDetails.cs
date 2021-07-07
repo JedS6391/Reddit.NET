@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// Defines a read-only view of a user.
     /// </summary>
     public class UserDetails : IToInteractor<UserInteractor>, IReloadable
-    {   
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="UserDetails" /> class.
         /// </summary>
@@ -32,7 +32,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         {
             Name = user.Name;
             CommentKarma = user.CommentKarma;
-            SubmissionKarma = user.LinkKarma;            
+            SubmissionKarma = user.LinkKarma;
             CreatedAtUtc = user.CreatedAtUtc;
             LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
@@ -50,7 +50,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the link karma of the user earned from submissions.
         /// </summary>
-        public int SubmissionKarma { get; private set; }           
+        public int SubmissionKarma { get; private set; }
 
         /// <summary>
         /// Gets the date and time the user was created.
@@ -58,7 +58,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         public DateTimeOffset CreatedAtUtc { get; private set; }
 
         /// <inheritdoc />
-        public DateTimeOffset LastLoadedAtUtc { get; private set; }        
+        public DateTimeOffset LastLoadedAtUtc { get; private set; }
 
         /// <inheritdoc />
         public UserInteractor Interact(RedditClient client) => client.User(Name);
@@ -70,7 +70,7 @@ namespace Reddit.NET.Client.Models.Public.Read
 
             Name = details.Name;
             CommentKarma = details.CommentKarma;
-            SubmissionKarma = details.SubmissionKarma;            
+            SubmissionKarma = details.SubmissionKarma;
             CreatedAtUtc = details.CreatedAtUtc;
             LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }

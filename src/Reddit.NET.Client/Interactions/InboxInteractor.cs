@@ -34,8 +34,8 @@ namespace Reddit.NET.Client.Interactions
         public IAsyncEnumerable<MessageDetails> GetMessagesAsync(
             Action<InboxMessagesListingEnumerable.Options.Builder> configurationAction = null)
         {
-            var optionsBuilder = new InboxMessagesListingEnumerable.Options.Builder();            
-    
+            var optionsBuilder = new InboxMessagesListingEnumerable.Options.Builder();
+
             configurationAction?.Invoke(optionsBuilder);
 
             return new InboxMessagesListingEnumerable(
@@ -45,7 +45,7 @@ namespace Reddit.NET.Client.Interactions
 
         /// <summary>
         /// Replies to the message.
-        /// </summary>        
+        /// </summary>
         /// <param name="message">The message to reply to.</param>
         /// <param name="text">The text of the reply to create.</param>
         /// <returns>

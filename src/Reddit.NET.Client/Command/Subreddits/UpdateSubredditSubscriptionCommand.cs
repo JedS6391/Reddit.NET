@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public UpdateSubredditSubscriptionCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }
@@ -54,7 +54,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit to update the subscription.
@@ -64,7 +64,7 @@ namespace Reddit.NET.Client.Command.Subreddits
             /// <summary>
             /// Gets or sets the subscription action to perform.
             /// </summary>
-            public SubscriptionAction Action { get; set; }            
+            public SubscriptionAction Action { get; set; }
         }
 
         /// <summary>

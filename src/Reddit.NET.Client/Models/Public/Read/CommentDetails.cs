@@ -53,12 +53,12 @@ namespace Reddit.NET.Client.Models.Public.Read
 
         /// <summary>
         /// Gets the full name of the submission the comment belongs to.
-        /// </summary>        
+        /// </summary>
         internal string SubmissionFullName { get; private set; }
 
         /// <summary>
         /// Gets the identifier of the submission the comment belongs to.
-        /// </summary> 
+        /// </summary>
         internal string SubmissionId => SubmissionFullName.Split("_")[1];
 
         /// <inheritdoc />
@@ -68,7 +68,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         public async Task ReloadAsync(RedditClient client)
         {
             var details = await client.Comment(SubmissionId, Id).GetDetailsAsync();
-            
+
             Body = details.Body;
             Subreddit = details.Subreddit;
             Permalink = details.Permalink;
@@ -82,7 +82,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         }
 
         /// <inheritdoc />
-        public override string ToString() => 
+        public override string ToString() =>
             $"Comment [Subreddit = {Subreddit}, Author = {Author}, Permalink = {Permalink}, CreatedAtUtc = {CreatedAtUtc}]";
     }
 }

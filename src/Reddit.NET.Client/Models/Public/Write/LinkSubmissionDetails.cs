@@ -19,7 +19,7 @@ namespace Reddit.NET.Client.Models.Public.Write
             Uri = uri;
             Resubmit = resubmit;
         }
-        
+
         /// <summary>
         /// Gets the title of the submission to create.
         /// </summary>
@@ -33,6 +33,6 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <summary>
         /// Gets a value indicating whether the submission should be resubmitted if it already exists.
         /// </summary>
-        public bool Resubmit { get; }        
+        public bool Resubmit { get; }
     }
 }

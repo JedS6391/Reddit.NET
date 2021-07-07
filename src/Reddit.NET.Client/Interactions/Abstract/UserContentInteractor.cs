@@ -40,7 +40,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
         protected string Id { get; }
 
         /// <summary>
-        /// Gets the fullname of the user content. 
+        /// Gets the fullname of the user content.
         /// </summary>
         protected string FullName => $"{Kind}_{Id}";
 
@@ -117,13 +117,13 @@ namespace Reddit.NET.Client.Interactions.Abstract
         {
             var deleteContentCommand = new DeleteContentCommand(new DeleteContentCommand.Parameters()
             {
-                FullName = FullName,                
+                FullName = FullName,
             });
 
-            await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);            
+            await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);
         }
 
-        private async Task ApplyVoteAsync(VoteDirection direction) 
+        private async Task ApplyVoteAsync(VoteDirection direction)
         {
             var applyVoteCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
@@ -131,7 +131,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 Direction = direction
             });
 
-            await Client.ExecuteCommandAsync(applyVoteCommand).ConfigureAwait(false);           
+            await Client.ExecuteCommandAsync(applyVoteCommand).ConfigureAwait(false);
         }
 
         private async Task SaveOrUnsaveAsync(bool unsave)
@@ -143,6 +143,6 @@ namespace Reddit.NET.Client.Interactions.Abstract
             });
 
             await Client.ExecuteCommandAsync(saveOrUnsaveContentCommand).ConfigureAwait(false);
-        }               
+        }
     }
 }
