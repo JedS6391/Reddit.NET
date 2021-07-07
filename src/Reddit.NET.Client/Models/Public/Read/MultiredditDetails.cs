@@ -22,6 +22,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         {
             Name = thing.Data.DisplayName;
             Subreddits = thing.Data.Subreddits.Select(s => s.Name).ToList();
+            Id = thing.Data.Name;
             Username = thing.Data.OwnerUsername;
             LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
@@ -40,12 +41,23 @@ namespace Reddit.NET.Client.Models.Public.Read
         public DateTimeOffset LastLoadedAtUtc { get; private set; }
 
         /// <summary>
+        /// Gets the identifier of the multireddit.
+        /// </summary>
+        /// <remarks>
+        /// Multireddits are identified by their name.
+        ///
+        /// When a multireddit is created, the display name provided is converted to a name,
+        /// e.g. "Test multireddit" -> "test_multireddit".
+        /// </remarks>
+        internal string Id { get; private set; }
+
+        /// <summary>
         /// Gets the name of the user the multireddit belongs to.
         /// </summary>
         internal string Username { get; private set; }
 
         /// <inheritdoc />
-        public MultiredditInteractor Interact(RedditClient client) => client.Multireddit(Username, Name);
+        public MultiredditInteractor Interact(RedditClient client) => client.Multireddit(Username, Id);
 
         /// <inheritdoc />
         public async Task ReloadAsync(RedditClient client)

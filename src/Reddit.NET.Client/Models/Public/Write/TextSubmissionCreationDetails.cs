@@ -3,14 +3,14 @@ namespace Reddit.NET.Client.Models.Public.Write
     /// <summary>
     /// Represents the details to create a text submission.
     /// </summary>
-    public class TextSubmissionDetails
+    public class TextSubmissionCreationDetails
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TextSubmissionDetails" /> class.
+        /// Initializes a new instance of the <see cref="TextSubmissionCreationDetails" /> class.
         /// </summary>
         /// <param name="title">The title of the submission to create.</param>
         /// <param name="text">The text of the submission to create.</param>
-        public TextSubmissionDetails(string title, string text)
+        public TextSubmissionCreationDetails(string title, string text)
         {
             Title = title;
             Text = text;

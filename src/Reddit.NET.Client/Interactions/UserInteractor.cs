@@ -84,23 +84,6 @@ namespace Reddit.NET.Client.Interactions
         }
 
         /// <summary>
-        /// Sends a private message to the user.
-        /// </summary>
-        /// <param name="details">The details of the message to send.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SendMessageAsync(PrivateMessageDetails details)
-        {
-            var sendMessageCommand = new SendMessageCommand(new SendMessageCommand.Parameters()
-            {
-                Username = _username,
-                Subject = details.Subject,
-                Body = details.Body
-            });
-
-            await _client.ExecuteCommandAsync(sendMessageCommand).ConfigureAwait(false);
-        }
-
-        /// <summary>
         /// Gets the trophies of the user.
         /// </summary>
         /// <returns>A task representing the asynchronous operation. The result contains the trophies of the user.</returns>
@@ -120,6 +103,23 @@ namespace Reddit.NET.Client.Interactions
                 .Trophies
                 .Select(t => new TrophyDetails(t))
                 .ToList();
+        }
+
+        /// <summary>
+        /// Sends a private message to the user.
+        /// </summary>
+        /// <param name="details">The details of the message to send.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SendMessageAsync(PrivateMessageCreationDetails details)
+        {
+            var sendMessageCommand = new SendMessageCommand(new SendMessageCommand.Parameters()
+            {
+                Username = _username,
+                Subject = details.Subject,
+                Body = details.Body
+            });
+
+            await _client.ExecuteCommandAsync(sendMessageCommand).ConfigureAwait(false);
         }
     }
 }
