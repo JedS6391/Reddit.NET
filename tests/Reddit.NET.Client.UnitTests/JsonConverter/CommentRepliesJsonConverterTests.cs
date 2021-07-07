@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
         [Test]
         public void Read_ListingObject_ReturnsCorrespondingListingObject()
         {
-            const string rawValue = @"
+            const string RawValue = @"
 {
     ""kind"": ""Listing"",
     ""data"": {
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
     }
 }";
 
-            var valueBytes = Encoding.UTF8.GetBytes(rawValue).AsSpan();
+            var valueBytes = Encoding.UTF8.GetBytes(RawValue).AsSpan();
 
             var reader = new Utf8JsonReader(valueBytes);
 
@@ -57,14 +57,14 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
             Assert.AreEqual("t1", convertedValue.Data.Children[0].Kind);
             Assert.IsNotNull(convertedValue.Data.Children[0].Data);
             Assert.AreEqual("t1_h3uuald", convertedValue.Data.Children[0].Data.ParentFullName);
-        } 
+        }
 
         [Test]
         public void Read_EmptyString_ReturnsNull()
         {
-            const string rawValue = @"""""";
+            const string RawValue = @"""""";
 
-            var valueBytes = Encoding.UTF8.GetBytes(rawValue).AsSpan();
+            var valueBytes = Encoding.UTF8.GetBytes(RawValue).AsSpan();
 
             var reader = new Utf8JsonReader(valueBytes);
 
@@ -79,11 +79,11 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
         [Test]
         public void Read_UnexpectedJsonToken_ThrowsJsonException()
         {
-            const string rawValue = @"[]";
+            const string RawValue = @"[]";
 
-            Assert.Throws<JsonException>(() => 
+            Assert.Throws<JsonException>(() =>
             {
-                var valueBytes = Encoding.UTF8.GetBytes(rawValue).AsSpan();
+                var valueBytes = Encoding.UTF8.GetBytes(RawValue).AsSpan();
 
                 var reader = new Utf8JsonReader(valueBytes);
 
@@ -91,7 +91,7 @@ namespace Reddit.NET.Client.UnitTests.JsonConverter
                 reader.Read();
 
                 _converter.Read(ref reader, typeof(Listing<IHasParent>), _options);
-            });            
-        }                     
+            });
+        }
     }
 }

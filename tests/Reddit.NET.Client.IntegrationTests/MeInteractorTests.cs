@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.IntegrationTests
             var details = await me.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-        }   
+        }
 
         [Test]
         public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(mySubreddits);
             Assert.IsNotEmpty(mySubreddits);
-        } 
+        }
 
         [Test]
         public async Task GetHistoryAsync_Submissions_ShouldGetSubmissions()
@@ -55,7 +55,7 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(history);
             Assert.IsNotEmpty(history);
-        }                   
+        }
 
         [Test]
         public async Task GetHistoryAsync_Saved_ShouldGetSavedHistory()
@@ -71,6 +71,6 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(history);
             Assert.IsNotEmpty(history);
-        } 
+        }
     }
 }

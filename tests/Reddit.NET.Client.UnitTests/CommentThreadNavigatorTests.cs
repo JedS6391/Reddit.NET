@@ -10,14 +10,14 @@ namespace Reddit.NET.Client.UnitTests
 {
     public class CommentThreadNavigatorTests
     {
-        private static readonly Random Random = new Random();
+        private static readonly Random s_random = new Random();
 
         [Test]
         public void Parent_NavigatorWithNoParent_ReturnsNull()
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
@@ -27,14 +27,14 @@ namespace Reddit.NET.Client.UnitTests
             var navigator = new CommentThreadNavigator(submission, replies);
 
             Assert.IsNull(navigator.Parent);
-        } 
+        }
 
         [Test]
         public void Parent_NavigatorWithParent_ReturnsParentCommentThread()
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
@@ -47,14 +47,14 @@ namespace Reddit.NET.Client.UnitTests
             Assert.IsNotNull(navigator.Parent);
             Assert.AreEqual(parent.Data.Id, navigator.Parent.Details.Id);
             Assert.AreEqual(submission.Data.Id, navigator.Parent.Submission.Id);
-        }           
+        }
 
         [Test]
         public void Count_TopLevelCommentThread_ShouldReturnCorrectCount()
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
@@ -72,7 +72,7 @@ namespace Reddit.NET.Client.UnitTests
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
@@ -86,14 +86,14 @@ namespace Reddit.NET.Client.UnitTests
 
             // 'more comments' aren't counted as comments
             Assert.AreEqual(5, navigator.Count);
-        }   
+        }
 
         [Test]
         public void IndexOperator_ValidIndex_ShouldReturnComment()
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
@@ -105,7 +105,7 @@ namespace Reddit.NET.Client.UnitTests
 
             var actualComment = navigator[1];
 
-            Assert.IsNotNull(actualComment);            
+            Assert.IsNotNull(actualComment);
             Assert.AreEqual(secondComment.Data.Id, actualComment.Details.Id);
             Assert.AreEqual(submission.Data.Id, actualComment.Submission.Id);
         }
@@ -115,27 +115,27 @@ namespace Reddit.NET.Client.UnitTests
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
                 new MoreComments()
-            };            
+            };
 
             var navigator = new CommentThreadNavigator(submission, replies);
 
-            Assert.Throws<ArgumentOutOfRangeException>(() => 
+            Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
                 var commnet = navigator[5];
             });
-        } 
+        }
 
         [Test]
         public void GetEnumerator_NavigatorWithThreeComments_ShouldEnumerateThreeComments()
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(),
                 RandomComment(),
                 RandomComment(),
@@ -165,7 +165,7 @@ namespace Reddit.NET.Client.UnitTests
         {
             var submission = RandomSubmission();
             var replies = new List<IThing<IHasParent>>()
-            {                
+            {
                 RandomComment(generateRandomReplies: true),
                 RandomComment(generateRandomReplies: true),
                 new MoreComments()
@@ -206,20 +206,20 @@ namespace Reddit.NET.Client.UnitTests
             var details = new Submission.Details();
 
             details.SetProperty(d => d.Id, Guid.NewGuid().ToString());
-            
+
             submission.SetProperty(s => s.Kind, "t3");
             submission.SetProperty(s => s.Data, details);
 
             return submission;
         }
 
-        private static Comment RandomComment(bool generateRandomReplies = false) 
+        private static Comment RandomComment(bool generateRandomReplies = false)
         {
             var comment = new Comment();
             var details = new Comment.Details();
             var listing = new Listing<IHasParent>();
-            var children = new List<IThing<IHasParent>>();         
-        
+            var children = new List<IThing<IHasParent>>();
+
             details.SetProperty(d => d.Id, Guid.NewGuid().ToString());
             details.SetProperty(d => d.Body, "Test comment body");
 
@@ -229,7 +229,7 @@ namespace Reddit.NET.Client.UnitTests
 
             if (generateRandomReplies)
             {
-                var replyCount = Random.Next(1, 10);          
+                var replyCount = s_random.Next(1, 10);
 
                 for (var i = 0; i < replyCount; i++)
                 {
@@ -238,7 +238,7 @@ namespace Reddit.NET.Client.UnitTests
 
                 listing.Data.SetProperty(l => l.Children, children);
                 details.SetProperty(d => d.Replies, listing);
-            }           
+            }
 
             comment.SetProperty(c => c.Kind, "t1");
             comment.SetProperty(c => c.Data, details);
