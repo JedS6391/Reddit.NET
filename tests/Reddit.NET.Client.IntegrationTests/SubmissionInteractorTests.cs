@@ -158,7 +158,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new TextSubmissionDetails(
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 text: "Test submission made by Reddit.NET client integration tests.");
 

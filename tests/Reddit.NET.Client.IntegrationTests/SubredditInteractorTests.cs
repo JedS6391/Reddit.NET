@@ -165,7 +165,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new LinkSubmissionDetails(
+            var newSubmissionDetails = new LinkSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
                 resubmit: true);
@@ -182,7 +182,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new LinkSubmissionDetails(
+            var newSubmissionDetails = new LinkSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
                 resubmit: false);
@@ -200,7 +200,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new TextSubmissionDetails(
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 text: "Test submission made by Reddit.NET client integration tests.");
 
