@@ -85,7 +85,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task UpvoteDownvoteUnvoteAsync_ValidSubmission_ShouldVote()
+        public async Task UpvoteAsync_ValidSubmission_ShouldUpvote()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
@@ -101,25 +101,59 @@ namespace Reddit.NET.Client.IntegrationTests
 
             var submission = submissionDetails.Interact(_client);
 
-            await RunFuncAndAssertVote(submission, VoteDirection.Upvoted, submission => submission.UpvoteAsync());
+            await submission.UpvoteAsync();
 
-            await RunFuncAndAssertVote(submission, VoteDirection.Downvoted, submission => submission.DownvoteAsync());
+            await submissionDetails.ReloadAsync(_client);
 
-            await RunFuncAndAssertVote(submission, VoteDirection.NoVote, submission => submission.UnvoteAsync());
+            Assert.AreEqual(VoteDirection.Upvoted, submissionDetails.Vote);
+        }
 
-            static async Task RunFuncAndAssertVote(SubmissionInteractor submission, VoteDirection expectedVoteDirection, Func<SubmissionInteractor, Task> func)
-            {
-                // The vote endpoint seems to have a higher rate limit than others, and may be rate limited
-                // regardless of the 60 request/min limit.
-                // This delay is an attempt to avoid hitting that limit.
-                await Task.Delay(TimeSpan.FromSeconds(2));
+        [Test]
+        public async Task DownvoteAsync_ValidSubmission_ShouldDownvote()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-                await func.Invoke(submission);
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
 
-                var submissionDetails = await submission.GetDetailsAsync();
+            Assert.IsNotNull(submissionDetails);
 
-                Assert.AreEqual(expectedVoteDirection, submissionDetails.Vote);
-            }
+            var submission = submissionDetails.Interact(_client);
+
+            await submission.DownvoteAsync();
+
+            await submissionDetails.ReloadAsync(_client);
+
+            Assert.AreEqual(VoteDirection.Downvoted, submissionDetails.Vote);
+        }
+
+        [Test]
+        public async Task UnvoteAsync_ValidSubmission_ShouldUnvote()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(submissionDetails);
+
+            var submission = submissionDetails.Interact(_client);
+
+            await submission.UnvoteAsync();
+
+            await submissionDetails.ReloadAsync(_client);
+
+            Assert.AreEqual(VoteDirection.NoVote, submissionDetails.Vote);
         }
 
         [Test]
