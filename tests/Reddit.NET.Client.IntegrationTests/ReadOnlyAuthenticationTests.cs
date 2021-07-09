@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
@@ -36,7 +37,11 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var me = _client.Me();
 
-            Assert.ThrowsAsync<CommandNotSupportedException>(async () => await me.GetDetailsAsync());
+            var exception = Assert.ThrowsAsync<CommandNotSupportedException>(async () =>
+                await me.GetDetailsAsync());
+
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(nameof(GetMyDetailsCommand), exception.CommandId);
         }
     }
 }
