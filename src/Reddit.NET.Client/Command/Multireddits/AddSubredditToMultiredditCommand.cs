@@ -44,7 +44,7 @@ namespace Reddit.NET.Client.Command.Multireddits
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Put,
-                RequestUri = new Uri(RedditApiUrl.Multireddit.UpdateSubreddit(
+                RequestUri = new Uri(RedditApiUrl.Multireddit.UpdateSubreddits(
                     _parameters.Username,
                     _parameters.MultiredditName,
                     _parameters.SubredditName)),

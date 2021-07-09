@@ -4,24 +4,24 @@ using System.Net.Http;
 namespace Reddit.NET.Client.Command.Multireddits
 {
     /// <summary>
-    /// Defines a command to remove a subreddit from a multireddit of the currently authenticated user.
+    /// Defines a command to delete a multireddit belonging to the currently authenticated user.
     /// </summary>
-    public sealed class RemoveSubredditFromMultiredditCommand : ClientCommand
+    public sealed class DeleteMultiredditCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RemoveSubredditFromMultiredditCommand" /> class.
+        /// Initializes a new instance of the <see cref="DeleteMultiredditCommand" /> class.
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
-        public RemoveSubredditFromMultiredditCommand(Parameters parameters)
+        public DeleteMultiredditCommand(Parameters parameters)
             : base()
         {
             _parameters = parameters;
         }
 
         /// <inheritdoc />
-        public override string Id => nameof(RemoveSubredditFromMultiredditCommand);
+        public override string Id => nameof(DeleteMultiredditCommand);
 
         /// <inheritdoc />
         public override HttpRequestMessage BuildRequest()
@@ -29,10 +29,9 @@ namespace Reddit.NET.Client.Command.Multireddits
             var request = new HttpRequestMessage()
             {
                 Method = HttpMethod.Delete,
-                RequestUri = new Uri(RedditApiUrl.Multireddit.UpdateSubreddits(
+                RequestUri = new Uri(RedditApiUrl.Multireddit.Delete(
                     _parameters.Username,
-                    _parameters.MultiredditName,
-                    _parameters.SubredditName))
+                    _parameters.MultiredditName))
             };
 
             return request;
@@ -52,11 +51,6 @@ namespace Reddit.NET.Client.Command.Multireddits
             /// Gets or sets the multireddit name to add the subreddit to.
             /// </summary>
             public string MultiredditName { get; set; }
-
-            /// <summary>
-            /// Gets or sets the subreddit name to add to the multireddit.
-            /// </summary>
-            public string SubredditName { get; set; }
         }
     }
 }

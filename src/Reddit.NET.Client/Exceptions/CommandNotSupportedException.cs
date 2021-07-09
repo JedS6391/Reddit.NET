@@ -1,5 +1,3 @@
-using Reddit.NET.Client.Exceptions;
-
 namespace Reddit.NET.Client.Exceptions
 {
     /// <summary>

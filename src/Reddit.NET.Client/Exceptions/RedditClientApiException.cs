@@ -1,3 +1,4 @@
+using System.Net;
 using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Exceptions
@@ -5,6 +6,10 @@ namespace Reddit.NET.Client.Exceptions
     /// <summary>
     /// Represents an error that occurs when the reddit API returns an error object.
     /// </summary>
+    /// <remarks>
+    /// This exception occurs when there is a validation error for the request,
+    /// resulting in a response with a <see cref="HttpStatusCode.NotFound" /> status code.
+    /// </remarks>
     public class RedditClientApiException : RedditClientException
     {
         /// <summary>

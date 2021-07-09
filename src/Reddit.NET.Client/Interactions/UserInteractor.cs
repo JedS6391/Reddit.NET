@@ -69,7 +69,7 @@ namespace Reddit.NET.Client.Interactions
 
             if (s_unsupportedHistoryTypeOptions.Any(t => t.Name == optionsBuilder.Options.Type.Name))
             {
-                throw new InvalidUserHistoryTypeException(
+                throw new ArgumentException(
                     $"History type option {optionsBuilder.Options.Type.Name} is only supported for the currently authenticated user.");
             }
 
