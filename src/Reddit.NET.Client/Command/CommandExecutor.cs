@@ -1,3 +1,5 @@
+using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -5,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
+using Polly;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
@@ -23,9 +26,22 @@ namespace Reddit.NET.Client.Command
     /// </remarks>
     public sealed class CommandExecutor
     {
+        private const int RetryCount = 3;
+
+        private static readonly HttpStatusCode[] s_httpStatusCodesToRetry = new HttpStatusCode[]
+        {
+            HttpStatusCode.InternalServerError,
+            HttpStatusCode.BadGateway,
+            HttpStatusCode.ServiceUnavailable,
+            HttpStatusCode.GatewayTimeout
+        };
+
+        private static readonly Func<int, TimeSpan> s_retrySleepDurationStrategy = (retryAttempt) =>
+            TimeSpan.FromSeconds(Math.Pow(2, retryAttempt));
+
         private readonly ILogger<CommandExecutor> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly RateLimiter _rateLimiter;
+        private readonly IRateLimiter _rateLimiter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandExecutor" /> class.
@@ -33,11 +49,24 @@ namespace Reddit.NET.Client.Command
         /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
         /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instanced used to create clients for HTTP communication.</param>
         public CommandExecutor(ILogger<CommandExecutor> logger, IHttpClientFactory httpClientFactory)
+            : this(logger, httpClientFactory, new TokenBucketRateLimiter(logger, TokenBucketRateLimiterOptions.Default))
+        {
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommandExecutor" /> class.
+        /// </summary>
+        /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
+        /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients for HTTP communication.</param>
+        /// <param name="rateLimiter">An <see cref="IRateLimiter" /> instance used to respect request rate limits.</param>
+        internal CommandExecutor(
+            ILogger<CommandExecutor> logger,
+            IHttpClientFactory httpClientFactory,
+            IRateLimiter rateLimiter)
         {
             _logger = logger;
             _httpClientFactory = httpClientFactory;
-            // TODO: Allow injection of rate limiter.
-            _rateLimiter = new TokenBucketRateLimiter(_logger, TokenBucketRateLimiterOptions.Default);
+            _rateLimiter = rateLimiter;
         }
 
         /// <summary>
@@ -49,9 +78,7 @@ namespace Reddit.NET.Client.Command
         {
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
 
-            var request = command.BuildRequest();
-
-            return await ExecuteRequestAsync(request).ConfigureAwait(false);
+            return await ExecuteRequestAsync(() => command.BuildRequest()).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -80,17 +107,19 @@ namespace Reddit.NET.Client.Command
 
             _logger.LogDebug("Executing '{CommandId}' command with authentication context '{AuthenticationContextId}'.", command.Id, authenticationContext.Id);
 
-            var request = command.BuildRequest();
+            return await ExecuteRequestAsync(() =>
+            {
+                var request = command.BuildRequest();
 
-            AddAuthorizationHeader(request, authenticationContext);
+                AddAuthorizationHeader(request, authenticationContext);
 
-            return await ExecuteRequestAsync(request).ConfigureAwait(false);
+                return request;
+            })
+            .ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> ExecuteRequestAsync(HttpRequestMessage request)
+        private async Task<HttpResponseMessage> ExecuteRequestAsync(Func<HttpRequestMessage> requestFunc)
         {
-            _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
-
             using var lease = await _rateLimiter.AcquireAsync();
 
             if (!lease.IsAcquired)
@@ -100,9 +129,20 @@ namespace Reddit.NET.Client.Command
 
             var client = _httpClientFactory.CreateClient(Constants.HttpClientName);
 
-            var response = await client
-                .SendAsync(request)
-                .ConfigureAwait(false);
+            var retryPolicy = Policy
+                .HandleResult<HttpResponseMessage>(r => s_httpStatusCodesToRetry.Contains(r.StatusCode))
+                .WaitAndRetryAsync(RetryCount, s_retrySleepDurationStrategy);
+
+            var response = await retryPolicy.ExecuteAsync(async () =>
+            {
+                var request = requestFunc.Invoke();
+
+                _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
+
+                return await client
+                    .SendAsync(request)
+                    .ConfigureAwait(false);
+            });
 
             if (response.IsSuccessStatusCode)
             {

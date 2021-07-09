@@ -8,6 +8,7 @@ using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
+using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
 
 namespace Reddit.NET.Client.Builder
@@ -106,9 +107,15 @@ namespace Reddit.NET.Client.Builder
         {
             CheckValidity();
 
+            // TODO: Add the ability to configure the rate limiter.
+            var rateLimiter = new TokenBucketRateLimiter(
+                _loggerFactory.CreateLogger<TokenBucketRateLimiter>(),
+                TokenBucketRateLimiterOptions.Default);
+
             var commandExecutor = new CommandExecutor(
                 _loggerFactory.CreateLogger<CommandExecutor>(),
-                _httpClientFactory);
+                _httpClientFactory,
+                rateLimiter);
 
             var authenticatorFactory = new AuthenticatorFactory(
                 _loggerFactory,
