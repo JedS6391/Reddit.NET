@@ -28,7 +28,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        public async Task GetSubredditsAsync_OneHundredSubreddits_ShouldGetSubreddits()
         {
             var me = _client.Me();
 
@@ -43,7 +43,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetHistoryAsync_Submissions_ShouldGetSubmissions()
+        public async Task GetHistoryAsync_Submissions_ShouldGetSubmissionHistory()
         {
             var me = _client.Me();
 

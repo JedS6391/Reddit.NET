@@ -50,23 +50,23 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_OneHundredNewSubmissions_ShouldGetOneHundredSubmissions()
+        public async Task GetSubmissionsAsync_OneHundredNewSubmissions_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
-            var fiftyHotSubmissions = await subreddit
+            var oneHundredNewSubmissions = await subreddit
                 .GetSubmissionsAsync(builder =>
                     builder
-                        .WithSort(SubredditSubmissionSort.Hot)
+                        .WithSort(SubredditSubmissionSort.New)
                         .WithMaximumItems(100))
                 .ToListAsync();
 
-            Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 100);
+            Assert.IsNotNull(oneHundredNewSubmissions);
+            Assert.IsTrue(oneHundredNewSubmissions.Count == 100);
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
@@ -83,7 +83,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_FiftyTopAllTimeSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        public async Task GetSubmissionsAsync_FiftyTopAllTimeSubmissionsTwentyFivePerRequest_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
@@ -101,7 +101,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_MultipleSubreddits_ShouldGetFiftySubmissions()
+        public async Task GetSubmissionsAsync_MultipleSubreddits_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit+pics");
 
@@ -117,7 +117,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task SearchSubmissionsAsync_FiftyRelevantSubmissions_ShouldGetFiftySubmissions()
+        public async Task SearchSubmissionsAsync_FiftyRelevantSubmissions_ShouldSearchSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
@@ -148,7 +148,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task UnsubscribeAsync_ValidSubreddit_ShouldSubscribe()
+        public async Task UnsubscribeAsync_ValidSubreddit_ShouldUnsubscribe()
         {
             var subreddit = _client.Subreddit("askreddit");
 
