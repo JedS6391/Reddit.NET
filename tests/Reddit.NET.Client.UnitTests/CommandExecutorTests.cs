@@ -160,6 +160,30 @@ namespace Reddit.NET.Client.UnitTests
         }
 
         [Test]
+        public void ExecuteCommandAsync_400ResponseWithoutErrorContent_ThrowsRedditClientResponseException()
+        {
+            var command = new MockCommand();
+
+            _httpMessageHandler.RequestFunc = (request) =>
+                Task.FromResult(new HttpResponseMessage(HttpStatusCode.BadRequest));
+
+            var exception = Assert.ThrowsAsync<RedditClientResponseException>(async () =>
+                await _commandExecutor.ExecuteCommandAsync(command));
+
+            Assert.IsNotNull(exception);
+            Assert.AreEqual(HttpStatusCode.BadRequest, exception.StatusCode);
+            Assert.AreEqual(1, _httpMessageHandler.RequestCount);
+
+            _rateLimiter
+                .Received(1)
+                .AcquireAsync(permitCount: 1);
+
+            _httpClientFactory
+                .Received(1)
+                .CreateClient(Constants.HttpClientName);
+        }
+
+        [Test]
         [TestCase(HttpStatusCode.NotFound)]
         [TestCase(HttpStatusCode.NotImplemented)]
         public void ExecuteCommandAsync_UnexpectedErrorResponse_ThrowsRedditClientResponseException(HttpStatusCode statusCode)
