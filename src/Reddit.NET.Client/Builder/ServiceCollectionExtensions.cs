@@ -4,7 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Reddit.NET.Client.Builder
 {
     /// <summary>
-    /// Extension methods to configure an <see cref="IServiceCollection" /> for the client. 
+    /// Extension methods to configure an <see cref="IServiceCollection" /> for the client.
     /// </summary>
     public static class ServiceCollectionExtensions
     {
@@ -12,7 +12,7 @@ namespace Reddit.NET.Client.Builder
         /// Adds the <see cref="IHttpClientFactory" /> and related services to the <see cref="IServiceCollection" />.
         /// </summary>
         /// <remarks>
-        /// A named <see cref="HttpClient" /> is defined with the appropriate configuration for the client 
+        /// A named <see cref="HttpClient" /> is defined with the appropriate configuration for the client
         /// to use for all HTTP communication.
         /// </remarks>
         /// <param name="services">The <see cref="IServiceCollection" />.</param>

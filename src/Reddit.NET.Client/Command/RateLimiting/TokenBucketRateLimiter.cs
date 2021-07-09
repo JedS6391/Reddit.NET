@@ -7,7 +7,7 @@ using Microsoft.Extensions.Logging;
 namespace Reddit.NET.Client.Command.RateLimiting
 {
     /// <summary>
-    /// A <see cref="RateLimiter" /> implementation using the <see href="https://en.wikipedia.org/wiki/Token_bucket">token bucket algorithm</see>.
+    /// An <see cref="IRateLimiter" /> implementation using the <see href="https://en.wikipedia.org/wiki/Token_bucket">token bucket algorithm</see>.
     ///
     /// The limiter will periodically replenish its permits to allow further permits to be obtained.
     /// </summary>
@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.Command.RateLimiting
     ///
     /// Once this API lands in the BCL, it would be preferred to use those implementations.
     /// </remarks>
-    internal class TokenBucketRateLimiter : RateLimiter
+    internal class TokenBucketRateLimiter : IRateLimiter
     {
         private int _permitCount;
         private int _queueCount;
@@ -50,10 +50,10 @@ namespace Reddit.NET.Client.Command.RateLimiting
         }
 
         /// <inheritdoc />
-        public override int GetAvailablePermits() => _permitCount;
+        public int GetAvailablePermits() => _permitCount;
 
         /// <inheritdoc />
-        public override ValueTask<PermitLease> AcquireAsync(int permitCount)
+        public ValueTask<PermitLease> AcquireAsync(int permitCount)
         {
             _logger.LogTrace($"Attempting to acquire lease for {permitCount} permits...");
 
