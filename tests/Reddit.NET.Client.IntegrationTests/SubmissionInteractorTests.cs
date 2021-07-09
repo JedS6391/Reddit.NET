@@ -85,7 +85,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task UpvoteDownvoteUnvoteAsync_ValidSubmission_ShouldUpvote()
+        public async Task UpvoteDownvoteUnvoteAsync_ValidSubmission_ShouldVote()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 

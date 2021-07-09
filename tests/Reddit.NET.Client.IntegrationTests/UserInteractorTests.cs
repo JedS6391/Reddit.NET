@@ -50,7 +50,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetHistoryAsync_Submissions_ShouldGetSubmissions()
+        public async Task GetHistoryAsync_Submissions_ShouldGetSubmissionHistory()
         {
             var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
@@ -66,11 +66,11 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public void GetHistoryAsync_Saved_ThrowsInvalidUserHistoryTypeException()
+        public void GetHistoryAsync_Saved_ThrowsArgumentException()
         {
             var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var exception = Assert.ThrowsAsync<InvalidUserHistoryTypeException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 var history = await user
                     .GetHistoryAsync(
