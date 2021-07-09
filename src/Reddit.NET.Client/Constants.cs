@@ -53,6 +53,8 @@ namespace Reddit.NET.Client
                     nameof(AddSubredditToMultiredditCommand),
                     nameof(RemoveSubredditFromMultiredditCommand),
                     nameof(GetMultiredditDetailsCommand),
+                    nameof(GetMultiredditSubmissionsCommand),
+                    nameof(DeleteMultiredditCommand),
                     nameof(GetMyDetailsCommand),
                     nameof(GetMySubredditsCommand),
                     nameof(GetMyKarmaBreakdownCommand),

@@ -48,8 +48,11 @@ namespace Reddit.NET.Client.Command
         {
             public static string Details(string username, string multiredditName) =>
                 $"{RedditOAuthPath}/api/multi/user/{username}/m/{multiredditName}";
-
-            public static string UpdateSubreddit(string username, string multiredditName, string subredditName) =>
+            public static string Submissions(string username, string multiredditName, string sort)
+                => $"{RedditOAuthPath}/user/{username}/m/{multiredditName}/{sort}";
+            public static string Delete(string username, string multiredditName) =>
+                $"{RedditOAuthPath}/api/multi/user/{username}/m/{multiredditName}";
+            public static string UpdateSubreddits(string username, string multiredditName, string subredditName) =>
                 $"{RedditOAuthPath}/api/multi/user/{username}/m/{multiredditName}/r/{subredditName}";
         }
 

@@ -1,7 +1,10 @@
+using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Multireddits;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
+using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Interactions
@@ -45,6 +48,45 @@ namespace Reddit.NET.Client.Interactions
             var multireddit = await _client.ExecuteCommandAsync<Multireddit>(getMultiredditDetailsCommand).ConfigureAwait(false);
 
             return new MultiredditDetails(multireddit);
+        }
+
+        /// <summary>
+        /// Gets the submissions of the multireddit.
+        /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the submissions of the multireddit.</returns>
+        public IAsyncEnumerable<SubmissionDetails> GetSubmissionsAsync(
+            Action<MultiredditSubmissionsListingEnumerable.Options.Builder> configurationAction = null)
+        {
+            var optionsBuilder = new MultiredditSubmissionsListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new MultiredditSubmissionsListingEnumerable(
+                _client,
+                optionsBuilder.Options,
+                new MultiredditSubmissionsListingEnumerable.ListingParameters()
+                {
+                    Username = _username,
+                    MultiredditName = _multiredditName
+                });
+        }
+
+        /// <summary>
+        /// Deletes the multireddit.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task DeleteAsync()
+        {
+            var commandParameters = new DeleteMultiredditCommand.Parameters()
+            {
+                Username = _username,
+                MultiredditName = _multiredditName
+            };
+
+            var deleteMultiredditCommand = new DeleteMultiredditCommand(commandParameters);
+
+            await _client.ExecuteCommandAsync(deleteMultiredditCommand).ConfigureAwait(false);
         }
 
         /// <summary>

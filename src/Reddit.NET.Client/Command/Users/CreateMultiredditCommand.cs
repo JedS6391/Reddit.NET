@@ -5,7 +5,7 @@ using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace Reddit.NET.Client.Command.Multireddits
+namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to create a multireddit belonging to the currently authenticated user.

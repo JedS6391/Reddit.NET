@@ -95,7 +95,7 @@ namespace Reddit.NET.Client.Command
 
             if (!lease.IsAcquired)
             {
-                throw new RateLimitException("Failed to acquire lease to execute request.");
+                throw new RedditClientRateLimitException("Failed to acquire lease to execute request.");
             }
 
             var client = _httpClientFactory.CreateClient(Constants.HttpClientName);
@@ -122,12 +122,12 @@ namespace Reddit.NET.Client.Command
             response.StatusCode switch
             {
                 HttpStatusCode.TooManyRequests =>
-                    throw new RateLimitException($"Rate limit has been met for '{response.RequestMessage.RequestUri}' endpoint."),
+                    throw new RedditClientRateLimitException($"Rate limit has been met for '{response.RequestMessage.RequestUri}' endpoint."),
 
                 HttpStatusCode.BadRequest => await HandleBadRequestAsync(response),
 
-                // Throw the standard HTTP request exception.
-                _ => response.EnsureSuccessStatusCode(),
+                // No specific handling for this response code.
+                _ => throw new RedditClientResponseException($"Request to '{response.RequestMessage.RequestUri}' endpoint failed.", response.StatusCode)
             };
 
         private async Task<HttpResponseMessage> HandleBadRequestAsync(HttpResponseMessage response)
@@ -147,8 +147,8 @@ namespace Reddit.NET.Client.Command
             {
                 _logger.LogError("Failed to read error details from response.", jsonException);
 
-                // Failed to read error details from response. Just throw the standard HTTP request exception.
-                return response.EnsureSuccessStatusCode();
+                // Failed to read error details from response.
+                throw new RedditClientResponseException($"Request to '{response.RequestMessage.RequestUri}' endpoint failed.", response.StatusCode);
             }
         }
     }
