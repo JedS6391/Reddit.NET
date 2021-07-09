@@ -104,3 +104,28 @@ foreach (CommentThread topLevelThread in navigator)
     }
 }
 ```
+
+## Errors
+
+The client will throw specific exceptions for certain error scenarios that it encounters, all of which are derived from the base `RedditClientException` type.
+
+### `CommandNotSupportedException`
+
+Occurs when trying to execute a command that is not supported using the particular authentication mode. For example, trying to use any of the interactions provided by `MeInteractor` when authenticated with read-only credentials.
+
+### `RedditClientRateLimitException`
+
+Will occur when either:
+
+- The reddit API returns a [429 HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/429)
+- The rate limiter used by the client cannot permit the execution of a request
+
+### `RedditClientApiException`
+
+Used when the reddit API returns a [400 HTTP response status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/400) and the response body contains an error object with details of the issue.
+
+The `Details` property of the exception can be used to inspect the actual error.
+
+### `RedditClientResponseException`
+
+Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.

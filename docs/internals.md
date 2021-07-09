@@ -24,6 +24,17 @@ By default, permits are replenished at a rate of 1 permit per second. The client
 
 This strategy aims to stay well under the limit, but in future it may be possible to have a more dynamic limiter that reacts in response to the `X-Ratelimit-*` headers returned by the reddit API. See the [reddit API rules](https://github.com/reddit-archive/reddit/wiki/API#rules) for more details.
 
+## Retries
+
+The client will attempt to retry a request up to three times when a transient HTTP response status code is returned by the reddit API. An exponential back-off sleep strategy is used between request retries. 
+
+**Transient HTTP response status codes:**
+
+- [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) 
+- [502 Bad Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) 
+- [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) 
+- [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) 
+
 ## Logging
 
 Components used by the client are provided loggers via an `ILoggerFactory`. 

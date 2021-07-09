@@ -102,7 +102,9 @@ namespace Reddit.NET.Client.Command
             {
                 _logger.LogError("'{CommandId}' not supported with the configured authentication scheme ('{AuthenticationContextId}').", command.Id, authenticationContext.Id);
 
-                throw new CommandNotSupportedException($"'{command.Id}' not supported with the configured authentication scheme ('{authenticationContext.Id}')");
+                throw new CommandNotSupportedException(
+                    $"'{command.Id}' not supported with the configured authentication scheme ('{authenticationContext.Id}')",
+                    command.Id);
             }
 
             _logger.LogDebug("Executing '{CommandId}' command with authentication context '{AuthenticationContextId}'.", command.Id, authenticationContext.Id);
