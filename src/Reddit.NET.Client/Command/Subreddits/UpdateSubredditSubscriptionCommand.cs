@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to update the subscription to a particular subreddit.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class UpdateSubredditSubscriptionCommand : ClientCommand
     {
         private readonly Parameters _parameters;

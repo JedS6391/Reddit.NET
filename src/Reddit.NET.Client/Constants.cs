@@ -14,64 +14,9 @@ namespace Reddit.NET.Client
     internal static class Constants
     {
         /// <summary>
-        /// The version of the client.
-        /// </summary>
-        public const string Version = "0.1.0";
-
-        /// <summary>
         /// The named used for <see cref="HttpClient" /> instances.
         /// </summary>
         public static string HttpClientName = $"Reddit.NET.Client";
-
-        /// <summary>
-        /// Constants used in commands.
-        /// </summary>
-        public static class Command
-        {
-            /// <summary>
-            /// The supported commands when using a read-only authentication mode.
-            /// </summary>
-            public static string[] ReadOnlyCommandIds = new string[]
-            {
-                nameof(GetSubredditDetailsCommand),
-                nameof(GetSubredditSubmissionsCommand),
-                nameof(SearchSubredditSubmissionsCommand),
-                nameof(GetFrontPageSubmissionsCommand),
-                nameof(GetSubmissionDetailsWithCommentsCommand),
-                nameof(GetUserDetailsCommand),
-                nameof(GetUserTrophiesCommand)
-            };
-
-            /// <summary>
-            /// The supported commands when using a user authentication mode.
-            /// </summary>
-            public static string[] UserCommandIds = ReadOnlyCommandIds
-                .Union(new string[]
-                {
-                    nameof(UpdateSubredditSubscriptionCommand),
-                    nameof(CreateSubredditSubmissionCommand),
-                    nameof(AddSubredditToMultiredditCommand),
-                    nameof(RemoveSubredditFromMultiredditCommand),
-                    nameof(GetMultiredditDetailsCommand),
-                    nameof(GetMultiredditSubmissionsCommand),
-                    nameof(DeleteMultiredditCommand),
-                    nameof(GetMyDetailsCommand),
-                    nameof(GetMySubredditsCommand),
-                    nameof(GetMyKarmaBreakdownCommand),
-                    nameof(GetMyTrophiesCommand),
-                    nameof(GetMyMultiredditsCommand),
-                    nameof(CreateMultiredditCommand),
-                    nameof(GetMyInboxMessagesCommand),
-                    nameof(SendMessageCommand),
-                    nameof(ReplyToMessageCommand),
-                    nameof(GetUserHistoryCommand),
-                    nameof(ApplyVoteCommand),
-                    nameof(SaveOrUnsaveContentCommand),
-                    nameof(DeleteContentCommand),
-                    nameof(CreateCommentCommand)
-                })
-                .ToArray();
-        }
 
         /// <summary>
         /// Constants used to determine reddit 'thing' kinds.

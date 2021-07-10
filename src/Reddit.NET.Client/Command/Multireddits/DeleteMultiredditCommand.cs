@@ -1,11 +1,13 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Multireddits
 {
     /// <summary>
     /// Defines a command to delete a multireddit belonging to the currently authenticated user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class DeleteMultiredditCommand : ClientCommand
     {
         private readonly Parameters _parameters;

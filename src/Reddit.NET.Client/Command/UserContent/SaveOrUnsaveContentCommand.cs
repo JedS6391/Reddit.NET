@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.UserContent
 {
     /// <summary>
     /// Defines a command to save or unsave a submission or comment.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class SaveOrUnsaveContentCommand : ClientCommand
     {
         private readonly Parameters _parameters;

@@ -1,11 +1,14 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get the trophies of a specific user.
     /// </summary>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetUserTrophiesCommand : ClientCommand
     {
         private readonly Parameters _parameters;

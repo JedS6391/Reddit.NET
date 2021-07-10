@@ -1,11 +1,13 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Multireddits
 {
     /// <summary>
     /// Defines a command to get the details of a multireddit belonging to the currently authenticated user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetMultiredditDetailsCommand : ClientCommand
     {
         private readonly Parameters _parameters;

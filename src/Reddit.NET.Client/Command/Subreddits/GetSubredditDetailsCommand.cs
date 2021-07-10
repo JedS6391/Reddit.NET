@@ -1,11 +1,14 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to get the details of a subreddit.
     /// </summary>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetSubredditDetailsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
