@@ -77,11 +77,11 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonPropertyName("selftext")]
             [JsonInclude]
             public string SelfText { get; private set; }
-            
+
             /// <inheritdoc />
             [JsonPropertyName("author")]
             [JsonInclude]
-            public string Author { get; private set; }            
+            public string Author { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("ups")]
@@ -101,7 +101,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// <inheritdoc />
             [JsonPropertyName("saved")]
             [JsonInclude]
-            public bool IsSaved { get; private set; }               
+            public bool IsSaved { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("created_utc")]
@@ -113,7 +113,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines a listing over a collection of <see cref="Submission" /> things.
         /// </summary>
-        public class Listing : Listing<Details> 
+        public class Listing : Listing<Details>
         {
         }
 
@@ -132,7 +132,7 @@ namespace Reddit.NET.Client.Models.Internal
                 _commentListing = commentListing;
             }
 
-            public Submission Submission => (Submission) (_submissionListing?.Data?.Children?[0]);
+            public Submission Submission => _submissionListing?.Data?.Children?[0] as Submission;
             public Listing<IHasParent> Comments => _commentListing;
         }
     }

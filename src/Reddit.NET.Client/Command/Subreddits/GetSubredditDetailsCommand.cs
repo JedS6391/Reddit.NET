@@ -1,11 +1,14 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to get the details of a subreddit.
     /// </summary>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetSubredditDetailsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -15,7 +18,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public GetSubredditDetailsCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }
@@ -38,7 +41,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit to get details for.

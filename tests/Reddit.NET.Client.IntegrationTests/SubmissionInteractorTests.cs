@@ -17,31 +17,42 @@ namespace Reddit.NET.Client.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _client = TestRedditClientProvider.GetClient();
+            _client = TestRedditClientProvider.GetScriptClient();
         }
 
         [Test]
-        public async Task GetDetailsAsync_HotSubmission_ShouldGetDetails()
+        public async Task GetDetailsAsync_ValidSubmission_ShouldGetDetails()
         {
-            var subreddit = _client.Subreddit("askreddit");
-
-            var submissionDetails = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot) 
-                        .WithItemsPerRequest(1)                 
-                        .WithMaximumItems(1))
-                .FirstAsync();
-
-            Assert.IsNotNull(submissionDetails);
-
-            var submission = submissionDetails.Interact(_client);
+            // https://old.reddit.com/r/AskReddit/comments/9whgf4/stan_lee_has_passed_away_at_95_years_old/
+            var submission = _client.Submission(submissionId: "9whgf4");
 
             var details = await submission.GetDetailsAsync();
 
             Assert.IsNotNull(details);
-            Assert.AreEqual("AskReddit", details.Subreddit);            
-        }         
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
+        }
+
+        [Test]
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
+        {
+            var submission = _client.Submission("9whgf4");
+
+            var details = await submission.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }
 
         [Test]
         public async Task GetCommentsAsync_HotSubmissions_ShouldGetComments()
@@ -49,10 +60,10 @@ namespace Reddit.NET.Client.IntegrationTests
             var subreddit = _client.Subreddit("askreddit");
 
             var fiveHotSubmissions = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot) 
-                        .WithItemsPerRequest(5)                 
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.Hot)
+                        .WithItemsPerRequest(5)
                         .WithMaximumItems(5))
                 .ToListAsync();
 
@@ -71,60 +82,94 @@ namespace Reddit.NET.Client.IntegrationTests
                 // There may be less than 20 top-level comments available.
                 Assert.IsTrue(commentThreadNavigator.Count <= 20);
             }
-        }     
+        }
 
         [Test]
-        public async Task UpvoteDownvoteUnvoteAsync_ValidSubmission_ShouldUpvote()
+        public async Task UpvoteAsync_ValidSubmission_ShouldUpvote()
         {
-            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));            
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             var submissionDetails = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.New) 
-                        .WithItemsPerRequest(1)                 
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
                         .WithMaximumItems(1))
                 .FirstAsync();
 
-            Assert.IsNotNull(submissionDetails);            
+            Assert.IsNotNull(submissionDetails);
 
             var submission = submissionDetails.Interact(_client);
 
-            await RunFuncAndAssertVote(submission, VoteDirection.Upvoted, submission => submission.UpvoteAsync());
+            await submission.UpvoteAsync();
 
-            await RunFuncAndAssertVote(submission, VoteDirection.Downvoted, submission => submission.DownvoteAsync());
+            await submissionDetails.ReloadAsync(_client);
 
-            await RunFuncAndAssertVote(submission, VoteDirection.NoVote, submission => submission.UnvoteAsync());
+            Assert.AreEqual(VoteDirection.Upvoted, submissionDetails.Vote);
+        }
 
-            static async Task RunFuncAndAssertVote(SubmissionInteractor submission, VoteDirection expectedVoteDirection, Func<SubmissionInteractor, Task> func)
-            {
-                // The vote endpoint seems to have a higher rate limit than others, and may be rate limited
-                // regardless of the 60 request/min limit.
-                // This delay is an attempt to avoid hitting that limit.
-                await Task.Delay(TimeSpan.FromSeconds(2));
+        [Test]
+        public async Task DownvoteAsync_ValidSubmission_ShouldDownvote()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-                await func.Invoke(submission);
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
 
-                var submissionDetails = await submission.GetDetailsAsync();
+            Assert.IsNotNull(submissionDetails);
 
-                Assert.AreEqual(expectedVoteDirection, submissionDetails.Vote);
-            }
+            var submission = submissionDetails.Interact(_client);
+
+            await submission.DownvoteAsync();
+
+            await submissionDetails.ReloadAsync(_client);
+
+            Assert.AreEqual(VoteDirection.Downvoted, submissionDetails.Vote);
+        }
+
+        [Test]
+        public async Task UnvoteAsync_ValidSubmission_ShouldUnvote()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(submissionDetails);
+
+            var submission = submissionDetails.Interact(_client);
+
+            await submission.UnvoteAsync();
+
+            await submissionDetails.ReloadAsync(_client);
+
+            Assert.AreEqual(VoteDirection.NoVote, submissionDetails.Vote);
         }
 
         [Test]
         public async Task SaveUnsaveAsync_ValidSubmission_ShouldSave()
         {
-            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));            
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             var submissionDetails = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.New) 
-                        .WithItemsPerRequest(1)                 
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
                         .WithMaximumItems(1))
                 .FirstAsync();
 
-            Assert.IsNotNull(submissionDetails);            
+            Assert.IsNotNull(submissionDetails);
 
             var submission = submissionDetails.Interact(_client);
 
@@ -147,7 +192,7 @@ namespace Reddit.NET.Client.IntegrationTests
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new TextSubmissionDetails(
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 text: "Test submission made by Reddit.NET client integration tests.");
 
@@ -160,16 +205,16 @@ namespace Reddit.NET.Client.IntegrationTests
             await submission.DeleteAsync();
 
             var submissionDetails = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.New) 
-                        .WithItemsPerRequest(1)                 
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
                         .WithMaximumItems(1))
                 .FirstAsync();
 
             Assert.IsNotNull(submissionDetails);
 
             Assert.AreNotEqual(createdSubmission.Title, submissionDetails.Title);
-        }                   
+        }
     }
 }

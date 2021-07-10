@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _client = TestRedditClientProvider.GetClient();
+            _client = TestRedditClientProvider.GetScriptClient();
         }
 
         [Test]
@@ -27,10 +27,30 @@ namespace Reddit.NET.Client.IntegrationTests
             var details = await user.GetDetailsAsync();
 
             Assert.IsNotNull(details);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name);
         }
 
         [Test]
-        public async Task GetHistoryAsync_Submissions_ShouldGetSubmissions()
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
+        {
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
+
+            var details = await user.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name);
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name);
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }
+
+        [Test]
+        public async Task GetHistoryAsync_Submissions_ShouldGetSubmissionHistory()
         {
             var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
@@ -43,14 +63,14 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(history);
             Assert.IsNotEmpty(history);
-        }                   
+        }
 
         [Test]
-        public void GetHistoryAsync_Saved_ThrowsInvalidUserHistoryTypeException()
+        public void GetHistoryAsync_Saved_ThrowsArgumentException()
         {
             var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var exception = Assert.ThrowsAsync<InvalidUserHistoryTypeException>(async () =>
+            var exception = Assert.ThrowsAsync<ArgumentException>(async () =>
             {
                 var history = await user
                     .GetHistoryAsync(
@@ -60,15 +80,15 @@ namespace Reddit.NET.Client.IntegrationTests
                     .ToListAsync();
             });
 
-            Assert.IsNotNull(exception);            
-        } 
+            Assert.IsNotNull(exception);
+        }
 
         [Test]
         public async Task SendMessageAsync_ValidUser_ShouldSendMessage()
         {
             var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
 
-            var privateMessage = new PrivateMessageDetails(
+            var privateMessage = new PrivateMessageCreationDetails(
                 subject: $"Test message {Guid.NewGuid()}",
                 body: "Test message sent by Reddit.NET client integration tests.");
 
@@ -87,6 +107,6 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(message);
             Assert.AreEqual(privateMessage.Body, message.Body);
-        }         
+        }
     }
 }

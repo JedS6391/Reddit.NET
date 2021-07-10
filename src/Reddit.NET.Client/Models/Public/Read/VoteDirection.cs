@@ -13,7 +13,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// No vote.
         /// </summary>
-        NoVote = 0,    
+        NoVote = 0,
 
         /// <summary>
         /// Upvoted

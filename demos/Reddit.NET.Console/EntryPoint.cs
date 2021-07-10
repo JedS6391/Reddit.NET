@@ -43,8 +43,8 @@ namespace Reddit.NET.Console
                 .ParseArguments<Options>(args)
                 .WithNotParsed(errors => HandleErrors(errors));
 
-            await result.WithParsedAsync(async options => 
-                await RunExampleAsync(options.ExampleName).ConfigureAwait(false));            
+            await result.WithParsedAsync(async options =>
+                await RunExampleAsync(options.ExampleName).ConfigureAwait(false));
         }
 
         private async Task RunExampleAsync(string exampleName)

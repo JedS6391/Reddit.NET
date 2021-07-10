@@ -7,7 +7,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// Represents a simple JSON data response returned by some reddit API endpoints.
     /// </summary>
     internal class JsonDataResponse<TDataNode>
-    {    
+    {
         /// <summary>
         /// Gets the 'json' node.
         /// </summary>
@@ -26,7 +26,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// Represents the data of the <see cref="JsonDataResponse{TDataNode}.Json" /> node.
     /// </summary>
     internal class JsonNode<TDataNode>
-    {        
+    {
         /// <summary>
         /// Gets the 'errors' list.
         /// </summary>
@@ -79,7 +79,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
         /// </summary>
         [JsonPropertyName("id")]
         [JsonInclude]
-        public string Id { get; private set; }            
+        public string Id { get; private set; }
 
         /// <summary>
         /// Gets the 'name'.
@@ -113,13 +113,13 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// }
     /// </code>
     /// </example>
-    internal class CreateCommentDataNode  
+    internal class CreateCommentDataNode
     {
         /// <summary>
         /// Gets the 'things'.
         /// </summary>
         [JsonPropertyName("things")]
         [JsonInclude]
-        public IReadOnlyList<Comment> Things { get; private set; }
+        public IReadOnlyList<IThing<IHasParent>> Things { get; private set; }
     }
 }

@@ -75,7 +75,7 @@ namespace Reddit.NET.WebApi.Services
 
         /// <inheritdoc />
         public async Task<Guid> CompleteAuthorizationAsync(string state, string code)
-        {            
+        {
             // Validate the state matches what we expect for this session.
             var storedState = _sessionService.Get(StateSessionKeyName);
 
@@ -110,9 +110,9 @@ namespace Reddit.NET.WebApi.Services
 
         /// <inheritdoc />
         public async Task<RedditClient> GetClientAsync(Guid sessionId)
-        { 
+        {
             return await RedditClientBuilder
-                .New                
+                .New
                 .WithLoggerFactory(_loggerFactory)
                 .WithHttpClientFactory(_httpClientFactory)
                 .WithTokenStorage(_tokenStorage)
@@ -124,23 +124,23 @@ namespace Reddit.NET.WebApi.Services
                         _options.ClientId,
                         _options.ClientSecret,
                         _options.RedirectUri,
-                        sessionId);                                    
+                        sessionId);
                 })
                 .BuildAsync();
         }
 
-        /// <inheritdoc />  
+        /// <inheritdoc />
         public async Task EndSessionAsync(Guid sessionId)
         {
             await _tokenStorage.RemoveTokenAsync(sessionId);
         }
 
-        private static string GetRandomState() 
+        private static string GetRandomState()
         {
             using var random = new RNGCryptoServiceProvider();
 
-            byte[] tokenData = new byte[32];
-            
+            var tokenData = new byte[32];
+
             random.GetBytes(tokenData);
 
             return Convert.ToBase64String(tokenData);

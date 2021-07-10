@@ -7,19 +7,19 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// </summary>
     /// <remarks>
     /// A comment thread is comprised of a top-level comment and all of its replies.
-    /// </remarks>    
-    public class CommentThread 
+    /// </remarks>
+    public class CommentThread
     {
         private readonly Submission _submission;
         private readonly Comment _comment;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentThread" /> class.
-        /// </summary> 
+        /// </summary>
         /// <param name="submission">The submission the thread belongs to.</param>
         /// <param name="comment">The top-level comment of the thread.</param>
         internal CommentThread(Submission submission, Comment comment)
-        {            
+        {
             _submission = submission;
             _comment = comment;
         }

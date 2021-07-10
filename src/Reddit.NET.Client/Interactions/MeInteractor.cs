@@ -7,6 +7,8 @@ using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
 using System.Linq;
+using Reddit.NET.Client.Models.Public.Write;
+using Reddit.NET.Client.Command.Multireddits;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -15,7 +17,7 @@ namespace Reddit.NET.Client.Interactions
     /// </summary>
     public sealed class MeInteractor : IInteractor
     {
-        private readonly RedditClient _client; 
+        private readonly RedditClient _client;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="MeInteractor" /> class.
@@ -53,13 +55,28 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
         /// <returns>An asynchronous enumerator over the authenticated user's subreddits.</returns>
         public IAsyncEnumerable<SubredditDetails> GetSubredditsAsync(
-            Action<MySubredditsListingEnumerable.Options.Builder> configurationAction = null) 
+            Action<MySubredditsListingEnumerable.Options.Builder> configurationAction = null)
         {
             var optionsBuilder = new MySubredditsListingEnumerable.Options.Builder();
 
             configurationAction?.Invoke(optionsBuilder);
 
             return new MySubredditsListingEnumerable(_client, optionsBuilder.Options);
+        }
+
+        /// <summary>
+        /// Gets the multireddits that belong to the authenticated user.
+        /// </summary>
+        /// <returns>A task representing the asynchronous operation. The result contains the multireddits of the authenticated user.</returns>
+        public async Task<IReadOnlyList<MultiredditDetails>> GetMultiredditsAsync()
+        {
+            var getMyMultiredditsCommand = new GetMyMultiredditsCommand();
+
+            var multireddits = await _client
+                .ExecuteCommandAsync<IReadOnlyList<Multireddit>>(getMyMultiredditsCommand)
+                .ConfigureAwait(false);
+
+            return multireddits.Select(mr => new MultiredditDetails(mr)).ToList();
         }
 
         /// <summary>
@@ -94,12 +111,12 @@ namespace Reddit.NET.Client.Interactions
             var karmaBreakdown = await _client
                 .ExecuteCommandAsync<KarmaList>(getMyKarmaBreakdownCommand)
                 .ConfigureAwait(false);
-            
+
             return karmaBreakdown
                 .Data
                 .Select(kb => new KarmaBreakdownDetails(kb))
                 .ToList();
-        } 
+        }
 
         /// <summary>
         /// Gets the trophies of the authenticated user.
@@ -112,12 +129,34 @@ namespace Reddit.NET.Client.Interactions
             var trophyList = await _client
                 .ExecuteCommandAsync<TrophyList>(getMyTrophiesCommand)
                 .ConfigureAwait(false);
-            
+
             return trophyList
                 .Data
                 .Trophies
                 .Select(t => new TrophyDetails(t))
                 .ToList();
-        }          
+        }
+
+        /// <summary>
+        /// Creates a new multireddit belonging to the authenticated user.
+        /// </summary>
+        /// <param name="details">The details of a multireddit to create.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The task result contains the created multireddit details.
+        /// </returns>
+        public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details)
+        {
+            var commandParameters = new CreateMultiredditCommand.Parameters()
+            {
+                Name = details.Name,
+                Subreddits = details.Subreddits
+            };
+
+            var createMultiredditCommand = new CreateMultiredditCommand(commandParameters);
+
+            var multireddit = await _client.ExecuteCommandAsync<Multireddit>(createMultiredditCommand).ConfigureAwait(false);
+
+            return new MultiredditDetails(multireddit);
+        }
     }
 }

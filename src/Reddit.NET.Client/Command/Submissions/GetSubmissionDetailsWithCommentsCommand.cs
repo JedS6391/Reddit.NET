@@ -1,14 +1,17 @@
 using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Submissions
 {
     /// <summary>
     /// Defines a command to get the details of a submission and its comments.
     /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetSubmissionDetailsWithCommentsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -32,10 +35,9 @@ namespace Reddit.NET.Client.Command.Submissions
             var uriBuilder = new UriBuilder(
                 RedditApiUrl.Submission.DetailsWithComments(_parameters.SubmissionId));
 
-            if (_parameters.Limit.HasValue)
-            {
-                uriBuilder.Query = $"?limit={_parameters.Limit}";
-            }
+            var queryString = BuildQueryString();
+
+            uriBuilder.Query = $"?{queryString}";
 
             var request = new HttpRequestMessage()
             {
@@ -46,15 +48,36 @@ namespace Reddit.NET.Client.Command.Submissions
             return request;
         }
 
+        private string BuildQueryString()
+        {
+            var parameters = new Dictionary<string, string>()
+            {
+                { "limit", _parameters.Limit?.ToString(CultureInfo.InvariantCulture) },
+                { "sort", _parameters.Sort },
+                { "comment", _parameters.FocusCommentId }
+            };
+
+            var queryStringParameters = parameters
+                .Where(p => !string.IsNullOrEmpty(p.Value))
+                .Select(p => $"{p.Key}={p.Value}");
+
+            return string.Join('&', queryStringParameters);
+        }
+
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
-        {        
+        public class Parameters
+        {
             /// <summary>
             /// Gets or sets the identifier of the submission.
             /// </summary>
             public string SubmissionId { get; set; }
+
+            /// <summary>
+            /// Gets or sets the identifier of the comment to focus on.
+            /// </summary>
+            public string FocusCommentId { get; set; }
 
             /// <summary>
             /// Gets or sets the sort option of the comments.

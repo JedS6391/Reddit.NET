@@ -23,13 +23,13 @@ namespace Reddit.NET.Client.Models.Internal.Json
 
             reader.Match(JsonTokenType.Number);
 
-            if (!reader.TryGetDouble(out double value))
+            if (!reader.TryGetDouble(out var value))
             {
                 throw new JsonException("Could not read raw epoch-second value as double type.");
             }
 
-            try 
-            {                
+            try
+            {
                 return DateTimeOffset.FromUnixTimeSeconds(Convert.ToInt64(value));
             }
             catch (Exception exception)
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
         }
 
         /// <inheritdoc />
-        public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options) =>        
-            throw new NotImplementedException();        
+        public override void Write(Utf8JsonWriter writer, DateTimeOffset value, JsonSerializerOptions options) =>
+            throw new NotImplementedException();
     }
 }

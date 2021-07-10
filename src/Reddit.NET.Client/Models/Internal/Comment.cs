@@ -25,7 +25,14 @@ namespace Reddit.NET.Client.Models.Internal
             /// <inheritdoc />
             [JsonPropertyName("parent_id")]
             [JsonInclude]
-            public string ParentFullName { get; private set; }            
+            public string ParentFullName { get; private set; }
+
+            /// <summary>
+            /// Gets the full name of the link the comment belongs to.
+            /// </summary>
+            [JsonPropertyName("link_id")]
+            [JsonInclude]
+            public string LinkFullName { get; private set; }
 
             /// <summary>
             /// Gets the body of the comment.
@@ -54,7 +61,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// </summary>
             [JsonPropertyName("permalink")]
             [JsonInclude]
-            public string Permalink { get; private set; }            
+            public string Permalink { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("author")]
@@ -79,7 +86,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// <inheritdoc />
             [JsonPropertyName("saved")]
             [JsonInclude]
-            public bool IsSaved { get; private set; }            
+            public bool IsSaved { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("created_utc")]
@@ -87,12 +94,12 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonConverter(typeof(EpochSecondJsonConverter))]
             public DateTimeOffset CreatedAtUtc { get; private set; }
         }
-        
+
         /// <summary>
         /// Defines a listing over a collection of <see cref="Comment" /> things.
         /// </summary>
-        public class Listing : Listing<Details> 
+        public class Listing : Listing<Details>
         {
-        }        
+        }
     }
 }

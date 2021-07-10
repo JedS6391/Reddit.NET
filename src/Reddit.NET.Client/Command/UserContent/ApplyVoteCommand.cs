@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Command.UserContent
@@ -9,6 +10,7 @@ namespace Reddit.NET.Client.Command.UserContent
     /// <summary>
     /// Defines a command to apply a vote to a submission or comment.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class ApplyVoteCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -22,7 +24,7 @@ namespace Reddit.NET.Client.Command.UserContent
         {
             _parameters = parameters;
         }
-        
+
         /// <inheritdoc />
         public override string Id => nameof(ApplyVoteCommand);
 
@@ -48,7 +50,7 @@ namespace Reddit.NET.Client.Command.UserContent
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the full name of the submission or comment to vote on.

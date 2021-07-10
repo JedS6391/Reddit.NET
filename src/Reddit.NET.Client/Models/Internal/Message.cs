@@ -13,8 +13,20 @@ namespace Reddit.NET.Client.Models.Internal
         /// <summary>
         /// Defines the attributes of a <see cref="Comment" />.
         /// </summary>
-        public class Details : ICreated
+        public class Details : ICreated, IHasParent
         {
+            /// <summary>
+            /// Gets the identifier of the message.
+            /// </summary>
+            [JsonPropertyName("id")]
+            [JsonInclude]
+            public string Id { get; private set; }
+
+            /// <inheritdoc />
+            [JsonPropertyName("parent_id")]
+            [JsonInclude]
+            public string ParentFullName { get; private set; }
+
             /// <summary>
             /// Gets the author of the message.
             /// </summary>
@@ -40,7 +52,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// Defines a listing over a collection of <see cref="Message" /> things.
         /// </summary>
         public class Listing : Listing<Details>
-        { 
+        {
         }
     }
 }

@@ -11,22 +11,22 @@ namespace Reddit.NET.Client.Models.Public.Abstract
     /// Provides mechanisms to asynchronously enumerate over the data contained in a <see cref="Listing{TData}" />.
     /// </summary>
     /// <remarks>
-    /// A <see cref="Listing{TData}" /> is how the reddit API supports pagination. 
-    /// 
-    /// A listing enumerable wraps a reddit API call that returns a listing and provides the ability to 
+    /// A <see cref="Listing{TData}" /> is how the reddit API supports pagination.
+    ///
+    /// A listing enumerable wraps a reddit API call that returns a listing and provides the ability to
     /// move through the data in each listing.
-    /// 
-    /// Listing enumerables operate in a lazy manner, meaning no API calls will be made until enumeration begins.
+    ///
+    /// A listing enumerable instance operate in a lazy manner, meaning no API calls will be made until enumeration begins.
     /// The enumerator will request a page of data at a time and returned each child in that page before fetching the next page.
     /// </remarks>
     /// <typeparam name="TListing">The type of listing the enumerable manages.</typeparam>
     /// <typeparam name="TData">The type of data associated with the things that this listing contains.</typeparam>
     /// <typeparam name="TMapped">The type the things in the listing will be mapped to before being returned.</typeparam>
     /// <typeparam name="TOptions">The type of options available to the listing.</typeparam>
-    public abstract class ListingEnumerable<TListing, TData, TMapped, TOptions> 
+    public abstract class ListingEnumerable<TListing, TData, TMapped, TOptions>
         : IAsyncEnumerable<TMapped>
         where TListing : Listing<TData>
-        where TOptions : ListingEnumerableOptions, new()        
+        where TOptions : ListingEnumerableOptions, new()
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> class.
@@ -55,7 +55,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// Provides the data for the next listing.
         /// </summary>
         /// <remarks>
-        /// This method will be called after the data in the current page has been enumerated. 
+        /// This method will be called after the data in the current page has been enumerated.
         /// If the current page indicates no next page (i.e. <see cref="ListingData{TData}.After" /> is <see langword="null" />).
         /// </remarks>
         /// <returns>A task representing the asynchronous operation. The task result contains the next listing data.</returns>
@@ -72,10 +72,10 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         public IAsyncEnumerator<TMapped> GetAsyncEnumerator(CancellationToken cancellationToken = default) =>
             new ListingEnumerator(
                 ListingOptions,
-                GetInitialListingAsync, 
-                GetNextListingAsync, 
+                GetInitialListingAsync,
+                GetNextListingAsync,
                 MapThing,
-                cancellationToken);    
+                cancellationToken);
 
         /// <summary>
         /// Supports asynchronous enumeration over <see cref="Listing{TData}" /> data.
@@ -111,7 +111,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             }
 
             /// <inheritdoc />
-            public TMapped Current => _context.Mapper.Invoke(_context.GetCurrentThing);                          
+            public TMapped Current => _context.Mapper.Invoke(_context.GetCurrentThing);
 
             /// <inheritdoc />
             public async ValueTask<bool> MoveNextAsync()
@@ -125,7 +125,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                         // No data for the initial page.
                         return false;
                     }
-                }         
+                }
 
                 if (_context.Options.MaximumItems.HasValue && _context.Count >= _context.Options.MaximumItems)
                 {
@@ -135,14 +135,14 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                 _context.MoveNext();
 
                 if (!_context.HasMoreData)
-                {                    
+                {
                     if (!await TryLoadNextPageAsync().ConfigureAwait(false))
                     {
                         // No data for the next page.
                         return false;
                     }
                 }
-                                
+
                 return _context.HasMoreData;
             }
 
@@ -162,7 +162,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                     throw new InvalidOperationException("Cannot load initial listing has a listing has already been loaded.");
                 }
 
-                TListing initialListing = await _context
+                var initialListing = await _context
                     .InitialListingProvider
                     .Invoke()
                     .ConfigureAwait(false);
@@ -184,7 +184,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                     return false;
                 }
 
-                TListing nextListing = await _context
+                var nextListing = await _context
                     .NextListingProvider
                     .Invoke(_context.CurrentListing)
                     .ConfigureAwait(false);
@@ -234,19 +234,18 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                 public bool HasMoreData => Position < CurrentListing.Data.Children.Count;
                 public IThing<TData> GetCurrentThing => CurrentListing.Data.Children[Position];
 
-                public void UpdateListing(TListing listing) 
+                public void UpdateListing(TListing listing)
                 {
-                    Exhausted = 
-                        listing.Data.After == CurrentListing?.Data.After ||
+                    Exhausted = listing.Data.After == CurrentListing?.Data.After ||
                         string.IsNullOrEmpty(listing.Data.After);
 
-                    CurrentListing = listing;                    
+                    CurrentListing = listing;
                 }
 
-                public void MoveNext() 
+                public void MoveNext()
                 {
                     Position++;
-                    Count++;;
+                    Count++;
                 }
 
                 public void ResetPosition() => Position = 0;

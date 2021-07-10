@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.UserContent
 {
     /// <summary>
     /// Defines a command to create a comment on a submission or as a reply to another comment.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class CreateCommentCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -16,7 +18,7 @@ namespace Reddit.NET.Client.Command.UserContent
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public CreateCommentCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }

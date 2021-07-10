@@ -11,7 +11,7 @@ using System.Linq;
 namespace Reddit.NET.Client.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the history of a user. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the history of a user.
     /// </summary>
     public sealed class UserHistoryListingEnumerable
         : ListingEnumerable<Listing<IUserContent>, IUserContent, UserContentDetails, UserHistoryListingEnumerable.Options>
@@ -32,7 +32,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         /// <param name="options">The options available to the listing.</param>
         /// <param name="parameters">Parameters used when loading the listing data.</param>
         public UserHistoryListingEnumerable(
-            RedditClient client, 
+            RedditClient client,
             Options options,
             ListingParameters parameters)
             : base(options)
@@ -66,11 +66,11 @@ namespace Reddit.NET.Client.Models.Public.Listings
         private async Task<Listing<IUserContent>> GetListingAsync(string after = null)
         {
             var commandParameters = new GetUserHistoryCommand.Parameters()
-            {                
-                HistoryType = ListingOptions.Type.Name,   
-                Sort = ListingOptions.Sort.Name,                 
+            {
+                HistoryType = ListingOptions.Type.Name,
+                Sort = ListingOptions.Sort.Name,
                 After = after,
-                Limit = ListingOptions.ItemsPerRequest,            
+                Limit = ListingOptions.ItemsPerRequest,
             };
 
             if (_parameters.UseAuthenticatedUser)
@@ -84,7 +84,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
                 commandParameters.Username = user.Name;
             }
-            else 
+            else
             {
                 commandParameters.Username = _parameters.Username;
             }
@@ -101,12 +101,12 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 .ConfigureAwait(false);
 
             return history;
-        } 
+        }
 
         /// <summary>
         /// Defines parameters used when loading the listing data.
         /// </summary>
-        public class ListingParameters 
+        public class ListingParameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit the submission belongs to
@@ -142,7 +142,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             /// Gets the option to use for the time range of history.
             /// </summary>
             /// <remarks>Defaults to day.</remarks>
-            internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.Day;            
+            internal TimeRangeSort TimeRange { get; set; } = TimeRangeSort.Day;
 
             /// <summary>
             /// Provides the ability to create <see cref="Options" /> instances.
@@ -162,8 +162,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.Type = type;
 
                     return this;
-                }       
-                
+                }
+
                 /// <summary>
                 /// Sets the sort option.
                 /// </summary>
@@ -186,7 +186,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.TimeRange = timeRange;
 
                     return this;
-                }                               
+                }
             }
         }
     }

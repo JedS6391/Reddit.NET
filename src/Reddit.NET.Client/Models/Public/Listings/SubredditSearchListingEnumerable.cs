@@ -9,7 +9,7 @@ using Reddit.NET.Client.Command.Subreddits;
 namespace Reddit.NET.Client.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over a search result of a subreddits submissions. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over a search result of a subreddits submissions.
     /// </summary>
     public sealed class SubredditSearchListingEnumerable
         : ListingEnumerable<Submission.Listing, Submission.Details, SubmissionDetails, SubredditSearchListingEnumerable.Options>
@@ -32,7 +32,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             _client = client;
             _parameters = parameters;
         }
-    
+
         /// <inheritdoc />
         internal override async Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
 
@@ -69,13 +69,13 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 .ExecuteCommandAsync<Submission.Listing>(searchSubredditSubmissionsCommand)
                 .ConfigureAwait(false);
 
-            return submissions;    
+            return submissions;
         }
 
         /// <summary>
         /// Defines parameters used when loading the listing data
         /// </summary>
-        public class ListingParameters 
+        public class ListingParameters
         {
             /// <summary>
             /// Gets or sets the name of the subreddit to load submissions from.
@@ -109,7 +109,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             /// Gets the search query syntax used.
             /// </summary>
             /// <remarks>Default to Lucene.</remarks>
-            internal SearchQuerySyntax Syntax = SearchQuerySyntax.Lucene;            
+            internal SearchQuerySyntax Syntax { get; set; } = SearchQuerySyntax.Lucene;
 
             /// <summary>
             /// Provides the ability to create <see cref="SubredditSubmissionsListingEnumerable.Options" /> instances.
@@ -129,7 +129,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.Sort = sort;
 
                     return this;
-                } 
+                }
 
                 /// <summary>
                 /// Sets the time range option.
@@ -141,7 +141,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.TimeRange = timeRange;
 
                     return this;
-                } 
+                }
 
                 /// <summary>
                 /// Sets the search query syntax option.
@@ -153,7 +153,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                     Options.Syntax = syntax;
 
                     return this;
-                }     
+                }
             }
         }
     }

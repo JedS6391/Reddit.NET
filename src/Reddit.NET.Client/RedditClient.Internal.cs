@@ -6,7 +6,7 @@ using Reddit.NET.Client.Interactions;
 namespace Reddit.NET.Client
 {
     /// <summary>
-    /// Provides mechanisms for interacting with <see href="https://www.reddit.com">reddit</see>. 
+    /// Provides mechanisms for interacting with <see href="https://www.reddit.com">reddit</see>.
     /// </summary>
     /// <remarks>
     /// <see cref="RedditClient" /> cannot be directly instantiated and should instead be created via the <see cref="Builder.RedditClientBuilder" /> class.
@@ -16,16 +16,26 @@ namespace Reddit.NET.Client
         /// <summary>
         /// Gets an interactor for operations relating to a specific submission.
         /// </summary>
-        /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>            
+        /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>
         /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the provided submission.</returns>
         internal SubmissionInteractor Submission(string submissionId) => new SubmissionInteractor(this, submissionId);
 
         /// <summary>
         /// Gets an interactor for operations relating to a specific comment.
         /// </summary>
-        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>            
+        /// <param name="submissionId">The base-36 ID of the submission the comment belongs to.</param>
+        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>
         /// <returns>A <see cref="CommentInteractor" /> instance that provides mechanisms for interacting with the provided comment.</returns>
-        internal CommentInteractor Comment(string commentId) => new CommentInteractor(this, commentId);
+        internal CommentInteractor Comment(string submissionId, string commentId) => new CommentInteractor(this, submissionId, commentId);
+
+        /// <summary>
+        /// Gets an interactor for operations relating to a specific multireddit.
+        /// </summary>
+        /// <param name="username">The name of the user the multireddit belongs to.</param>
+        /// <param name="multiredditName">The name of the multireddit to interact with.</param>
+        /// <returns>A <see cref="MultiredditInteractor" /> instance that provides mechanisms for interacting with the provided multireddit.</returns>
+        internal MultiredditInteractor Multireddit(string username, string multiredditName) =>
+            new MultiredditInteractor(this, username, multiredditName);
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />.

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to send a message to another reddit user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class SendMessageCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -16,7 +18,7 @@ namespace Reddit.NET.Client.Command.Users
         /// </summary>
         /// <param name="parameters">The parameters used by the command.</param>
         public SendMessageCommand(Parameters parameters)
-            : base()            
+            : base()
         {
             _parameters = parameters;
         }

@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get history of a user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetUserHistoryCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -46,12 +48,12 @@ namespace Reddit.NET.Client.Command.Users
         }
 
         private string BuildQueryString()
-        {            
+        {
             var parameters = new Dictionary<string, string>()
-            {                
+            {
                 { "sort", _parameters.Sort },
                 { "t", _parameters.TimeRange },
-                { "limit", _parameters.Limit.ToString(CultureInfo.InvariantCulture) },                
+                { "limit", _parameters.Limit.ToString(CultureInfo.InvariantCulture) },
                 { "after", _parameters.After }
             };
 
@@ -59,13 +61,13 @@ namespace Reddit.NET.Client.Command.Users
                 .Where(p => !string.IsNullOrEmpty(p.Value))
                 .Select(p => $"{p.Key}={p.Value}");
 
-            return string.Join('&', queryStringParameters);            
-        }        
+            return string.Join('&', queryStringParameters);
+        }
 
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the user.
@@ -80,12 +82,12 @@ namespace Reddit.NET.Client.Command.Users
             /// <summary>
             /// Gets or sets the sort option of history.
             /// </summary>
-            public string Sort { get; set; }    
+            public string Sort { get; set; }
 
             /// <summary>
             /// Gets or sets the option for the time range of history.
             /// </summary>
-            public string TimeRange { get; set; }  
+            public string TimeRange { get; set; }
 
             /// <summary>
             /// Gets or sets the limit parameter.
@@ -95,7 +97,7 @@ namespace Reddit.NET.Client.Command.Users
             /// <summary>
             /// Gets or sets the after parameter.
             /// </summary>
-            public string After { get; set; }            
+            public string After { get; set; }
         }
     }
 }

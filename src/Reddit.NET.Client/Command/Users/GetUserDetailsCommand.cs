@@ -1,11 +1,14 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get the details of a specific user.
     /// </summary>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetUserDetailsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -37,12 +40,12 @@ namespace Reddit.NET.Client.Command.Users
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the name of the user.
             /// </summary>
-            public string Username { get; set; }           
-        }        
+            public string Username { get; set; }
+        }
     }
 }

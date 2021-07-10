@@ -11,15 +11,15 @@ namespace Reddit.NET.Client.Interactions
     /// Provides mechanisms for interacting with a submission.
     /// </summary>
     public sealed class SubmissionInteractor : UserContentInteractor, IInteractor
-    {                
+    {
         /// <summary>
         /// Initializes a new instance of the <see cref="SubmissionInteractor" /> class.
-        /// </summary>        
+        /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>
         public SubmissionInteractor(RedditClient client, string submissionId)
             : base(client, kind: Constants.Kind.Submission, id: submissionId)
-        {            
+        {
         }
 
         /// <summary>
@@ -47,12 +47,12 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets a <see cref="CommentThreadNavigator" /> over the comments on the submission.
         /// </summary>
-        /// <param name="limit">The number of comments to retrieve.</param> 
+        /// <param name="limit">The number of comments to retrieve.</param>
         /// <param name="sort">The sort order to retrieve comments with.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains a navigator over the comments.
         /// </returns>
-        public async Task<CommentThreadNavigator> GetCommentsAsync(int? limit = null, SubmissionsCommentSort sort = null) 
+        public async Task<CommentThreadNavigator> GetCommentsAsync(int? limit = null, SubmissionsCommentSort sort = null)
         {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
@@ -67,9 +67,9 @@ namespace Reddit.NET.Client.Interactions
                 .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
                 .ConfigureAwait(false);
 
-            return new CommentThreadNavigator(                
+            return new CommentThreadNavigator(
                 submission: submissionWithComments.Submission,
                 replies: submissionWithComments.Comments.Children);
-        }  
+        }
     }
 }

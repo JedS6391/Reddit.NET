@@ -8,22 +8,22 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// <typeparam name="TData">The type of data this kind of thing contains.</typeparam>
     public abstract class Thing<TData> : IThing<TData>
     {
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [JsonPropertyName("id")]
         [JsonInclude]
         public string Id { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [JsonPropertyName("name")]
         [JsonInclude]
-        public string Name { get; private set; } 
+        public string Name { get; private set; }
 
-        /// <inheritdoc/>
-        [JsonPropertyName("kind")]   
+        /// <inheritdoc />
+        [JsonPropertyName("kind")]
         [JsonInclude]
-        public string Kind { get; private set; }    
+        public string Kind { get; private set; }
 
-        /// <inheritdoc/>
+        /// <inheritdoc />
         [JsonPropertyName("data")]
         [JsonInclude]
         public TData Data { get; private set; }

@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditInteractor" /> class.
         /// </summary>
-        /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>        
+        /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="username">The name of the user to interact with.</param>
         public UserInteractor(RedditClient client, string username)
         {
@@ -69,7 +69,7 @@ namespace Reddit.NET.Client.Interactions
 
             if (s_unsupportedHistoryTypeOptions.Any(t => t.Name == optionsBuilder.Options.Type.Name))
             {
-                throw new InvalidUserHistoryTypeException(
+                throw new ArgumentException(
                     $"History type option {optionsBuilder.Options.Type.Name} is only supported for the currently authenticated user.");
             }
 
@@ -81,24 +81,7 @@ namespace Reddit.NET.Client.Interactions
                     UseAuthenticatedUser = false,
                     Username = _username
                 });
-        } 
-
-        /// <summary>
-        /// Sends a private message to the user.
-        /// </summary>
-        /// <param name="details">The details of the message to send.</param>
-        /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SendMessageAsync(PrivateMessageDetails details)
-        {
-            var sendMessageCommand = new SendMessageCommand(new SendMessageCommand.Parameters()
-            {
-                Username = _username,
-                Subject = details.Subject,
-                Body = details.Body
-            });
-        
-            await _client.ExecuteCommandAsync(sendMessageCommand).ConfigureAwait(false);            
-        }    
+        }
 
         /// <summary>
         /// Gets the trophies of the user.
@@ -114,12 +97,29 @@ namespace Reddit.NET.Client.Interactions
             var trophyList = await _client
                 .ExecuteCommandAsync<TrophyList>(getUserTrophiesCommand)
                 .ConfigureAwait(false);
-            
+
             return trophyList
                 .Data
                 .Trophies
                 .Select(t => new TrophyDetails(t))
                 .ToList();
-        }                      
+        }
+
+        /// <summary>
+        /// Sends a private message to the user.
+        /// </summary>
+        /// <param name="details">The details of the message to send.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task SendMessageAsync(PrivateMessageCreationDetails details)
+        {
+            var sendMessageCommand = new SendMessageCommand(new SendMessageCommand.Parameters()
+            {
+                Username = _username,
+                Subject = details.Subject,
+                Body = details.Body
+            });
+
+            await _client.ExecuteCommandAsync(sendMessageCommand).ConfigureAwait(false);
+        }
     }
 }

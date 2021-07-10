@@ -37,11 +37,11 @@ namespace Reddit.NET.WebApi
 
             services.AddSession(options =>
             {
-                options.IdleTimeout = TimeSpan.FromSeconds(30);                
+                options.IdleTimeout = TimeSpan.FromSeconds(30);
                 options.Cookie.HttpOnly = true;
                 options.Cookie.IsEssential = true;
             });
-    
+
             services.Configure<RedditOptions>(options =>
             {
                 options.ClientId = Configuration.GetValue<string>("REDDIT_CLIENT_ID");
@@ -56,7 +56,7 @@ namespace Reddit.NET.WebApi
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app)
         {
             app.UseHttpsRedirection();
 

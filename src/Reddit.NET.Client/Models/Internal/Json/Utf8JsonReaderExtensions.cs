@@ -28,11 +28,11 @@ namespace Reddit.NET.Client.Models.Internal.Json
         /// <param name="reader">The reader to consume from.</param>
         /// <param name="tokenType">The type of token to consume.</param>
         /// <exception cref="JsonException">Thrown when the current reader token does not match the provided token type.</exception>
-        public static void Consume(this ref Utf8JsonReader reader, JsonTokenType tokenType) 
+        public static void Consume(this ref Utf8JsonReader reader, JsonTokenType tokenType)
         {
             Match(reader, tokenType);
 
             reader.Read();
-        } 
+        }
     }
 }

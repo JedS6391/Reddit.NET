@@ -19,18 +19,18 @@ namespace Reddit.NET.Client.Models.Internal
             /// </summary>
             [JsonPropertyName("id")]
             [JsonInclude]
-            public string Id { get; private set; }  
+            public string Id { get; private set; }
 
             /// <inheritdoc />
             [JsonPropertyName("parent_id")]
             [JsonInclude]
-            public string ParentFullName { get; private set; }            
+            public string ParentFullName { get; private set; }
 
             /// <summary>
             /// Gets the number of children.
             /// </summary>
             [JsonPropertyName("count")]
-            [JsonInclude]          
+            [JsonInclude]
             public int Count { get; private set; }
 
             /// <summary>
@@ -45,6 +45,7 @@ namespace Reddit.NET.Client.Models.Internal
         /// Defines a listing over a collection of <see cref="MoreComments" /> things.
         /// </summary>
         public class Listing : Listing<Details>
-        {}
+        {
+        }
     }
 }

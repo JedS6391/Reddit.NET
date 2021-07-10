@@ -5,16 +5,16 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Models.Public.Read
-{   
+{
     /// <summary>
     /// Provides the ability to navigate through a comment thread.
     /// </summary>
     /// <remarks>
-    /// A <see cref="CommentThreadNavigator" /> manages a single level of comments on a submission. 
-    /// 
-    /// Each of the comments on the submission is itself represented as a <see cref="CommentThread" /> instance, 
+    /// A <see cref="CommentThreadNavigator" /> manages a single level of comments on a submission.
+    ///
+    /// Each of the comments on the submission is itself represented as a <see cref="CommentThread" /> instance,
     /// of which the replies can be navigated through via a separate navigator instance.
-    /// 
+    ///
     /// There is a special case of navigator for the top-level comments of a submission, where <see cref="Parent" />
     /// will be set to <see langword="null" />.
     /// </remarks>
@@ -22,7 +22,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// Note that the replies in a thread can be directly enumerated over, as below:
     /// <code>
     /// CommentThreadNavigator navigator = ...;
-    /// 
+    ///
     /// foreach (CommentThread topLevelThread in navigator)
     /// {
     ///     // Navigate replies of each thread
@@ -32,7 +32,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     ///     }
     /// }
     /// </code>
-    /// </example> 
+    /// </example>
     public class CommentThreadNavigator : IReadOnlyList<CommentThread>
     {
         private readonly Submission _submission;
@@ -50,7 +50,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="replies">The replies to the submission.</param>
         internal CommentThreadNavigator(Submission submission, IReadOnlyList<IThing<IHasParent>> replies)
             : this(submission, replies, parent: null)
-        {            
+        {
         }
 
         /// <summary>
@@ -63,16 +63,13 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="replies">The replies to the submission.</param>
         /// <param name="parent">The parent comment the replies to belong to.</param>
         internal CommentThreadNavigator(
-            Submission submission, 
+            Submission submission,
             IReadOnlyList<IThing<IHasParent>> replies,
             Comment parent)
         {
             _submission = submission;
             _parent = parent;
-            _comments = replies
-                .Where(c => c is Comment)
-                .Select(c => c as Comment)
-                .ToList();
+            _comments = replies.OfType<Comment>().ToList();
             // TODO: Need to provide a way to resolve more comment instances to the comments they represent,
             // and update the internal state with those new comments.
             // This is complicated for a number of reasons:
@@ -80,12 +77,9 @@ namespace Reddit.NET.Client.Models.Public.Read
             //   2. The comment IDs requested may not be what is actually returned. Reddit will return descendants
             //      of a requested comment, if that comment ranks higher than one of the other comments requested (based
             //      on the provided sort parameter)
-            //   3. Because of (2), we can't just directly add comments as they may actually be descendants of other comments 
+            //   3. Because of (2), we can't just directly add comments as they may actually be descendants of other comments
             //      (i.e. not necessarily attached to the parent thread the current instance refers to)
-            _moreComments = replies
-                .Where(c => c is MoreComments)
-                .Select(c => c as MoreComments)
-                .ToList();
+            _moreComments = replies.OfType<MoreComments>().ToList();
         }
 
         /// <summary>
@@ -101,7 +95,7 @@ namespace Reddit.NET.Client.Models.Public.Read
 
         /// <inheritdoc />
         public CommentThread this[int index] => new CommentThread(_submission, _comments[index]);
-        
+
         /// <inheritdoc />
         public int Count => _comments.Count;
 

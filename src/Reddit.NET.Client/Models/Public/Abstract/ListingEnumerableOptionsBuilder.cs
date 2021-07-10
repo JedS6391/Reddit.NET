@@ -8,7 +8,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
     /// </remarks>
     /// <typeparam name="TOptions">The type of options the builder is responsible for.</typeparam>
     /// <typeparam name="TBuilder">The type of the concrete builder.</typeparam>
-    public abstract class ListingEnumerableOptionsBuilder<TOptions, TBuilder> 
+    public abstract class ListingEnumerableOptionsBuilder<TOptions, TBuilder>
         where TOptions : ListingEnumerableOptions, new()
         where TBuilder : ListingEnumerableOptionsBuilder<TOptions, TBuilder>
     {

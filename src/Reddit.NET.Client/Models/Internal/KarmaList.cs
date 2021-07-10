@@ -36,7 +36,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// </summary>
             [JsonPropertyName("link_karma")]
             [JsonInclude]
-            public int LinkKarma { get; private set; }               
+            public int LinkKarma { get; private set; }
         }
     }
 }

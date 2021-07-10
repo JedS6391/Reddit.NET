@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.IntegrationTests.Shared;
-using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.IntegrationTests
@@ -15,22 +13,56 @@ namespace Reddit.NET.Client.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _client = TestRedditClientProvider.GetClient();
+            _client = TestRedditClientProvider.GetScriptClient();
+        }
+
+        [Test]
+        public async Task GetDetailsAsync_ValidComment_ShouldGetDetails()
+        {
+            // https://old.reddit.com/r/AskReddit/comments/9whgf4/stan_lee_has_passed_away_at_95_years_old/e9kveve/
+            var comment = _client.Comment(submissionId: "9whgf4", commentId: "e9kveve");
+
+            var details = await comment.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.IsNotNull(details.Body);
+        }
+
+        [Test]
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
+        {
+            var comment = _client.Comment(submissionId: "9whgf4", commentId: "e9kveve");
+
+            var details = await comment.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.IsNotNull(details.Body);
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Subreddit);
+            Assert.IsNotNull(details.Body);
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
         }
 
         [Test]
         public async Task ReplyAsync_ValidSubmissionValidComment_ShouldAddRepliesToSubmission()
         {
-            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));            
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             // Create a submission to comment on.
-            var newSubmissionDetails = new TextSubmissionDetails(
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 text: "Test submission made by Reddit.NET client integration tests.");
 
             var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
 
-            Assert.IsNotNull(createdSubmission);            
+            Assert.IsNotNull(createdSubmission);
 
             var submission = createdSubmission.Interact(_client);
 

@@ -2,6 +2,7 @@ using System;
 using System.Net.Http;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Builder;
 
 namespace Reddit.NET.Client.IntegrationTests.Shared
@@ -11,22 +12,24 @@ namespace Reddit.NET.Client.IntegrationTests.Shared
     /// </summary>
     public static class TestRedditClientProvider
     {
-        // The client instance will only be created once.
-        private static readonly Lazy<RedditClient> s_client = new Lazy<RedditClient>(BuildClient);
+        private static readonly Lazy<RedditClient> s_scriptClient = new Lazy<RedditClient>(() => BuildClient(AuthenticationMode.Script));
+        private static readonly Lazy<RedditClient> s_readOnlyClient = new Lazy<RedditClient>(() => BuildClient(AuthenticationMode.ReadOnly));
 
         /// <summary>
         /// Gets a client instance configured with the script authentication mode.
         /// </summary>
         /// <returns>A <see cref="RedditClient" /> instance.</returns>
-        public static RedditClient GetClient() => s_client.Value;
+        public static RedditClient GetScriptClient() => s_scriptClient.Value;
 
-        private static RedditClient BuildClient()
+        public static RedditClient GetReadOnlyClient() => s_readOnlyClient.Value;
+
+        private static RedditClient BuildClient(AuthenticationMode mode)
         {
             var services = new ServiceCollection();
 
             services
-                .AddLogging(builder => 
-                    builder                    
+                .AddLogging(builder =>
+                    builder
                         .AddDebug()
                         .AddConsole()
                         .SetMinimumLevel(LogLevel.Error))
@@ -45,11 +48,21 @@ namespace Reddit.NET.Client.IntegrationTests.Shared
                     var username = Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME");
                     var password = Environment.GetEnvironmentVariable("TEST_REDDIT_PASSWORD");
 
-                    credentialsBuilder.Script(
-                        clientId,
-                        clientSecret,
-                        username,
-                        password);
+                    switch (mode)
+                    {
+                        case AuthenticationMode.Script:
+                            credentialsBuilder.Script(clientId, clientSecret, username, password);
+
+                            break;
+
+                        case AuthenticationMode.ReadOnly:
+                            credentialsBuilder.ReadOnly(clientId, clientSecret, deviceId: Guid.NewGuid());
+
+                            break;
+
+                        default:
+                            throw new NotSupportedException($"Unsupported authentication mode '{mode}'");
+                    }
                 })
                 .BuildAsync()
                 .GetAwaiter()

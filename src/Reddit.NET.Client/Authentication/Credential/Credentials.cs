@@ -15,18 +15,18 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="clientSecret">The client secret of the reddit app.</param>
         /// <param name="username">The username of the user the reddit app is for.</param>
-        /// <param name="password">The password of the user the reddit app is for.</param>  
+        /// <param name="password">The password of the user the reddit app is for.</param>
         /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
-        /// <param name="deviceId">The identifier of the device.</param>    
+        /// <param name="deviceId">The identifier of the device.</param>
         protected Credentials(
-            AuthenticationMode mode, 
-            string clientId, 
-            string clientSecret, 
+            AuthenticationMode mode,
+            string clientId,
+            string clientSecret,
             string username = null,
             string password = null,
             Uri redirectUri = null,
             Guid? deviceId = null)
-        {            
+        {
             Requires.NotNull(clientId, nameof(clientId));
             Requires.NotNull(clientSecret, nameof(clientSecret));
 
@@ -43,7 +43,7 @@ namespace Reddit.NET.Client.Authentication.Credential
         /// Gets the mode of authentication this instance represents.
         /// </summary>
         public AuthenticationMode Mode { get; }
-        
+
         /// <summary>
         /// Gets the client ID of the reddit app.
         /// </summary>

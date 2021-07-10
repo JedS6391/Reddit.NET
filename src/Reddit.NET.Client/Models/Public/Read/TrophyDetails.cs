@@ -44,10 +44,10 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the time the trophy was awarded in UTC.
         /// </summary>
-        public DateTimeOffset? AwardedAtUtc { get; } 
+        public DateTimeOffset? AwardedAtUtc { get; }
 
         /// <inheritdoc />
-        public override string ToString() => 
+        public override string ToString() =>
             $"Trophy [Name = {Name}, AwardedAtUtc = {AwardedAtUtc}]";
     }
 }

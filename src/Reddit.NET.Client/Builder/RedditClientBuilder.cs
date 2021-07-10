@@ -8,6 +8,7 @@ using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
+using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
 
 namespace Reddit.NET.Client.Builder
@@ -20,7 +21,7 @@ namespace Reddit.NET.Client.Builder
         private IHttpClientFactory _httpClientFactory;
         private ILoggerFactory _loggerFactory;
         private ITokenStorage _tokenStorage;
-        private Action<CredentialsBuilder> _credentialsBuilderConfigurationAction;        
+        private Action<CredentialsBuilder> _credentialsBuilderConfigurationAction;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientBuilder" /> class.
@@ -62,7 +63,7 @@ namespace Reddit.NET.Client.Builder
             _loggerFactory = loggerFactory;
 
             return this;
-        }        
+        }
 
         /// <summary>
         /// Configures the builder to use the provided <see cref="Action{T}" /> to configure the credentials used by the client.
@@ -90,40 +91,46 @@ namespace Reddit.NET.Client.Builder
             _tokenStorage = tokenStorage;
 
             return this;
-        }        
+        }
 
         /// <summary>
         /// Creates a <see cref="RedditClient" /> instance based on the builder configuration.
         /// </summary>
         /// <remarks>
-        /// When using an interactive authentication mode, the builder will asynchronously complete the 
+        /// When using an interactive authentication mode, the builder will asynchronously complete the
         /// authentication flow to create the appropriate credentials.
         /// </remarks>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains a <see cref="RedditClient" /> instance configured based on the builder.
         /// </returns>
-        public async Task<RedditClient> BuildAsync() 
+        public async Task<RedditClient> BuildAsync()
         {
             CheckValidity();
 
+            // TODO: Add the ability to configure the rate limiter.
+            var rateLimiter = new TokenBucketRateLimiter(
+                _loggerFactory.CreateLogger<TokenBucketRateLimiter>(),
+                TokenBucketRateLimiterOptions.Default);
+
             var commandExecutor = new CommandExecutor(
                 _loggerFactory.CreateLogger<CommandExecutor>(),
-                _httpClientFactory);
+                _httpClientFactory,
+                rateLimiter);
 
             var authenticatorFactory = new AuthenticatorFactory(
-                _loggerFactory, 
+                _loggerFactory,
                 commandExecutor);
 
             var credentialsBuilder = new CredentialsBuilder();
 
             _credentialsBuilderConfigurationAction.Invoke(credentialsBuilder);
 
-            // Note that the credential builder may need to execute commands (e.g. for interactive credentials).            
-            Credentials credentials = await credentialsBuilder
+            // Note that the credential builder may need to execute commands (e.g. for interactive credentials).
+            var credentials = await credentialsBuilder
                 .BuildCredentialsAsync(commandExecutor, _tokenStorage)
                 .ConfigureAwait(false);
 
-            IAuthenticator authenticator = authenticatorFactory.GetAuthenticator(credentials);
+            var authenticator = authenticatorFactory.GetAuthenticator(credentials);
 
             return new RedditClient(commandExecutor, authenticator);
         }
@@ -131,19 +138,19 @@ namespace Reddit.NET.Client.Builder
         private void CheckValidity()
         {
             if (_httpClientFactory == null)
-            {                
+            {
                 throw new RedditClientBuilderException("No HTTP client factory configured.");
             }
 
-            if (_loggerFactory == null) 
+            if (_loggerFactory == null)
             {
                 throw new RedditClientBuilderException("No logger factory configured.");
             }
 
             if (_credentialsBuilderConfigurationAction == null)
             {
-                throw new RedditClientBuilderException("No credentials configured.");    
-            }                     
+                throw new RedditClientBuilderException("No credentials configured.");
+            }
         }
     }
 }

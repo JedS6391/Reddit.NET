@@ -9,14 +9,12 @@ namespace Reddit.NET.Client.Authentication.Context
     /// </summary>
     public sealed class ClientCredentialsAuthenticationContext : AuthenticationContext
     {
-        private static readonly string[] _supportedCommandIds = Constants.Command.ReadOnlyCommandIds;       
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ClientCredentialsAuthenticationContext" /> class.
         /// </summary>
         /// <param name="token">The authentication token for this context.</param>
-        public ClientCredentialsAuthenticationContext(Token token) 
-            : base(_supportedCommandIds)
+        public ClientCredentialsAuthenticationContext(Token token)
+            : base()
         {
             Token = Requires.NotNull(token, nameof(token));
         }
@@ -25,6 +23,6 @@ namespace Reddit.NET.Client.Authentication.Context
         public override string Id => "Client Credentials";
 
         /// <inheritdoc />
-        public override Token Token { get; } 
+        public override Token Token { get; }
     }
 }

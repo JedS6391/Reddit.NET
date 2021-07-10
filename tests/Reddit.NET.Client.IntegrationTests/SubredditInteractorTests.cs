@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.IntegrationTests
         [SetUp]
         public void Setup()
         {
-            _client = TestRedditClientProvider.GetClient();
+            _client = TestRedditClientProvider.GetScriptClient();
         }
 
         [Test]
@@ -31,31 +31,50 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_OneHundredNewSubmissions_ShouldGetOneHundredSubmissions()
+        public async Task GetDetailsAsync_ReloadModel_ShouldGetDetails()
         {
             var subreddit = _client.Subreddit("askreddit");
 
-            var fiftyHotSubmissions = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot)                  
+            var details = await subreddit.GetDetailsAsync();
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Name);
+
+            var lastLoadedAtUtcBeforeReload = details.LastLoadedAtUtc;
+
+            await details.ReloadAsync(_client);
+
+            Assert.IsNotNull(details);
+            Assert.AreEqual("AskReddit", details.Name);
+            Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }
+
+        [Test]
+        public async Task GetSubmissionsAsync_OneHundredNewSubmissions_ShouldGetSubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var oneHundredNewSubmissions = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
                         .WithMaximumItems(100))
                 .ToListAsync();
 
-            Assert.IsNotNull(fiftyHotSubmissions);
-            Assert.IsTrue(fiftyHotSubmissions.Count == 100);
-        }        
+            Assert.IsNotNull(oneHundredNewSubmissions);
+            Assert.IsTrue(oneHundredNewSubmissions.Count == 100);
+        }
 
         [Test]
-        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        public async Task GetSubmissionsAsync_FiftyHotSubmissionsTwentyFivePerRequest_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
             var fiftyHotSubmissions = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot) 
-                        .WithItemsPerRequest(25)                 
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.Hot)
+                        .WithItemsPerRequest(25)
                         .WithMaximumItems(50))
                 .ToListAsync();
 
@@ -64,41 +83,41 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task GetSubmissionsAsync_FiftyTopAllTimeSubmissionsTwentyFivePerRequest_ShouldGetFiftySubmissions()
+        public async Task GetSubmissionsAsync_FiftyTopAllTimeSubmissionsTwentyFivePerRequest_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
             var fiftyTopSubmissions = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Top) 
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.Top)
                         .WithTimeRange(TimeRangeSort.AllTime)
-                        .WithItemsPerRequest(25)                 
+                        .WithItemsPerRequest(25)
                         .WithMaximumItems(50))
                 .ToListAsync();
 
             Assert.IsNotNull(fiftyTopSubmissions);
             Assert.IsTrue(fiftyTopSubmissions.Count == 50);
-        } 
+        }
 
         [Test]
-        public async Task GetSubmissionsAsync_MultipleSubreddits_ShouldGetFiftySubmissions()
+        public async Task GetSubmissionsAsync_MultipleSubreddits_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit+pics");
 
             var fiftyHotSubmissions = await subreddit
-                .GetSubmissionsAsync(builder => 
-                    builder                    
-                        .WithSort(SubredditSubmissionSort.Hot)                         
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.Hot)
                         .WithMaximumItems(50))
                 .ToListAsync();
 
             Assert.IsNotNull(fiftyHotSubmissions);
             Assert.IsTrue(fiftyHotSubmissions.Count == 50);
-        }         
+        }
 
         [Test]
-        public async Task SearchSubmissionsAsync_FiftyRelevantSubmissions_ShouldGetFiftySubmissions()
+        public async Task SearchSubmissionsAsync_FiftyRelevantSubmissions_ShouldSearchSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");
 
@@ -129,7 +148,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task UnsubscribeAsync_ValidSubreddit_ShouldSubscribe()
+        public async Task UnsubscribeAsync_ValidSubreddit_ShouldUnsubscribe()
         {
             var subreddit = _client.Subreddit("askreddit");
 
@@ -139,14 +158,14 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(details);
             Assert.IsFalse(details.IsSubscribed);
-        }        
+        }
 
         [Test]
         public async Task CreateSubmissionAsync_LinkSubmissionWithResubmit_ShouldCreateLinkSubmission()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new LinkSubmissionDetails(
+            var newSubmissionDetails = new LinkSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
                 resubmit: true);
@@ -159,29 +178,29 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsCreateSubmissionException()
+        public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsRedditClientApiException()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new LinkSubmissionDetails(
+            var newSubmissionDetails = new LinkSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
                 resubmit: false);
 
-            var exception = Assert.ThrowsAsync<CreateSubmissionException>(async () => 
+            var exception = Assert.ThrowsAsync<RedditClientApiException>(async () =>
                 await subreddit.CreateSubmissionAsync(newSubmissionDetails));
 
             Assert.IsNotNull(exception);
             Assert.IsNotNull(exception.Details);
             Assert.AreEqual("ALREADY_SUB", exception.Details.Type);
-        }        
+        }
 
         [Test]
         public async Task CreateSubmissionAsync_TextSubmission_ShouldCreateTextSubmission()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-            var newSubmissionDetails = new TextSubmissionDetails(
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
                 text: "Test submission made by Reddit.NET client integration tests.");
 
@@ -190,6 +209,6 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(createdSubmission);
             Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
             Assert.IsTrue(createdSubmission.SelfText == newSubmissionDetails.Text);
-        }           
+        }
     }
 }

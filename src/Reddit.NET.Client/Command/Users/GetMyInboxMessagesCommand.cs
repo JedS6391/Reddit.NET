@@ -1,11 +1,13 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get the messages in the currently authenticated user's inbox.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetMyInboxMessagesCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -48,7 +50,7 @@ namespace Reddit.NET.Client.Command.Users
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets message type parameter.
@@ -64,6 +66,6 @@ namespace Reddit.NET.Client.Command.Users
             /// Gets or sets the after parameter.
             /// </summary>
             public string After { get; set; }
-        }        
+        }
     }
 }

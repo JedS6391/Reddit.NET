@@ -12,7 +12,7 @@ namespace Reddit.NET.WebApi.Controllers
     [ApiController]
     [Route("v1/api/reddit/authentication")]
     public class RedditAuthenticationController : ControllerBase
-    {    
+    {
         private readonly IRedditService _redditService;
 
         /// <summary>
@@ -20,13 +20,13 @@ namespace Reddit.NET.WebApi.Controllers
         /// </summary>
         /// <param name="redditService">A service for interacting with reddit.</param>
         public RedditAuthenticationController(IRedditService redditService)
-        {            
+        {
             _redditService = redditService;
         }
 
         /// <summary>
         /// Starts the reddit OAuth login process.
-        /// </summary>        
+        /// </summary>
         [HttpGet]
         [Route("login")]
         public IActionResult Login()
@@ -47,12 +47,12 @@ namespace Reddit.NET.WebApi.Controllers
         [HttpGet]
         [Route("callback")]
         public async Task<IActionResult> Callback(
-            [Required, FromQuery] string state, 
+            [Required, FromQuery] string state,
             [Required, FromQuery] string code)
         {
             var sessionId = await _redditService.CompleteAuthorizationAsync(state, code);
 
-            return Ok(new 
+            return Ok(new
             {
                 SessionId = sessionId
             });

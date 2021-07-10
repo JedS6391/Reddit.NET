@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// <param name="name">The name of the sort option.</param>
         private SubredditSubmissionSort(string name)
             : base(name)
-        {            
+        {
         }
 
         /// <summary>
@@ -33,7 +33,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// Gets the 'rising' sort option.
         /// </summary>
         public static SubredditSubmissionSort Rising => new SubredditSubmissionSort("rising");
-        
+
         /// <summary>
         /// Gets the 'controversial' sort option.
         /// </summary>
@@ -41,7 +41,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
 
         /// <summary>
         /// Gets the 'top' sort option.
-        /// </summary>        
+        /// </summary>
         public static SubredditSubmissionSort Top => new SubredditSubmissionSort("top");
     }
 }

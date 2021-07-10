@@ -1,11 +1,13 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get the subreddits of the currently authenticated user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetMySubredditsCommand : ClientCommand
     {
         private readonly Parameters _parameters;
@@ -48,7 +50,7 @@ namespace Reddit.NET.Client.Command.Users
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the limit parameter.

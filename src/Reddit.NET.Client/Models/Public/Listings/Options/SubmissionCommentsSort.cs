@@ -17,26 +17,26 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// <summary>
         /// Gets the 'confidence' sort option.
         /// </summary>
-        public static SubmissionsCommentSort Confidence = new SubmissionsCommentSort("confidence");
+        public static SubmissionsCommentSort Confidence => new SubmissionsCommentSort("confidence");
 
         /// <summary>
         /// Gets the 'top' sort option.
         /// </summary>
-        public static SubmissionsCommentSort Top = new SubmissionsCommentSort("top");
+        public static SubmissionsCommentSort Top => new SubmissionsCommentSort("top");
 
         /// <summary>
         /// Gets the 'new' sort option.
         /// </summary>
-        public static SubmissionsCommentSort New = new SubmissionsCommentSort("new");
+        public static SubmissionsCommentSort New => new SubmissionsCommentSort("new");
 
         /// <summary>
         /// Gets the 'controversial' sort option.
         /// </summary>
-        public static SubmissionsCommentSort Controversial = new SubmissionsCommentSort("controversial");
+        public static SubmissionsCommentSort Controversial => new SubmissionsCommentSort("controversial");
 
         /// <summary>
         /// Gets the 'old' sort option.
         /// </summary>
-        public static SubmissionsCommentSort Old = new SubmissionsCommentSort("old");      
+        public static SubmissionsCommentSort Old => new SubmissionsCommentSort("old");
     }
 }

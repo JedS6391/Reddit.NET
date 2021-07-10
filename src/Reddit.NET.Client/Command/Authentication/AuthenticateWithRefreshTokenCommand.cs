@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Command.Authentication
     /// <summary>
     /// Defines a command to authenticate using the <c>refresh_token</c> grant type.
     /// </summary>
-    public sealed class AuthenticateWithRefreshTokenCommand : ClientCommand        
+    public sealed class AuthenticateWithRefreshTokenCommand : ClientCommand
     {
         private readonly Parameters _parameters;
 
@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.Command.Authentication
             var requestParameters = new Dictionary<string, string>()
             {
                 { "grant_type", "refresh_token" },
-                { "refresh_token", _parameters.RefreshToken },                
+                { "refresh_token", _parameters.RefreshToken },
                 { "duration", "permanent" }
             };
 
@@ -47,24 +47,24 @@ namespace Reddit.NET.Client.Command.Authentication
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(
                     $"{_parameters.ClientId}:{_parameters.ClientSecret}")));
 
-            return request;            
+            return request;
         }
 
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the refresh token.
             /// </summary>
-            public string RefreshToken { get; set; } 
+            public string RefreshToken { get; set; }
 
             /// <summary>
             /// Gets or sets the client identifier.
             /// </summary>
             public string ClientId { get; set; }
-            
+
             /// <summary>
             /// Gets or sets the client secret.
             /// </summary>

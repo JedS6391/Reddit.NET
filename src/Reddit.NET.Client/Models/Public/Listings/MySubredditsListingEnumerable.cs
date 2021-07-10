@@ -8,7 +8,7 @@ using Reddit.NET.Client.Command.Users;
 namespace Reddit.NET.Client.Models.Public.Listings
 {
     /// <summary>
-    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the subreddits the authenticated user is subscribed to. 
+    /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the subreddits the authenticated user is subscribed to.
     /// </summary>
     public sealed class MySubredditsListingEnumerable
         : ListingEnumerable<Subreddit.Listing, Subreddit.Details, SubredditDetails, MySubredditsListingEnumerable.Options>
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
 
             return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
         }
-        
+
         /// <inheritdoc />
         internal override SubredditDetails MapThing(IThing<Subreddit.Details> thing) => new SubredditDetails(thing);
 
@@ -56,7 +56,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 .ConfigureAwait(false);
 
             return subreddits;
-        } 
+        }
 
         /// <summary>
         /// Defines the options available for <see cref="MySubredditsListingEnumerable" />.

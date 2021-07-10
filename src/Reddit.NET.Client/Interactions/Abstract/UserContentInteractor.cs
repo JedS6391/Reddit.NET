@@ -1,5 +1,6 @@
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.UserContent;
+using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Read;
 
@@ -39,7 +40,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
         protected string Id { get; }
 
         /// <summary>
-        /// Gets the fullname of the user content. 
+        /// Gets the fullname of the user content.
         /// </summary>
         protected string FullName => $"{Kind}_{Id}";
 
@@ -105,7 +106,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand)
                 .ConfigureAwait(false);
 
-            return new CommentDetails(thing: response.Data.Things[0]);
+            return new CommentDetails(thing: response.Data.Things[0] as IThing<Comment.Details>);
         }
 
         /// <summary>
@@ -116,13 +117,13 @@ namespace Reddit.NET.Client.Interactions.Abstract
         {
             var deleteContentCommand = new DeleteContentCommand(new DeleteContentCommand.Parameters()
             {
-                FullName = FullName,                
+                FullName = FullName,
             });
 
-            await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);            
+            await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);
         }
 
-        private async Task ApplyVoteAsync(VoteDirection direction) 
+        private async Task ApplyVoteAsync(VoteDirection direction)
         {
             var applyVoteCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
@@ -130,7 +131,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 Direction = direction
             });
 
-            await Client.ExecuteCommandAsync(applyVoteCommand).ConfigureAwait(false);           
+            await Client.ExecuteCommandAsync(applyVoteCommand).ConfigureAwait(false);
         }
 
         private async Task SaveOrUnsaveAsync(bool unsave)
@@ -142,6 +143,6 @@ namespace Reddit.NET.Client.Interactions.Abstract
             });
 
             await Client.ExecuteCommandAsync(saveOrUnsaveContentCommand).ConfigureAwait(false);
-        }               
+        }
     }
 }

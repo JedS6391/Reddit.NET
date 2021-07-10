@@ -31,8 +31,8 @@ namespace Reddit.NET.Client.Command.Authentication
             var requestParameters = new Dictionary<string, string>()
             {
                 { "grant_type", "authorization_code" },
-                { "code", _parameters.Code },   
-                { "redirect_uri", _parameters.RedirectUri },             
+                { "code", _parameters.Code },
+                { "redirect_uri", _parameters.RedirectUri },
                 { "duration", "permanent" }
             };
 
@@ -48,19 +48,19 @@ namespace Reddit.NET.Client.Command.Authentication
                 Convert.ToBase64String(Encoding.ASCII.GetBytes(
                     $"{_parameters.ClientId}:{_parameters.ClientSecret}")));
 
-            return request;            
+            return request;
         }
 
         /// <summary>
         /// Defines the parameters of the command.
         /// </summary>
-        public class Parameters 
+        public class Parameters
         {
             /// <summary>
             /// Gets or sets the authorization code.
             /// </summary>
-            public string Code { get; set; }     
-            
+            public string Code { get; set; }
+
             /// <summary>
             /// Gets or sets the redirect URI.
             /// </summary>
