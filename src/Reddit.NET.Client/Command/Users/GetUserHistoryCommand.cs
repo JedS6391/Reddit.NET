@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get history of a user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetUserHistoryCommand : ClientCommand
     {
         private readonly Parameters _parameters;

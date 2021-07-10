@@ -9,14 +9,12 @@ namespace Reddit.NET.Client.Authentication.Context
     /// </summary>
     public sealed class UsernamePasswordAuthenticationContext : AuthenticationContext
     {
-        private static readonly string[] s_supportedCommandIds = Constants.Command.UserCommandIds;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="UsernamePasswordAuthenticationContext" /> class.
         /// </summary>
         /// <param name="token">The authentication token for this context.</param>
         public UsernamePasswordAuthenticationContext(Token token)
-            : base(s_supportedCommandIds)
+            : base()
         {
             Token = Requires.NotNull(token, nameof(token));
         }

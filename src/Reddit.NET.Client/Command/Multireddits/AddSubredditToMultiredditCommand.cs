@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Multireddits
 {
     /// <summary>
     /// Defines a command to add a subreddit to a multireddit of the currently authenticated user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class AddSubredditToMultiredditCommand : ClientCommand
     {
         private readonly Parameters _parameters;

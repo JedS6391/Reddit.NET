@@ -1,11 +1,13 @@
 using System;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to get the multireddits of the currently authenticated user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetMyMultiredditsCommand : ClientCommand
     {
         /// <summary>

@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.UserContent
 {
     /// <summary>
     /// Defines a command to reply to an inbox message.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class ReplyToMessageCommand : ClientCommand
     {
         private readonly Parameters _parameters;

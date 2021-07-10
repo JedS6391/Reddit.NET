@@ -4,12 +4,15 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to search the submissions of a subreddit.
     /// </summary>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class SearchSubredditSubmissionsCommand : ClientCommand
     {
         private readonly Parameters _parameters;

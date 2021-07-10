@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Submissions
 {
     /// <summary>
     /// Defines a command to get the details of a submission and its comments.
     /// </summary>
-    /// <remarks>
-    ///
-    /// </remarks>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetSubmissionDetailsWithCommentsCommand : ClientCommand
     {
         private readonly Parameters _parameters;

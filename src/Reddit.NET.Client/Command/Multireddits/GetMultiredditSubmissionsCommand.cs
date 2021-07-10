@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to get the submissions of a multireddit.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class GetMultiredditSubmissionsCommand : ClientCommand
     {
         private readonly Parameters _parameters;

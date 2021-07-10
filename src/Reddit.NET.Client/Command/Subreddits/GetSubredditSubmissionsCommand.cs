@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to get the submissions of a subreddit.
     /// </summary>
+    [ReadOnlyAuthenticationContext]
+    [UserAuthenticationContext]
     public sealed class GetSubredditSubmissionsCommand : ClientCommand
     {
         private readonly Parameters _parameters;

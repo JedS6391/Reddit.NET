@@ -1,12 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
 {
     /// <summary>
     /// Defines a command to create a submission in a particular subreddit.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class CreateSubredditSubmissionCommand : ClientCommand
     {
         private readonly Parameters _parameters;

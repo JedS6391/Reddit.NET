@@ -4,12 +4,14 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
 {
     /// <summary>
     /// Defines a command to create a multireddit belonging to the currently authenticated user.
     /// </summary>
+    [UserAuthenticationContext]
     public sealed class CreateMultiredditCommand : ClientCommand
     {
         private readonly Parameters _parameters;

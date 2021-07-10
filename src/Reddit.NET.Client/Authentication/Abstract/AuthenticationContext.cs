@@ -1,5 +1,7 @@
+using System;
 using System.Linq;
-using Microsoft;
+using System.Reflection;
+using Reddit.NET.Client.Authentication.Context;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Models.Internal;
 
@@ -10,15 +12,11 @@ namespace Reddit.NET.Client.Authentication.Abstract
     /// </summary>
     public abstract class AuthenticationContext
     {
-        private readonly string[] _supportedCommandIds;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticationContext" /> class.
         /// </summary>
-        /// <param name="supportedCommandIds">A list of <see cref="ClientCommand" /> identifiers that are supported by this context.</param>
-        protected AuthenticationContext(string[] supportedCommandIds)
+        protected AuthenticationContext()
         {
-            _supportedCommandIds = Requires.NotNull(supportedCommandIds, nameof(supportedCommandIds));
         }
 
         /// <summary>
@@ -36,6 +34,20 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// </summary>
         /// <param name="command">A command to determine the execution rules for.</param>
         /// <returns><see langword="true" /> if the context supports the provided command; <see langword="false" /> otherwise.</returns>
-        public bool CanExecute(ClientCommand command) => _supportedCommandIds.Any(id => id == command.Id);
+        public bool CanExecute(ClientCommand command)
+        {
+            var supportedAuthenticationContextAttributes = command
+                .GetType()
+                .GetCustomAttributes<SupportedAuthenticationContextAttribute>();
+
+            if (!supportedAuthenticationContextAttributes.Any())
+            {
+                throw new ArgumentException("'{CommandId}' does not have any supported authentication context types.", command.Id);
+            }
+
+            var contextType = GetType();
+
+            return supportedAuthenticationContextAttributes.Any(a => a.Types.Contains(contextType));
+        }
     }
 }
