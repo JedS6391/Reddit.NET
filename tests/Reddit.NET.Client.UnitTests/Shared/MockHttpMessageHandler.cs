@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,13 +12,15 @@ namespace Reddit.NET.Client.UnitTests.Shared
         {
         }
 
-        public int RequestCount { get; private set; } = 0;
+        public int RequestCount => SeenRequests.Count;
+
+        public List<HttpRequestMessage> SeenRequests { get; } = new List<HttpRequestMessage>();
 
         public Func<HttpRequestMessage, Task<HttpResponseMessage>> RequestFunc { get; set; }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            RequestCount++;
+            SeenRequests.Add(request);
 
             var response = await RequestFunc.Invoke(request);
 

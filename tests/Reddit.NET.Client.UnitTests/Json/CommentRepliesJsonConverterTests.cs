@@ -5,7 +5,7 @@ using NUnit.Framework;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Internal.Json;
 
-namespace Reddit.NET.Client.UnitTests.JsonConverter
+namespace Reddit.NET.Client.UnitTests.Json
 {
     public class CommentRepliesJsonConverterTests
     {

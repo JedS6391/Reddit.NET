@@ -17,7 +17,7 @@ using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.UnitTests.Shared;
 
-namespace Reddit.NET.Client.UnitTests
+namespace Reddit.NET.Client.UnitTests.Authentication
 {
     [SuppressMessage("Reliability", "CA2012", Justification = "ValueTask result is not used in test assertions.")]
     public class CredentialsBuilderTests

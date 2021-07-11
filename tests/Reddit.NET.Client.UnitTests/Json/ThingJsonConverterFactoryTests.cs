@@ -4,7 +4,7 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Internal.Json;
 
-namespace Reddit.NET.Client.UnitTests.JsonConverter
+namespace Reddit.NET.Client.UnitTests.Json
 {
     public class ThingJsonConverterFactoryTests
     {

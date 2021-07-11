@@ -32,8 +32,7 @@ namespace Reddit.NET.Client.Command.Authentication
             {
                 { "grant_type", "password" },
                 { "username", _parameters.Username },
-                { "password", _parameters.Password },
-                { "duration", "permanent" }
+                { "password", _parameters.Password }
             };
 
             var request = new HttpRequestMessage()
