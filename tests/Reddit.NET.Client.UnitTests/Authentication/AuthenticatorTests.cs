@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using NSubstitute;
 using NUnit.Framework;
 using Reddit.NET.Client.Authentication;
+using Reddit.NET.Client.Authentication.Context;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Command.RateLimiting;
@@ -75,6 +76,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<ClientCredentialsAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "Client Credentials");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -115,6 +117,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<ClientCredentialsAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "Client Credentials");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -135,6 +138,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<ClientCredentialsAuthenticationContext>(context);
 
             // No further requests
             Assert.AreEqual(1, _httpMessageHandler.RequestCount);
@@ -164,6 +168,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<ClientCredentialsAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "Client Credentials");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -187,6 +192,157 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<ClientCredentialsAuthenticationContext>(context);
+
+            Assert.AreEqual(2, _httpMessageHandler.RequestCount);
+
+            request = _httpMessageHandler.SeenRequests[1];
+            requestContent = await (request.Content as FormUrlEncodedContent).ReadAsStringAsync();
+
+            Assert.AreEqual("https://www.reddit.com/api/v1/access_token", request.RequestUri.AbsoluteUri);
+            Assert.AreEqual("grant_type=refresh_token&refresh_token=...&duration=permanent", requestContent);
+        }
+
+        [Test]
+        public async Task GetAuthenticationContextAsync_InstalledClientAuthenticatorNoExistingContext_CreatesContextAndReturnsContext()
+        {
+            _httpMessageHandler.RequestFunc = (request) =>
+                Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(Tokens.InstalledClient)
+                });
+
+            var credentials = new NonInteractiveCredentials(
+                mode: AuthenticationMode.ReadOnlyInstalledApp,
+                clientId: Guid.NewGuid().ToString(),
+                clientSecret: string.Empty,
+                deviceId: Guid.NewGuid());
+
+            var authenticator = new InstalledClientAuthenticator(
+                Substitute.For<ILogger<InstalledClientAuthenticator>>(),
+                _commandExecutor,
+                credentials);
+
+            var context = await authenticator.GetAuthenticationContextAsync();
+
+            Assert.IsNotNull(context);
+            Assert.IsInstanceOf<InstalledClientAuthenticationContext>(context);
+            Assert.AreEqual(context.Id, "Installed Client");
+            Assert.IsNotNull(context.Token);
+            Assert.AreEqual("...", context.Token.AccessToken);
+            Assert.AreEqual("bearer", context.Token.TokenType);
+            Assert.AreEqual(3600, context.Token.ExpiresIn);
+            Assert.AreEqual("*", context.Token.Scope);
+            Assert.AreEqual("...", context.Token.RefreshToken);
+
+            Assert.AreEqual(1, _httpMessageHandler.RequestCount);
+
+            var request = _httpMessageHandler.SeenRequests[0];
+            var requestContent = await (request.Content as FormUrlEncodedContent).ReadAsStringAsync();
+
+            Assert.AreEqual("https://www.reddit.com/api/v1/access_token", request.RequestUri.AbsoluteUri);
+            Assert.AreEqual($"grant_type=https%3A%2F%2Foauth.reddit.com%2Fgrants%2Finstalled_client&device_id={credentials.DeviceId.Value}&duration=permanent", requestContent);
+        }
+
+        [Test]
+        public async Task GetAuthenticationContextAsync_InstalledClientAuthenticatorExistingUnexpiredContext_ReturnsExistingContext()
+        {
+            _httpMessageHandler.RequestFunc = (request) =>
+                Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    Content = new StringContent(Tokens.InstalledClient)
+                });
+
+            var credentials = new NonInteractiveCredentials(
+                mode: AuthenticationMode.ReadOnlyInstalledApp,
+                clientId: Guid.NewGuid().ToString(),
+                clientSecret: string.Empty,
+                deviceId: Guid.NewGuid());
+
+            var authenticator = new InstalledClientAuthenticator(
+                Substitute.For<ILogger<InstalledClientAuthenticator>>(),
+                _commandExecutor,
+                credentials);
+
+            var context = await authenticator.GetAuthenticationContextAsync();
+
+            Assert.IsNotNull(context);
+            Assert.IsInstanceOf<InstalledClientAuthenticationContext>(context);
+            Assert.AreEqual(context.Id, "Installed Client");
+            Assert.IsNotNull(context.Token);
+            Assert.AreEqual("...", context.Token.AccessToken);
+            Assert.AreEqual("bearer", context.Token.TokenType);
+            Assert.AreEqual(3600, context.Token.ExpiresIn);
+            Assert.AreEqual("*", context.Token.Scope);
+            Assert.AreEqual("...", context.Token.RefreshToken);
+
+            Assert.AreEqual(1, _httpMessageHandler.RequestCount);
+
+            var request = _httpMessageHandler.SeenRequests[0];
+            var requestContent = await (request.Content as FormUrlEncodedContent).ReadAsStringAsync();
+
+            Assert.AreEqual("https://www.reddit.com/api/v1/access_token", request.RequestUri.AbsoluteUri);
+            Assert.AreEqual($"grant_type=https%3A%2F%2Foauth.reddit.com%2Fgrants%2Finstalled_client&device_id={credentials.DeviceId.Value}&duration=permanent", requestContent);
+
+            // Get the context again.
+            context = await authenticator.GetAuthenticationContextAsync();
+
+            Assert.IsNotNull(context);
+            Assert.IsInstanceOf<InstalledClientAuthenticationContext>(context);
+
+            // No further requests
+            Assert.AreEqual(1, _httpMessageHandler.RequestCount);
+        }
+
+        [Test]
+        public async Task GetAuthenticationContextAsync_InstalledClientAuthenticatorExistingExpiredContext_RefreshesContextAndReturnsContext()
+        {
+            _httpMessageHandler.RequestFunc = (request) =>
+                Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK)
+                {
+                    // Token has 2 seconds expiry
+                    Content = new StringContent(Tokens.InstalledClientShortExpiry)
+                });
+
+            var credentials = new NonInteractiveCredentials(
+                mode: AuthenticationMode.ReadOnlyInstalledApp,
+                clientId: Guid.NewGuid().ToString(),
+                clientSecret: string.Empty,
+                deviceId: Guid.NewGuid());
+
+            var authenticator = new InstalledClientAuthenticator(
+                Substitute.For<ILogger<InstalledClientAuthenticator>>(),
+                _commandExecutor,
+                credentials);
+
+            var context = await authenticator.GetAuthenticationContextAsync();
+
+            Assert.IsNotNull(context);
+            Assert.IsInstanceOf<InstalledClientAuthenticationContext>(context);
+            Assert.AreEqual(context.Id, "Installed Client");
+            Assert.IsNotNull(context.Token);
+            Assert.AreEqual("...", context.Token.AccessToken);
+            Assert.AreEqual("bearer", context.Token.TokenType);
+            Assert.AreEqual(2, context.Token.ExpiresIn);
+            Assert.AreEqual("*", context.Token.Scope);
+            Assert.AreEqual("...", context.Token.RefreshToken);
+
+            Assert.AreEqual(1, _httpMessageHandler.RequestCount);
+
+            var request = _httpMessageHandler.SeenRequests[0];
+            var requestContent = await (request.Content as FormUrlEncodedContent).ReadAsStringAsync();
+
+            Assert.AreEqual("https://www.reddit.com/api/v1/access_token", request.RequestUri.AbsoluteUri);
+            Assert.AreEqual($"grant_type=https%3A%2F%2Foauth.reddit.com%2Fgrants%2Finstalled_client&device_id={credentials.DeviceId.Value}&duration=permanent", requestContent);
+
+            // Ensure the token has expired.
+            await Task.Delay(TimeSpan.FromSeconds(4));
+
+            // Get the context again.
+            context = await authenticator.GetAuthenticationContextAsync();
+
+            Assert.IsNotNull(context);
+            Assert.IsInstanceOf<InstalledClientAuthenticationContext>(context);
 
             Assert.AreEqual(2, _httpMessageHandler.RequestCount);
 
@@ -221,6 +377,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UsernamePasswordAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "Username + Password");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -262,6 +419,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UsernamePasswordAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "Username + Password");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -282,6 +440,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UsernamePasswordAuthenticationContext>(context);
 
             // No further requests
             Assert.AreEqual(1, _httpMessageHandler.RequestCount);
@@ -312,6 +471,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UsernamePasswordAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "Username + Password");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -335,6 +495,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UsernamePasswordAuthenticationContext>(context);
 
             Assert.AreEqual(2, _httpMessageHandler.RequestCount);
 
@@ -364,6 +525,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UserTokenAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "User Token");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -394,6 +556,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UserTokenAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "User Token");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -408,6 +571,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UserTokenAuthenticationContext>(context);
 
             // Still no requests
             Assert.AreEqual(0, _httpMessageHandler.RequestCount);
@@ -439,6 +603,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UserTokenAuthenticationContext>(context);
             Assert.AreEqual(context.Id, "User Token");
             Assert.IsNotNull(context.Token);
             Assert.AreEqual("...", context.Token.AccessToken);
@@ -456,6 +621,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             context = await authenticator.GetAuthenticationContextAsync();
 
             Assert.IsNotNull(context);
+            Assert.IsInstanceOf<UserTokenAuthenticationContext>(context);
 
             Assert.AreEqual(1, _httpMessageHandler.RequestCount);
 
@@ -484,6 +650,26 @@ namespace Reddit.NET.Client.UnitTests.Authentication
     ""expires_in"": 3600,
     ""scope"": ""*"",
     ""refresh_token"": ""...""
+}";
+
+            public const string InstalledClient = @"
+{
+    ""access_token"": ""..."",
+    ""token_type"": ""bearer"",
+    ""expires_in"": 3600,
+    ""scope"": ""*"",
+    ""refresh_token"": ""..."",
+    ""device_id"": ""...""
+}";
+
+            public const string InstalledClientShortExpiry = @"
+{
+    ""access_token"": ""..."",
+    ""token_type"": ""bearer"",
+    ""expires_in"": 2,
+    ""scope"": ""*"",
+    ""refresh_token"": ""..."",
+    ""device_id"": ""...""
 }";
 
             public const string ClientCredentialsShortExpiry = @"
