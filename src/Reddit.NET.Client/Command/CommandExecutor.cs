@@ -17,12 +17,21 @@ using Reddit.NET.Client.Models.Public.Read;
 namespace Reddit.NET.Client.Command
 {
     /// <summary>
-    /// Responsible for executing HTTP communication with reddit.
+    /// Responsible for facilitating HTTP communication with reddit.
     /// </summary>
     /// <remarks>
-    /// All HTTP operations are encapsulated in <see cref="ClientCommand" /> instances which this executor knows
-    /// how to handle. This design allows components that need to execute HTTP requests to be decoupled from
-    /// the actual HTTP communication, and instead just operate in terms of commands.
+    /// <para>
+    /// All HTTP operations are encapsulated in <see cref="ClientCommand" /> instances which this class can execute.
+    ///
+    /// This design allows components that need to execute HTTP requests to be decoupled from the actual HTTP communication.
+    /// </para>
+    /// <para>
+    /// Requests that result in transient HTTP response status codes will be retried a number of times, with an exponential back-off sleep duration.
+    /// </para>
+    /// <para>
+    /// To remain with the reddit API rate limits, command execution will be managed to ensure that the number of requests being ,ade
+    /// falls within the rate limits imposed.
+    /// </para>
     /// </remarks>
     public sealed class CommandExecutor
     {
