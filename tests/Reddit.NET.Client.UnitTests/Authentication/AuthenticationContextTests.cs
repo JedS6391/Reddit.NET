@@ -5,7 +5,7 @@ using Reddit.NET.Client.Authentication.Context;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Models.Internal;
 
-namespace Reddit.NET.Client.UnitTests
+namespace Reddit.NET.Client.UnitTests.Authentication
 {
     public class AuthenticationContextTests
     {
