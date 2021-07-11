@@ -10,18 +10,18 @@ using Reddit.NET.Client.Models.Internal;
 namespace Reddit.NET.Client.Authentication
 {
     /// <summary>
-    /// An <see cref="IAuthenticator" /> implementation that uses the <c>client_credentials</c> grant type to authenticate.
+    /// An <see cref="IAuthenticator" /> implementation that uses the <c>https://oauth.reddit.com/grants/installed_client</c> grant type to authenticate.
     /// </summary>
-    public sealed class ClientCredentialsAuthenticator : AutoRefreshAuthenticator
+    public sealed class InstalledClientAuthenticator : AutoRefreshAuthenticator
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="ClientCredentialsAuthenticator" /> class.
+        /// Initializes a new instance of the <see cref="InstalledClientAuthenticator" /> class.
         /// </summary>
         /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
         /// <param name="commandExecutor">An <see cref="CommandExecutor" /> instance used to execute commands against reddit.</param>
         /// <param name="credentials">A <see cref="Credentials" /> instance describing the credentials to use for authentication.</param>
-        public ClientCredentialsAuthenticator(
-            ILogger<ClientCredentialsAuthenticator> logger,
+        public InstalledClientAuthenticator(
+            ILogger<InstalledClientAuthenticator> logger,
             CommandExecutor commandExecutor,
             Credentials credentials)
             : base(logger, commandExecutor, credentials)
@@ -31,15 +31,16 @@ namespace Reddit.NET.Client.Authentication
         /// <inheritdoc />
         protected override async Task<AuthenticationContext> DoAuthenticateAsync()
         {
-            var authenticateCommand = new AuthenticateWithClientCredentialsCommand(new AuthenticateWithClientCredentialsCommand.Parameters()
+            var authenticateCommand = new AuthenticateWithInstalledClientCommand(new AuthenticateWithInstalledClientCommand.Parameters()
             {
+                DeviceId = Credentials.DeviceId.Value,
                 ClientId = Credentials.ClientId,
                 ClientSecret = Credentials.ClientSecret
             });
 
             var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
 
-            return new ClientCredentialsAuthenticationContext(token);
+            return new InstalledClientAuthenticationContext(token);
         }
 
         /// <inheritdoc />
@@ -54,7 +55,7 @@ namespace Reddit.NET.Client.Authentication
 
             var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
 
-            return new ClientCredentialsAuthenticationContext(token);
+            return new InstalledClientAuthenticationContext(token);
         }
     }
 }
