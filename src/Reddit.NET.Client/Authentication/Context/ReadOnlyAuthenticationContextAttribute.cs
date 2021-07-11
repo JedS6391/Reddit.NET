@@ -11,7 +11,7 @@ namespace Reddit.NET.Client.Authentication.Context
         /// Initializes a new instance of the <see cref="ReadOnlyAuthenticationContextAttribute" /> class.
         /// </summary>
         public ReadOnlyAuthenticationContextAttribute()
-            : base(typeof(ClientCredentialsAuthenticationContext))
+            : base(typeof(ClientCredentialsAuthenticationContext), typeof(InstalledClientAuthenticationContext))
         {
         }
     }

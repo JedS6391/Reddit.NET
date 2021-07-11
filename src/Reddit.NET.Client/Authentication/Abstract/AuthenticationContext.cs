@@ -42,7 +42,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
 
             if (!supportedAuthenticationContextAttributes.Any())
             {
-                throw new ArgumentException("'{CommandId}' does not have any supported authentication context types.", command.Id);
+                throw new ArgumentException($"'{command.Id}' does not have any supported authentication context types.");
             }
 
             var contextType = GetType();

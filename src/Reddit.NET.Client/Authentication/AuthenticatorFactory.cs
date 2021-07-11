@@ -60,10 +60,11 @@ namespace Reddit.NET.Client.Authentication
                         _commandExecutor,
                         credentials),
 
-                // TODO: Should use the installed_client grant as described here:
-                // https://github.com/reddit-archive/reddit/wiki/OAuth2#application-only-oauth
                 AuthenticationMode.ReadOnlyInstalledApp =>
-                    throw new NotSupportedException($"Mode '{credentials.Mode}' is not supported for non-interactive authentication."),
+                    new InstalledClientAuthenticator(
+                        _loggerFactory.CreateLogger<InstalledClientAuthenticator>(),
+                        _commandExecutor,
+                        credentials),
 
                 _ => throw new ArgumentException($"Mode '{credentials.Mode}' is not supported for non-interactive authentication.", nameof(credentials)),
             };
@@ -73,7 +74,7 @@ namespace Reddit.NET.Client.Authentication
         {
             return credentials.Mode switch
             {
-                AuthenticationMode.WebApp or AuthenticationMode.WebApp =>
+                AuthenticationMode.WebApp or AuthenticationMode.InstalledApp =>
                     new UserTokenAuthenticator(
                         _loggerFactory.CreateLogger<UserTokenAuthenticator>(),
                         _commandExecutor,
