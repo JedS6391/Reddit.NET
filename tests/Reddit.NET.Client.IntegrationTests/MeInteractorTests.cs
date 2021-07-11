@@ -86,6 +86,26 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
+        public async Task GetKarmaBreakdownAsync_ValidUser_ShouldGetKarmabreakdown()
+        {
+            var me = _client.Me();
+
+            var karmaBreakdownDetails = await me.GetKarmaBreakdownAsync();
+
+            Assert.IsNotNull(karmaBreakdownDetails);
+        }
+
+        [Test]
+        public async Task GetTrophiesAsync_ValidUser_ShouldGetTrophies()
+        {
+            var me = _client.Me();
+
+            var trophyDetails = await me.GetTrophiesAsync();
+
+            Assert.IsNotNull(trophyDetails);
+        }
+
+        [Test]
         public async Task CreateMultiredditAsync_ValidUser_ShouldCreateMultireddit()
         {
             var me = _client.Me();
