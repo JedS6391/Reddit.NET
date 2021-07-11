@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.1.1] - 2021-07-11
+
+### Fixed 
+
+- `AuthenticateWithUsernamePasswordCommand` will no longer send a `duration` parameter, as it not supported for the `password` grant type
+
 ## [1.1.0] - 2021-07-10
 
 ### Added
@@ -37,5 +43,6 @@ This release also includes a number of new tests, both for new and existing func
     - Submissions
     - Comments
 
+[1.1.1]: https://github.com/JedS6391/Reddit.NET/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/JedS6391/Reddit.NET/compare/1.0.0...1.1.0
 [1.0.0]: https://github.com/JedS6391/Reddit.NET/tree/1.0.0
