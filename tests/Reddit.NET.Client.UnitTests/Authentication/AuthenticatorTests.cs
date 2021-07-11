@@ -181,7 +181,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             Assert.AreEqual("grant_type=client_credentials&duration=permanent", requestContent);
 
             // Ensure the token has expired.
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(4));
 
             // Get the context again.
             context = await authenticator.GetAuthenticationContextAsync();
@@ -329,7 +329,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             Assert.AreEqual($"grant_type=password&username={credentials.Username}&password={credentials.Password}", requestContent);
 
             // Ensure the token has expired.
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(4));
 
             // Get the context again.
             context = await authenticator.GetAuthenticationContextAsync();
@@ -450,7 +450,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             Assert.AreEqual(0, _httpMessageHandler.RequestCount);
 
             // Ensure the token has expired.
-            await Task.Delay(TimeSpan.FromSeconds(2));
+            await Task.Delay(TimeSpan.FromSeconds(4));
 
             // Get the context again.
             context = await authenticator.GetAuthenticationContextAsync();
