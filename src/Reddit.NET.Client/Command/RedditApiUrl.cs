@@ -37,6 +37,7 @@ namespace Reddit.NET.Client.Command
             public static string Details(string subredditName) => $"{RedditOAuthPath}/r/{subredditName}/about";
             public static string Submissions(string subredditName, string sort)
                 => $"{RedditOAuthPath}/r/{subredditName}/{sort}";
+            public static string Comments(string subredditName) => $"{RedditOAuthPath}/r/{subredditName}/comments";
             public static string FrontPageSubmissions(string sort) => $"{RedditOAuthPath}/{sort}";
             public static string Search(string subredditName)
                 => $"{RedditOAuthPath}/r/{subredditName}/search";

@@ -12,6 +12,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using System.Linq;
 using Reddit.NET.Client.Exceptions;
+using Reddit.NET.Client.Models.Public.Streams;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -33,6 +34,11 @@ namespace Reddit.NET.Client.Interactions
             _client = client;
             _subredditName = subredditName;
         }
+
+        /// <summary>
+        /// Gets a <see cref="SubredditStreamProvider" /> that can be used to access streams of submissions or comments.
+        /// </summary>
+        public SubredditStreamProvider Stream => new SubredditStreamProvider(_client, _subredditName);
 
         /// <summary>
         /// Gets the details of the subreddit.
