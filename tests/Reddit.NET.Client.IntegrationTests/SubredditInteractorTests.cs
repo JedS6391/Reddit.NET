@@ -50,6 +50,44 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
+        public async Task StreamSubmissionsAsync_ValidSubreddit_ShouldStreamSubmissions()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var stream = subreddit.Stream.SubmissionsAsync();
+
+            Assert.IsNotNull(stream);
+
+            // 102 may seem like a random number, but the initial query will retrieve
+            // 100 historical submissions and then we will poll until 2 more submissions
+            // become available.
+            // We don't want this number to be too high, otherwise the test will take a really
+            // long time to complete (i.e. if it's a slow time of day for submissions)
+            var submissions = await stream.Take(102).ToListAsync();
+
+            Assert.IsNotNull(submissions);
+            Assert.IsNotEmpty(submissions);
+            Assert.AreEqual(102, submissions.Count);
+        }
+
+        [Test]
+        public async Task StreamCommentsAsync_ValidSubreddit_ShouldStreamComments()
+        {
+            var subreddit = _client.Subreddit("askreddit");
+
+            var stream = subreddit.Stream.CommentsAsync();
+
+            Assert.IsNotNull(stream);
+
+            // See the comment above for the submissions stream regarding why the number 102.
+            var comments = await stream.Take(102).ToListAsync();
+
+            Assert.IsNotNull(comments);
+            Assert.IsNotEmpty(comments);
+            Assert.AreEqual(102, comments.Count);
+        }
+
+        [Test]
         public async Task GetSubmissionsAsync_OneHundredNewSubmissions_ShouldGetSubmissions()
         {
             var subreddit = _client.Subreddit("askreddit");

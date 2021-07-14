@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// Gets new submissions made in the subreddit.
         /// </summary>
         /// <remarks>
-        /// The enumerator will return the oldest submissions first.
+        /// The enumerator will return the oldest submissions first, retrieving 100 historical submissions in the initial query.
         /// </remarks>
         /// <returns>An asynchronous enumerator over new submissions in the subreddit.</returns>
         public IAsyncEnumerable<SubmissionDetails> SubmissionsAsync() =>
@@ -44,7 +44,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// Gets new comments made in the subreddit.
         /// </summary>
         /// <remarks>
-        /// The enumerator will return the oldest comments first.
+        /// The enumerator will return the oldest comments first, retrieving 100 historical comments in the initial query.
         /// </remarks>
         /// <returns>An asynchronous enumerator over new comments in the subreddit.</returns>
         public IAsyncEnumerable<CommentDetails> CommentsAsync() =>
