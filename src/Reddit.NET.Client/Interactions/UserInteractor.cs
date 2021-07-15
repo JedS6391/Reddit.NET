@@ -8,6 +8,7 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
+using Reddit.NET.Client.Models.Public.Streams;
 using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.Interactions
@@ -37,6 +38,11 @@ namespace Reddit.NET.Client.Interactions
             _client = client;
             _username = username;
         }
+
+        /// <summary>
+        /// Gets a <see cref="UserStreamProvider" /> that can be used to access streams of submissions or comments.
+        /// </summary>
+        public UserStreamProvider Stream => new UserStreamProvider(_client, _username);
 
         /// <summary>
         /// Gets the details of the user.

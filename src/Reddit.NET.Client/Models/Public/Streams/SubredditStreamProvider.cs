@@ -53,7 +53,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
                 mapper: c => new CommentDetails(c),
                 idSelector: c => c.Data.Id));
 
-        private async Task<IReadOnlyList<IThing<Submission.Details>>> GetNewSubmissionsAsync()
+        private async Task<IEnumerable<IThing<Submission.Details>>> GetNewSubmissionsAsync()
         {
             var commandParameters = new GetSubredditSubmissionsCommand.Parameters()
             {
@@ -71,7 +71,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
             return submissions.Children;
         }
 
-        private async Task<IReadOnlyList<IThing<Comment.Details>>> GetNewCommentsAsync()
+        private async Task<IEnumerable<IThing<Comment.Details>>> GetNewCommentsAsync()
         {
             var commandParameters = new GetSubredditCommentsCommand.Parameters()
             {
