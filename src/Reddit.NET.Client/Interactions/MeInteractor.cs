@@ -8,7 +8,6 @@ using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
 using System.Linq;
 using Reddit.NET.Client.Models.Public.Write;
-using Reddit.NET.Client.Command.Multireddits;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -23,7 +22,7 @@ namespace Reddit.NET.Client.Interactions
         /// Initializes a new instance of the <see cref="MeInteractor" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
-        public MeInteractor(RedditClient client)
+        internal MeInteractor(RedditClient client)
         {
             _client = client;
         }

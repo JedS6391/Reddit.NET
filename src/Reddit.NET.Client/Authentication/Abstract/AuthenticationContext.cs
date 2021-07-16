@@ -32,6 +32,9 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// <summary>
         /// Determines whether the provided command can be executed in this context.
         /// </summary>
+        /// <remarks>
+        /// Whether a command is supported or not is determined by which <see cref="SupportedAuthenticationContextAttribute" /> attributes are applied.
+        /// </remarks>
         /// <param name="command">A command to determine the execution rules for.</param>
         /// <returns><see langword="true" /> if the context supports the provided command; <see langword="false" /> otherwise.</returns>
         public bool CanExecute(ClientCommand command)

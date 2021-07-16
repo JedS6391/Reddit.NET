@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="username">The name of the user the multireddit belongs to.</param>
         /// <param name="multiredditName">The name of the multireddit to interact with.</param>
-        public MultiredditInteractor(RedditClient client, string username, string multiredditName)
+        internal MultiredditInteractor(RedditClient client, string username, string multiredditName)
         {
             _client = client;
             _username = username;

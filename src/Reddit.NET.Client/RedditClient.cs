@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
+using System.Threading.Tasks;
 using Microsoft;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Command;
@@ -13,9 +15,29 @@ namespace Reddit.NET.Client
     /// Provides mechanisms for interacting with <see href="https://www.reddit.com">reddit</see>.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// The <see cref="RedditClient" /> class is the main entry-point for accessing reddit's API.
+    /// </para>
+    /// <para>
+    /// The client exposes its functionality through <i>interactors</i>, which are responsible for specific high-level concepts (e.g. subreddits, users, etc).
+    /// </para>
+    /// <para>
+    /// Obtaining an interactor instance does not perform any network operations, as they simply provide access to a set of related functionality.
+    /// </para>
+    /// <para>
     /// <see cref="RedditClient" /> cannot be directly instantiated and should instead be created via the <see cref="Builder.RedditClientBuilder" /> class.
+    /// </para>
     /// </remarks>
-    public sealed partial class RedditClient
+    /// <example>
+    /// An example of interacting with a specific subreddit:
+    /// <code>
+    /// Interact with a subreddit
+    /// SubredditInteractor askReddit = client.Subreddit("askreddit");
+    ///
+    /// SubredditDetails askRedditDetails = await askReddit.GetDetailsAsync();
+    /// </code>
+    /// </example>
+    public sealed class RedditClient
     {
         private readonly CommandExecutor _commandExecutor;
         private readonly IAuthenticator _authenticator;
@@ -77,5 +99,47 @@ namespace Reddit.NET.Client
                 this,
                 optionsBuilder.Options);
         }
+
+        /// <summary>
+        /// Gets an interactor for operations relating to a specific submission.
+        /// </summary>
+        /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>
+        /// <returns>A <see cref="SubmissionInteractor" /> instance that provides mechanisms for interacting with the provided submission.</returns>
+        internal SubmissionInteractor Submission(string submissionId) => new SubmissionInteractor(this, submissionId);
+
+        /// <summary>
+        /// Gets an interactor for operations relating to a specific comment.
+        /// </summary>
+        /// <param name="submissionId">The base-36 ID of the submission the comment belongs to.</param>
+        /// <param name="commentId">The base-36 ID of the comment to interact with.</param>
+        /// <returns>A <see cref="CommentInteractor" /> instance that provides mechanisms for interacting with the provided comment.</returns>
+        internal CommentInteractor Comment(string submissionId, string commentId) => new CommentInteractor(this, submissionId, commentId);
+
+        /// <summary>
+        /// Gets an interactor for operations relating to a specific multireddit.
+        /// </summary>
+        /// <param name="username">The name of the user the multireddit belongs to.</param>
+        /// <param name="multiredditName">The name of the multireddit to interact with.</param>
+        /// <returns>A <see cref="MultiredditInteractor" /> instance that provides mechanisms for interacting with the provided multireddit.</returns>
+        internal MultiredditInteractor Multireddit(string username, string multiredditName) =>
+            new MultiredditInteractor(this, username, multiredditName);
+
+        /// <summary>
+        /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />.
+        /// </summary>
+        /// <param name="command">The command to execute.</param>
+        /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
+        internal async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command) =>
+            await _commandExecutor.ExecuteCommandAsync(command, _authenticator).ConfigureAwait(false);
+
+        /// <summary>
+        /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />, parsing the response to an instance of type <typeparamref name="TResponse" />.
+        /// </summary>
+        /// <param name="command">The command to execute.</param>
+        /// <returns>
+        /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
+        /// </returns>
+        internal async Task<TResponse> ExecuteCommandAsync<TResponse>(ClientCommand command) =>
+            await _commandExecutor.ExecuteCommandAsync<TResponse>(command, _authenticator).ConfigureAwait(false);
     }
 }

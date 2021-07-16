@@ -22,14 +22,15 @@ namespace Reddit.NET.Client.Command
     /// <remarks>
     /// <para>
     /// All HTTP operations are encapsulated in <see cref="ClientCommand" /> instances which this class can execute.
-    ///
+    /// </para>
+    /// <para>
     /// This design allows components that need to execute HTTP requests to be decoupled from the actual HTTP communication.
     /// </para>
     /// <para>
     /// Requests that result in transient HTTP response status codes will be retried a number of times, with an exponential back-off sleep duration.
     /// </para>
     /// <para>
-    /// To remain with the reddit API rate limits, command execution will be managed to ensure that the number of requests being ,ade
+    /// To remain within the reddit API rate limits, command execution will be managed to ensure that the number of requests being ,ade
     /// falls within the rate limits imposed.
     /// </para>
     /// </remarks>
@@ -83,6 +84,24 @@ namespace Reddit.NET.Client.Command
         /// </summary>
         /// <param name="command">The command to execute.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
+        /// <exception cref="RedditClientRateLimitException">
+        /// Thrown when:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>The reddit API returns a response with the <see cref="HttpStatusCode.TooManyRequests" /> HTTP status code.</description>
+        ///     </item>
+        ///     <item>
+        ///         <description>The client rate limiter cannot permit the execution of a new request.</description>
+        ///     </item>
+        /// </list>
+        /// </exception>
+        /// <exception cref="RedditClientApiException">
+        /// Thrown when the reddit API returns a response with the <see cref="HttpStatusCode.BadRequest" /> HTTP status code and the response
+        /// body contains an error object with details of the issue.
+        /// </exception>
+        /// <exception cref="RedditClientResponseException">
+        /// Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.
+        /// </exception>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command)
         {
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
@@ -103,6 +122,24 @@ namespace Reddit.NET.Client.Command
         /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to handle authentication for the command.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
         /// <exception cref="CommandNotSupportedException">Thrown when the command cannot be executed in the available <see cref="AuthenticationContext" />.</exception>
+        /// <exception cref="RedditClientRateLimitException">
+        /// Thrown when:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>The reddit API returns a response with the <see cref="HttpStatusCode.TooManyRequests" /> HTTP status code.</description>
+        ///     </item>
+        ///     <item>
+        ///         <description>The client rate limiter cannot permit the execution of a new request.</description>
+        ///     </item>
+        /// </list>
+        /// </exception>
+        /// <exception cref="RedditClientApiException">
+        /// Thrown when the reddit API returns a response with the <see cref="HttpStatusCode.BadRequest" /> HTTP status code and the response
+        /// body contains an error object with details of the issue.
+        /// </exception>
+        /// <exception cref="RedditClientResponseException">
+        /// Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.
+        /// </exception>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, IAuthenticator authenticator)
         {
             var authenticationContext = await authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
@@ -159,6 +196,12 @@ namespace Reddit.NET.Client.Command
             {
                 return response;
             }
+
+            _logger.LogError(
+                "{Method} request to '{Uri}' failed with status code '{StatusCode}'",
+                response.RequestMessage.Method,
+                response.RequestMessage.RequestUri,
+                response.StatusCode);
 
             // Try to handle the failed request.
             return await HandleFailedRequestAsync(response);

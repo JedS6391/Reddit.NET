@@ -20,7 +20,7 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="submissionId">The base-36 ID of the submission the comment belongs to.</param>
         /// <param name="commentId">The base-36 ID of the comment to interact with.</param>
-        public CommentInteractor(RedditClient client, string submissionId, string commentId)
+        internal CommentInteractor(RedditClient client, string submissionId, string commentId)
             : base(client, kind: Constants.Kind.Comment, id: commentId)
         {
             _submissionId = submissionId;

@@ -6,10 +6,13 @@ namespace Reddit.NET.Client.Command
     /// Represents a command to execute against reddit.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// A <see cref="ClientCommand" /> instance describes an HTTP request that can be executed by a <see cref="CommandExecutor" />.
-    /// 
-    /// Each HTTP interaction can be defined as a command, to allow components to operate in terms of 
+    /// </para>
+    /// <para>
+    /// Each HTTP interaction can be defined as a command, to allow components to operate in terms of
     /// commands rather than HTTP requests.
+    /// </para>
     /// </remarks>
     public abstract class ClientCommand
     {
@@ -26,7 +29,7 @@ namespace Reddit.NET.Client.Command
         public abstract string Id { get; }
 
         /// <summary>
-        /// Builds the <see cref="HttpRequestMessage" /> this command represents. 
+        /// Builds the <see cref="HttpRequestMessage" /> this command represents.
         /// </summary>
         /// <returns>A <see cref="HttpRequestMessage" /> instance.</returns>
         public abstract HttpRequestMessage BuildRequest();

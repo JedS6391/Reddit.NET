@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
+            var token = await CommandExecutor.ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
 
             return new UserTokenAuthenticationContext(token);
         }

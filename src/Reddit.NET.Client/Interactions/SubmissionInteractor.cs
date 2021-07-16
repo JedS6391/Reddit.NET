@@ -17,7 +17,7 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>
-        public SubmissionInteractor(RedditClient client, string submissionId)
+        internal SubmissionInteractor(RedditClient client, string submissionId)
             : base(client, kind: Constants.Kind.Submission, id: submissionId)
         {
         }

@@ -10,13 +10,17 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// Provides the ability to navigate through a comment thread.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// A <see cref="CommentThreadNavigator" /> manages a single level of comments on a submission.
-    ///
+    /// </para>
+    /// <para>
     /// Each of the comments on the submission is itself represented as a <see cref="CommentThread" /> instance,
     /// of which the replies can be navigated through via a separate navigator instance.
-    ///
+    /// </para>
+    /// <para>
     /// There is a special case of navigator for the top-level comments of a submission, where <see cref="Parent" />
     /// will be set to <see langword="null" />.
+    /// </para>
     /// </remarks>
     /// <example>
     /// Note that the replies in a thread can be directly enumerated over, as below:

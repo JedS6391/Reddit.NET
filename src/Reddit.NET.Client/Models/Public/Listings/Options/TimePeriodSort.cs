@@ -15,32 +15,32 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         }
 
         /// <summary>
-        /// Gets the 'hour' sort option.
+        /// Gets the <i>hour</i> sort option.
         /// </summary>
         public static TimeRangeSort Hour => new TimeRangeSort("hour");
 
         /// <summary>
-        /// Gets the 'day' sort option.
+        /// Gets the <i>day</i> sort option.
         /// </summary>
         public static TimeRangeSort Day => new TimeRangeSort("day");
 
         /// <summary>
-        /// Gets the 'week' sort option.
+        /// Gets the <i>week</i> sort option.
         /// </summary>
         public static TimeRangeSort Week => new TimeRangeSort("week");
 
         /// <summary>
-        /// Gets the 'month' sort option.
+        /// Gets the <i>month</i> sort option.
         /// </summary>
         public static TimeRangeSort Month => new TimeRangeSort("month");
 
         /// <summary>
-        /// Gets the 'year' sort option.
+        /// Gets the <i>year</i> sort option.
         /// </summary>
         public static TimeRangeSort Year => new TimeRangeSort("year");
 
         /// <summary>
-        /// Gets the 'all' sort option.
+        /// Gets the <i>all</i> sort option.
         /// </summary>
         public static TimeRangeSort AllTime => new TimeRangeSort("all");
     }

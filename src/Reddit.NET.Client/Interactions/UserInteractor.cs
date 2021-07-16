@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Users;
-using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings;
@@ -33,7 +32,7 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="username">The name of the user to interact with.</param>
-        public UserInteractor(RedditClient client, string username)
+        internal UserInteractor(RedditClient client, string username)
         {
             _client = client;
             _username = username;

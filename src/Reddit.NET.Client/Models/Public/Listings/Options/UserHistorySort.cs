@@ -15,22 +15,22 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         }
 
         /// <summary>
-        /// Gets the 'hot' sort option.
+        /// Gets the <i>hot</i> sort option.
         /// </summary>
         public static UserHistorySort Hot => new UserHistorySort("hot");
 
         /// <summary>
-        /// Gets the 'new' sort option.
+        /// Gets the <i>new</i> sort option.
         /// </summary>
         public static UserHistorySort New => new UserHistorySort("new");
 
         /// <summary>
-        /// Gets the 'top' sort option.
+        /// Gets the <i>top</i> sort option.
         /// </summary>
         public static UserHistorySort Top => new UserHistorySort("top");
 
         /// <summary>
-        /// Gets the 'controversial' sort option.
+        /// Gets the <i>controversial</i> sort option.
         /// </summary>
         public static UserHistorySort Controversial => new UserHistorySort("controversial");
     }

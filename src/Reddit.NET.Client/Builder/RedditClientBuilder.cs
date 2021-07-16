@@ -5,7 +5,6 @@ using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication;
 using Reddit.NET.Client.Authentication.Abstract;
-using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
 using Reddit.NET.Client.Command.RateLimiting;

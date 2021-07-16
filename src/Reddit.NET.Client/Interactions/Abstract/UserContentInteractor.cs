@@ -7,7 +7,7 @@ using Reddit.NET.Client.Models.Public.Read;
 namespace Reddit.NET.Client.Interactions.Abstract
 {
     /// <summary>
-    /// Defines functionality shared by user content interactors.
+    /// Defines functionality shared by user content interactors i.e. submissions and comments.
     /// </summary>
     public abstract class UserContentInteractor : IInteractor
     {

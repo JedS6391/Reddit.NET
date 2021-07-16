@@ -21,7 +21,7 @@ namespace Reddit.NET.Client.Interactions
         /// Initializes a new instance of the <see cref="InboxInteractor" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
-        public InboxInteractor(RedditClient client)
+        internal InboxInteractor(RedditClient client)
         {
             _client = client;
         }

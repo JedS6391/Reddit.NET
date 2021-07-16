@@ -55,8 +55,12 @@ namespace Reddit.NET.Client.Builder
         }
 
         /// <summary>
-        /// Configures the builder to create credentials for use in the context of a script or web app where read-only access is required.
+        /// Configures the builder to create credentials for use in the context of a script or web app
+        /// where read-only access is required.
         /// </summary>
+        /// <remarks>
+        /// When using read-only authentication, operations that require user-based authentication will not be supported.
+        /// </remarks>
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="clientSecret">The client secret of the reddit app.</param>
         /// <param name="deviceId">The identifier of the device.</param>
@@ -73,8 +77,12 @@ namespace Reddit.NET.Client.Builder
         }
 
         /// <summary>
-        /// Configures the builder to create credentials for use in the context of an installed application (e.g. user's phone) where read-only access is required.
+        /// Configures the builder to create credentials for use in the context of an installed application (e.g. user's phone)
+        /// where read-only access is required.
         /// </summary>
+        /// <remarks>
+        /// When using read-only authentication, operations that require user-based authentication will not be supported.
+        /// </remarks>
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="deviceId">The identifier of the device.</param>
         public void ReadOnlyInstalledApp(string clientId, Guid deviceId)
@@ -93,8 +101,18 @@ namespace Reddit.NET.Client.Builder
         /// Configures the builder to create credentials for use in the context of a web application.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Web applications are able to keep a secret and will use the authorization code grant type
         /// to request access to reddit on behalf of a user.
+        /// </para>
+        /// <para>
+        /// Web app credentials are considered <i>interactive</i> and require further user interaction to be configured.
+        ///
+        /// The interactive configuration can be managed by the returned <see cref="InteractiveCredentials.Builder" />.
+        /// </para>
+        /// <para>
+        /// Upon creation, the builder will asynchronously complete the authentication flow to create the appropriate credentials.
+        /// </para>
         /// </remarks>
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="clientSecret">The client secret of the reddit app.</param>
@@ -135,8 +153,18 @@ namespace Reddit.NET.Client.Builder
         /// Configures the builder to create credentials for use in the context of an installed application, e.g. a user's phone.
         /// </summary>
         /// <remarks>
+        /// <para>
         /// Installed applications are not able to keep a secret and will use the authorization code grant type
         /// to request access to reddit on behalf of a user.
+        /// </para>
+        /// <para>
+        /// Installed app credentials are considered <i>interactive</i> and require further user interaction to be configured.
+        ///
+        /// The interactive configuration can be managed by the returned <see cref="InteractiveCredentials.Builder" />.
+        /// </para>
+        /// <para>
+        /// Upon creation, the builder will asynchronously complete the authentication flow to create the appropriate credentials.
+        /// </para>
         /// </remarks>
         /// <param name="clientId">The client ID of the reddit app.</param>
         /// <param name="redirectUri">The URL that users will be redirected to when authorizing your application.</param>
@@ -172,9 +200,12 @@ namespace Reddit.NET.Client.Builder
         /// Configures the builder to create credentials for use when an existing session identifier is available.
         /// </summary>
         /// <remarks>
-        /// A session identifier can be obtained at the end of the interactive authentication process.
-        ///
+        /// <para>
+        /// A session identifier can be obtained at the end of the interactive authentication process (<see cref="WebApp" /> or <see cref="InstalledApp" />).
+        /// </para>
+        /// <para>
         /// It can then be used to create interactive credentials without restarting the interaction authentication process.
+        /// </para>
         /// </remarks>
         /// <param name="mode">The </param>
         /// <param name="clientId">The client ID of the reddit app.</param>

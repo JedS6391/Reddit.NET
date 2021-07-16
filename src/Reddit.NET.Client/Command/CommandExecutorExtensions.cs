@@ -1,9 +1,10 @@
 using System;
-using System.Net.Http;
+using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Authentication.Abstract;
+using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Models.Internal.Json;
 
 namespace Reddit.NET.Client.Command
@@ -23,6 +24,24 @@ namespace Reddit.NET.Client.Command
         /// <returns>
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
+        /// <exception cref="RedditClientRateLimitException">
+        /// Thrown when:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>The reddit API returns a response with the <see cref="HttpStatusCode.TooManyRequests" /> HTTP status code.</description>
+        ///     </item>
+        ///     <item>
+        ///         <description>The client rate limiter cannot permit the execution of a new request.</description>
+        ///     </item>
+        /// </list>
+        /// </exception>
+        /// <exception cref="RedditClientApiException">
+        /// Thrown when the reddit API returns a response with the <see cref="HttpStatusCode.BadRequest" /> HTTP status code and the response
+        /// body contains an error object with details of the issue.
+        /// </exception>
+        /// <exception cref="RedditClientResponseException">
+        /// Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.
+        /// </exception>
         public static async Task<TResponse> ExecuteCommandAsync<TResponse>(
             this CommandExecutor executor,
             ClientCommand command)
@@ -44,6 +63,25 @@ namespace Reddit.NET.Client.Command
         /// <returns>
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
+        /// <exception cref="CommandNotSupportedException">Thrown when the command cannot be executed in the available <see cref="AuthenticationContext" />.</exception>
+        /// <exception cref="RedditClientRateLimitException">
+        /// Thrown when:
+        /// <list type="bullet">
+        ///     <item>
+        ///         <description>The reddit API returns a response with the <see cref="HttpStatusCode.TooManyRequests" /> HTTP status code.</description>
+        ///     </item>
+        ///     <item>
+        ///         <description>The client rate limiter cannot permit the execution of a new request.</description>
+        ///     </item>
+        /// </list>
+        /// </exception>
+        /// <exception cref="RedditClientApiException">
+        /// Thrown when the reddit API returns a response with the <see cref="HttpStatusCode.BadRequest" /> HTTP status code and the response
+        /// body contains an error object with details of the issue.
+        /// </exception>
+        /// <exception cref="RedditClientResponseException">
+        /// Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.
+        /// </exception>
         public static async Task<TResponse> ExecuteCommandAsync<TResponse>(
             this CommandExecutor executor,
             ClientCommand command,
