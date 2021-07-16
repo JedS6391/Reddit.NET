@@ -4,7 +4,6 @@
 [![status][status-image]][status-url]
 [![coverage][coverage-image]][coverage-url]
 
-
 ## About
 
 Provides a .NET client for interacting with [reddit](https://www.reddit.com).
@@ -59,7 +58,7 @@ Following the instructions below to get started with the project in a local deve
 
 After cloning the source code to a destination of your choice, run the following command to build the solution:
 
-```
+```console
 dotnet build
 ```
 
@@ -67,7 +66,7 @@ dotnet build
 
 The test suite can be run using the following command:
 
-```
+```console
 dotnet test
 ```
 

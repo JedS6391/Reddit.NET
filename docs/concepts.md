@@ -12,7 +12,7 @@ The `RedditClient` class is the main entry-point for accessing reddit's API.
 
 ## Interactions
 
-The client exposes its functionality through *interactors*, which are responsible for specific high-level concepts e.g. subreddits, users, etc. 
+The client exposes its functionality through *interactors*, which are responsible for specific high-level concepts e.g. subreddits, users, etc.
 
 For example, to interact with a specific subreddit, a `SubredditInteractor` can be used:
 
@@ -122,7 +122,7 @@ await foreach (var submission in newSubmissions.WithCancellation(cts.Token))
 
 ## Comment threads
 
-Navigating the comments of a submission is managed by the `CommentThreadNavigator` class. 
+Navigating the comments of a submission is managed by the `CommentThreadNavigator` class.
 
 Comment threads are highly-nested structures which the navigator abstraction aims to simplify by exposing access to a single level of comments. In practice this means that a `CommentThreadNavigator` instance will either represent:
 
