@@ -7,6 +7,7 @@ using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Read;
+using Reddit.NET.Client.Models.Public.Streams;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -25,6 +26,11 @@ namespace Reddit.NET.Client.Interactions
         {
             _client = client;
         }
+
+        /// <summary>
+        /// Gets a <see cref="InboxStreamProvider" /> that can be used to access streams of inbox messages.
+        /// </summary>
+        public InboxStreamProvider Stream => new InboxStreamProvider(_client);
 
         /// <summary>
         /// Gets the messages in the authenticated user's inbox.

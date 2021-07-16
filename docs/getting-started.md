@@ -16,7 +16,7 @@ The `Reddit.NET.Client` assembly is available as a [Nuget package](https://www.n
 
 You can use the Nuget package manager to install the package as follows:
 
-```
+```console
 PM> Install-Package Reddit.NET.Client -Version {Version}
 ```
 
@@ -56,7 +56,7 @@ RedditClient client = await builder.BuildAsync();
 
 An extension method is provided to configure a named `HttpClient` that the client will use for HTTP communication. This ensures that a unique and descriptive User-Agent is configured, as per the [reddit API rules](https://github.com/reddit-archive/reddit/wiki/API#rules).
 
-```cs 
+```cs
 IServiceCollection services = ...;
 
 services.AddRedditHttpClient(userAgent: "<platform>:<app ID>:<version string> (by /u/<reddit username>)");

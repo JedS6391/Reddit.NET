@@ -8,6 +8,7 @@ using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
 using System.Linq;
 using Reddit.NET.Client.Models.Public.Write;
+using Reddit.NET.Client.Models.Public.Streams;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -32,6 +33,11 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <returns>A <see cref="InboxInteractor" /> instance that provides mechanisms for interacting with the authenticated user's inbox.</returns>
         public InboxInteractor Inbox() => new InboxInteractor(_client);
+
+        /// <summary>
+        /// Gets a <see cref="UserStreamProvider" /> that can be used to access streams of submissions or comments.
+        /// </summary>
+        public UserStreamProvider Stream => new UserStreamProvider(_client);
 
         /// <summary>
         /// Gets the details of the authenticated user.

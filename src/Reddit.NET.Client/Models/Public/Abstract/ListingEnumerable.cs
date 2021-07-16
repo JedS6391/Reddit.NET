@@ -16,11 +16,11 @@ namespace Reddit.NET.Client.Models.Public.Abstract
     /// </para>
     /// <para>
     /// A listing enumerable wraps a reddit API call that returns a listing and provides the ability to
-    /// move through the data in each listing as well as moving to the next listing.
+    /// move through the data in each listing.
     /// </para>
     /// <para>
     /// A listing enumerable instance operate in a lazy manner, meaning no API calls will be made until enumeration begins.
-    /// The enumerator will request a page of data at a time and return each child in that page before fetching the next page.
+    /// The enumerator will request a page of data at a time and returned each child in that page before fetching the next page.
     /// </para>
     /// </remarks>
     /// <typeparam name="TListing">The type of listing the enumerable manages.</typeparam>
@@ -69,7 +69,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// Maps a <see cref="Thing{TData}" /> entity to an instance of type <typeparamref name="TMapped" />.
         /// </summary>
         /// <param name="thing">The thing to map.</param>
-        /// <returns></returns>
+        /// <returns>The mapped thing.</returns>
         internal abstract TMapped MapThing(IThing<TData> thing);
 
         /// <inheritdoc />

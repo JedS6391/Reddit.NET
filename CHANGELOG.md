@@ -6,7 +6,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ## [1.1.1] - 2021-07-11
 
-### Fixed 
+### Fixed
 
 - `AuthenticateWithUsernamePasswordCommand` will no longer send a `duration` parameter, as it not supported for the `password` grant type
 
@@ -36,12 +36,12 @@ This release also includes a number of new tests, both for new and existing func
 
 - Support for multiple authentication modes (read-only, script, web-app + more)
 - Interactions for primary reddit objects:
-    - Authenticated user account
-    - Other user accounts
-    - Front page
-    - Subreddits
-    - Submissions
-    - Comments
+  - Authenticated user account
+  - Other user accounts
+  - Front page
+  - Subreddits
+  - Submissions
+  - Comments
 
 [1.1.1]: https://github.com/JedS6391/Reddit.NET/compare/1.1.0...1.1.1
 [1.1.0]: https://github.com/JedS6391/Reddit.NET/compare/1.0.0...1.1.0
