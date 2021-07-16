@@ -1,4 +1,5 @@
 using System.Linq;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Streams
 {
@@ -8,9 +9,10 @@ namespace Reddit.NET.Client.Models.Public.Streams
     /// <typeparam name="TData">The type of the buffered data.</typeparam>
     internal class CircularBuffer<TData>
     {
-        private int _position;
         private readonly int _capacity;
         private readonly TData[] _buffer;
+
+        private int _position;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CircularBuffer{TData}" /> class.
@@ -18,8 +20,10 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <param name="capacity">The maximum number of items to buffer before older items will be replaced.</param>
         public CircularBuffer(int capacity)
         {
-            _position = 0;
+            Requires.Argument(capacity > 0, nameof(capacity), "Must be greater than zero");
+
             _capacity = capacity;
+            _position = 0;
             _buffer = new TData[capacity];
         }
 

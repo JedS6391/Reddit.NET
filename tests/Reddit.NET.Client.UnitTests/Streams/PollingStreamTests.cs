@@ -1,13 +1,12 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.Models.Public.Streams;
 
-namespace Reddit.NET.Client.UnitTests
+namespace Reddit.NET.Client.UnitTests.Streams
 {
     public class PollingStreamTests
     {
