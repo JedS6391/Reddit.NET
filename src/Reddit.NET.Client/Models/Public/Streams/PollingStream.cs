@@ -22,8 +22,8 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// The enumerator will keep track of a set of *seen* identifiers to determine when new data is available.
         /// </para>
         /// <para>
-        /// To avoid polling the data provider too frequently, the enumerator will pause using an exponential back-off
-        /// strategy based on the number of polls made without new data.
+        /// To avoid querying the data provider too frequently, the enumerator will pause using an exponential back-off
+        /// strategy based on the number of queries made without new data.
         /// </para>
         /// </remarks>
         /// <typeparam name="TData">The type of the data source.</typeparam>
