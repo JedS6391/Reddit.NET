@@ -1,8 +1,8 @@
 {
-	"recommendations": [
-        "ms-dotnettools.csharp",
-        "editorconfig.editorconfig",
-        "streetsidesoftware.code-spell-checker",
-        "davidanson.vscode-markdownlint"
+        "recommendations": [
+                "ms-dotnettools.csharp",
+                "editorconfig.editorconfig",
+                "streetsidesoftware.code-spell-checker",
+                "davidanson.vscode-markdownlint"
 	]
 }
