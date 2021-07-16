@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,26 +14,26 @@ namespace Reddit.NET.Client.UnitTests
         [Test]
         public async Task PollingStream_PeriodicDataSource_ReturnsDataAsItBecomesAvailable()
         {
-            var dataSource = new UpdateableDataSource();
+            var dataSource = new PeriodicDataSource();
 
             var stream = PollingStream.Create(new PollingStreamOptions<string, string, string>(
                 () => dataSource.GetData(),
                 mapper: v => v,
                 idSelector: v => v));
 
-            var data = await stream.Take(50).ToListAsync();
+            var data = await stream.Take(30).ToListAsync();
 
             Assert.IsNotNull(data);
             Assert.IsNotEmpty(data);
         }
 
-        private class UpdateableDataSource
+        private class PeriodicDataSource
         {
             private readonly Random _random;
             private readonly Timer _timer;
             private IEnumerable<string> _data;
 
-            public UpdateableDataSource()
+            public PeriodicDataSource()
             {
                 _random = new Random();
                 _timer = new Timer(
@@ -47,8 +48,9 @@ namespace Reddit.NET.Client.UnitTests
             private void GenerateData()
             {
                 _data = Enumerable
-                    .Range(0, _random.Next(1, 5))
-                    .Select(v => Guid.NewGuid().ToString());
+                    .Range(0, _random.Next(1, 10))
+                    .Select(v => Guid.NewGuid().ToString())
+                    .ToList();
             }
         }
     }
