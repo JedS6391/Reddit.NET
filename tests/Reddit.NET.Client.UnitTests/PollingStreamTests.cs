@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.UnitTests
                     (_) => GenerateData(),
                     this,
                     TimeSpan.FromSeconds(0),
-                    TimeSpan.FromSeconds(3));
+                    TimeSpan.FromSeconds(5));
             }
 
             public Task<IEnumerable<string>> GetData() => Task.FromResult(_data);
