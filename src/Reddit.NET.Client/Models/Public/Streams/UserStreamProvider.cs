@@ -20,6 +20,22 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <summary>
         /// Initializes a new instance of the <see cref="SubredditStreamProvider" /> class.
         /// </summary>
+        /// <remarks>
+        /// This constructor is intended to be used in a context when the streams provided should be for the current user.
+        /// </remarks>
+        /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
+        public UserStreamProvider(RedditClient client)
+        {
+            _client = client;
+            _username = null;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="SubredditStreamProvider" /> class.
+        /// </summary>
+        /// <remarks>
+        /// This constructor is intended to be used in a context when the streams provided should be for a specific user.
+        /// </remarks>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="username">The name of the user to provide streams for.</param>
         public UserStreamProvider(RedditClient client, string username)
@@ -58,11 +74,26 @@ namespace Reddit.NET.Client.Models.Public.Streams
         {
             var commandParameters = new GetUserHistoryCommand.Parameters()
             {
-                Username = _username,
                 HistoryType = historyType.Name,
                 Sort = UserHistorySort.New.Name,
                 Limit = 100
             };
+
+            if (string.IsNullOrEmpty(_username))
+            {
+                // Resolve the username for the currently authenticated user.
+                var getMyDetailsCommand = new GetMyDetailsCommand();
+
+                var user = await _client
+                    .ExecuteCommandAsync<User.Details>(getMyDetailsCommand)
+                    .ConfigureAwait(false);
+
+                commandParameters.Username = user.Name;
+            }
+            else
+            {
+                commandParameters.Username = _username;
+            }
 
             var getUserHistoryCommand = new GetUserHistoryCommand(commandParameters);
 
