@@ -58,16 +58,12 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(stream);
 
-            // 102 may seem like a random number, but the initial query will retrieve
-            // 100 historical submissions and then we will poll until 2 more submissions
-            // become available.
-            // We don't want this number to be too high, otherwise the test will take a really
-            // long time to complete (i.e. if it's a slow time of day for submissions)
-            var submissions = await stream.Take(102).ToListAsync();
+            // We only take the first 100 as we don't want to actually wait polling in the test.
+            var submissions = await stream.Take(100).ToListAsync();
 
             Assert.IsNotNull(submissions);
             Assert.IsNotEmpty(submissions);
-            Assert.AreEqual(102, submissions.Count);
+            Assert.AreEqual(100, submissions.Count);
         }
 
         [Test]
@@ -79,12 +75,12 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(stream);
 
-            // See the comment above for the submissions stream regarding why the number 102.
-            var comments = await stream.Take(102).ToListAsync();
+            // See the comment above for the submissions stream regarding why the number 100.
+            var comments = await stream.Take(100).ToListAsync();
 
             Assert.IsNotNull(comments);
             Assert.IsNotEmpty(comments);
-            Assert.AreEqual(102, comments.Count);
+            Assert.AreEqual(100, comments.Count);
         }
 
         [Test]

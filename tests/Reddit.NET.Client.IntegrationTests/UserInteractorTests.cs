@@ -2,7 +2,6 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
-using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Write;
@@ -47,6 +46,40 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(details);
             Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"), details.Name);
             Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }
+
+        [Test]
+        public async Task StreamSubmissionsAsync_ValidUser_ShouldStreamSubmissions()
+        {
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
+
+            var stream = user.Stream.SubmissionsAsync();
+
+            Assert.IsNotNull(stream);
+
+            // We only take the first 100 as we don't want to actually wait polling in the test.
+            var submissions = await stream.Take(100).ToListAsync();
+
+            Assert.IsNotNull(submissions);
+            Assert.IsNotEmpty(submissions);
+            Assert.AreEqual(100, submissions.Count);
+        }
+
+        [Test]
+        public async Task StreamCommentsAsync_ValidSubreddit_ShouldStreamComments()
+        {
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_USERNAME"));
+
+            var stream = user.Stream.CommentsAsync();
+
+            Assert.IsNotNull(stream);
+
+            // See the comment above for the submissions stream regarding why the number 100.
+            var comments = await stream.Take(100).ToListAsync();
+
+            Assert.IsNotNull(comments);
+            Assert.IsNotEmpty(comments);
+            Assert.AreEqual(100, comments.Count);
         }
 
         [Test]
