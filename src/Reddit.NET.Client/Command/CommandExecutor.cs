@@ -7,6 +7,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Reddit.NET.Client.Authentication.Abstract;
@@ -75,9 +76,9 @@ namespace Reddit.NET.Client.Command
             IHttpClientFactory httpClientFactory,
             IRateLimiter rateLimiter)
         {
-            _logger = logger;
-            _httpClientFactory = httpClientFactory;
-            _rateLimiter = rateLimiter;
+            _logger = Requires.NotNull(logger, nameof(logger));
+            _httpClientFactory = Requires.NotNull(httpClientFactory, nameof(httpClientFactory));
+            _rateLimiter = Requires.NotNull(rateLimiter, nameof(rateLimiter));
         }
 
         /// <summary>
@@ -106,6 +107,8 @@ namespace Reddit.NET.Client.Command
         /// </exception>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(command, nameof(command));
+
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
 
             return await ExecuteRequestAsync(() => command.BuildRequest(), cancellationToken).ConfigureAwait(false);
@@ -145,6 +148,9 @@ namespace Reddit.NET.Client.Command
         /// </exception>
         public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, IAuthenticator authenticator, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(command, nameof(command));
+            Requires.NotNull(authenticator, nameof(authenticator));
+
             var authenticationContext = await authenticator.GetAuthenticationContextAsync(cancellationToken).ConfigureAwait(false);
 
             if (!authenticationContext.CanExecute(command))

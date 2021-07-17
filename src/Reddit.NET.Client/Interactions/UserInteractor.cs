@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -36,8 +37,8 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="username">The name of the user to interact with.</param>
         internal UserInteractor(RedditClient client, string username)
         {
-            _client = client;
-            _username = username;
+            _client = Requires.NotNull(client, nameof(client));
+            _username = Requires.NotNull(username, nameof(username));
         }
 
         /// <summary>
@@ -121,6 +122,8 @@ namespace Reddit.NET.Client.Interactions
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task SendMessageAsync(PrivateMessageCreationDetails details, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(details, nameof(details));
+
             var sendMessageCommand = new SendMessageCommand(new SendMessageCommand.Parameters()
             {
                 Username = _username,

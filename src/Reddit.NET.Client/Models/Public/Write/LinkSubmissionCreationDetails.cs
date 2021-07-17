@@ -1,11 +1,12 @@
 using System;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Write
 {
     /// <summary>
     /// Represents the details to create a link submission.
     /// </summary>
-    public class LinkSubmissionCreationDetails
+    public sealed class LinkSubmissionCreationDetails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LinkSubmissionCreationDetails" /> class.
@@ -15,6 +16,9 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <param name="resubmit">Whether the submission should be resubmitted if it already exists..</param>
         public LinkSubmissionCreationDetails(string title, Uri uri, bool resubmit = false)
         {
+            Requires.NotNullOrWhiteSpace(title, nameof(title));
+            Requires.NotNull(uri, nameof(uri));
+
             Title = title;
             Uri = uri;
             Resubmit = resubmit;

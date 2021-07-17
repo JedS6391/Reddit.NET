@@ -5,6 +5,7 @@ using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -20,6 +21,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         internal SubmissionDetails(IThing<Submission.Details> thing)
             : base(thing.Kind, thing.Data.Id)
         {
+            Requires.NotNull(thing, nameof(thing));
+
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
@@ -91,6 +94,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <inheritdoc />
         public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(client, nameof(client));
+
             var details = await client.Submission(Id).GetDetailsAsync(cancellationToken);
 
             Title = details.Title;

@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -12,7 +13,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
     /// <summary>
     /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the messages in the authenticated user's inbox.
     /// </summary>
-    public class InboxMessagesListingEnumerable
+    public sealed class InboxMessagesListingEnumerable
         : ListingEnumerable<Message.Listing, Message.Details, MessageDetails, InboxMessagesListingEnumerable.Options>
     {
         private readonly RedditClient _client;
@@ -25,7 +26,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         public InboxMessagesListingEnumerable(RedditClient client, Options options)
             : base(options)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <inheritdoc />
@@ -88,6 +89,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithMessageType(InboxMessageType type)
                 {
+                    Requires.NotNull(type, nameof(type));
+
                     Options.MessageType = type;
 
                     return this;

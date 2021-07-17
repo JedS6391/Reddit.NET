@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Models.Public.Abstract
@@ -38,7 +39,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// <param name="options">The options available to the listing.</param>
         protected ListingEnumerable(TOptions options)
         {
-            ListingOptions = options;
+            ListingOptions = Requires.NotNull(options, nameof(options));
         }
 
         /// <summary>
@@ -109,6 +110,11 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                 Func<IThing<TData>, TMapped> mapper,
                 CancellationToken cancellationToken = default)
             {
+                Requires.NotNull(options, nameof(options));
+                Requires.NotNull(initialListingProvider, nameof(initialListingProvider));
+                Requires.NotNull(nextListingProvider, nameof(nextListingProvider));
+                Requires.NotNull(mapper, nameof(mapper));
+
                 _context = new ListingEnumeratorContext(
                     options,
                     initialListingProvider,
@@ -154,10 +160,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             }
 
             /// <inheritdoc />
-            public void Reset()
-            {
-                throw new NotSupportedException();
-            }
+            public void Reset() => throw new NotSupportedException();
 
             /// <inheritdoc />
             public ValueTask DisposeAsync() => ValueTask.CompletedTask;
@@ -216,6 +219,11 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                     Func<IThing<TData>, TMapped> mapper,
                     CancellationToken cancellationToken)
                 {
+                    Requires.NotNull(options, nameof(options));
+                    Requires.NotNull(initialListingProvider, nameof(initialListingProvider));
+                    Requires.NotNull(nextListingProvider, nameof(nextListingProvider));
+                    Requires.NotNull(mapper, nameof(mapper));
+
                     Options = options;
                     InitialListingProvider = initialListingProvider;
                     NextListingProvider = nextListingProvider;
@@ -243,6 +251,8 @@ namespace Reddit.NET.Client.Models.Public.Abstract
 
                 public void UpdateListing(TListing listing)
                 {
+                    Requires.NotNull(listing, nameof(listing));
+
                     Exhausted = listing.Data.After == CurrentListing?.Data.After ||
                         string.IsNullOrEmpty(listing.Data.After);
 

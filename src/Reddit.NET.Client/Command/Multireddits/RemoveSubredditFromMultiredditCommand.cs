@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Multireddits
@@ -19,7 +20,7 @@ namespace Reddit.NET.Client.Command.Multireddits
         public RemoveSubredditFromMultiredditCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

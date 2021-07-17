@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.UserContent;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -25,7 +26,7 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         internal InboxInteractor(RedditClient client)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <summary>
@@ -61,6 +62,9 @@ namespace Reddit.NET.Client.Interactions
         /// </returns>
         public async Task<MessageDetails> ReplyAsync(MessageDetails message, string text, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(message, nameof(message));
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
             var createCommentCommand = new ReplyToMessageCommand(new ReplyToMessageCommand.Parameters()
             {
                 MessageFullName = message.FullName,

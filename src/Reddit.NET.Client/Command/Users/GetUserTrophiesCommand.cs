@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
@@ -20,7 +21,7 @@ namespace Reddit.NET.Client.Command.Users
         public GetUserTrophiesCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

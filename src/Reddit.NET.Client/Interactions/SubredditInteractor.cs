@@ -14,6 +14,7 @@ using System.Linq;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Models.Public.Streams;
 using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -32,8 +33,8 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="subredditName">The name of the subreddit to interact with.</param>
         internal SubredditInteractor(RedditClient client, string subredditName)
         {
-            _client = client;
-            _subredditName = subredditName;
+            _client = Requires.NotNull(client, nameof(client));
+            _subredditName = Requires.NotNull(subredditName, nameof(subredditName));
         }
 
         /// <summary>
@@ -94,6 +95,8 @@ namespace Reddit.NET.Client.Interactions
             string query,
             Action<SubredditSearchListingEnumerable.Options.Builder> configurationAction = null)
         {
+            Requires.NotNullOrWhiteSpace(query, nameof(query));
+
             var optionsBuilder = new SubredditSearchListingEnumerable.Options.Builder();
 
             configurationAction?.Invoke(optionsBuilder);

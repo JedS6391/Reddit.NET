@@ -10,6 +10,7 @@ using System.Linq;
 using Reddit.NET.Client.Models.Public.Write;
 using Reddit.NET.Client.Models.Public.Streams;
 using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -26,7 +27,7 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         internal MeInteractor(RedditClient client)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <summary>
@@ -159,6 +160,8 @@ namespace Reddit.NET.Client.Interactions
         /// </returns>
         public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(details, nameof(details));
+
             var commandParameters = new CreateMultiredditCommand.Parameters()
             {
                 Name = details.Name,

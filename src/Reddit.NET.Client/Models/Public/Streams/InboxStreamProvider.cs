@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -22,7 +23,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         public InboxStreamProvider(RedditClient client)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <summary>

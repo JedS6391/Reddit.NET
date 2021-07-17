@@ -7,6 +7,7 @@ using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Subreddits;
 using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -32,7 +33,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         public FrontPageSubmissionsListingEnumerable(RedditClient client, Options options)
             : base(options)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <inheritdoc />
@@ -108,6 +109,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithSort(SubredditSubmissionSort sort)
                 {
+                    Requires.NotNull(sort, nameof(sort));
+
                     Options.Sort = sort;
 
                     return this;
@@ -120,6 +123,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithTimeRange(TimeRangeSort timeRange)
                 {
+                    Requires.NotNull(timeRange, nameof(timeRange));
+
                     Options.TimeRange = timeRange;
 
                     return this;

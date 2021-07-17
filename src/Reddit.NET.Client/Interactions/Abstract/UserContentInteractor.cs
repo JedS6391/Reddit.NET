@@ -1,5 +1,6 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.UserContent;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -20,9 +21,9 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// <param name="id">The base-36 ID of the user content to interact with.</param>
         protected UserContentInteractor(RedditClient client, string kind, string id)
         {
-            Client = client;
-            Kind = kind;
-            Id = id;
+            Client = Requires.NotNull(client, nameof(client));
+            Kind = Requires.NotNull(kind, nameof(kind));
+            Id = Requires.NotNull(id, nameof(id));
         }
 
         /// <summary>
@@ -108,6 +109,8 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// </returns>
         public async Task<CommentDetails> ReplyAsync(string text, CancellationToken cancellationToken = default)
         {
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
             var createCommentCommand = new CreateCommentCommand(new CreateCommentCommand.Parameters()
             {
                 ParentFullName = FullName,

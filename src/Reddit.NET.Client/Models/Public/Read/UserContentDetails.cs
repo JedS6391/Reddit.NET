@@ -1,4 +1,5 @@
 using System;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -14,6 +15,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="id">The identifier of the thing.</param>
         protected UserContentDetails(string kind, string id)
         {
+            Requires.NotNullOrWhiteSpace(kind, nameof(kind));
+            Requires.NotNullOrWhiteSpace(id, nameof(id));
+
             Kind = kind;
             Id = id;
             FullName = $"{kind}_{id}";

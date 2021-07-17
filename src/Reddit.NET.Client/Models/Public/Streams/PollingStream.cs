@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Streams
 {
@@ -36,6 +37,8 @@ namespace Reddit.NET.Client.Models.Public.Streams
             PollingStreamOptions<TData, TOut, TId> options,
             [EnumeratorCancellation] CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(options, nameof(options));
+
             var queriesWithoutNewData = 0;
             var seenIds = new CircularBuffer<TId>(capacity: 500);
 

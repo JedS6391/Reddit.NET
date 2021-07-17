@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Microsoft.Extensions.Logging;
 
 namespace Reddit.NET.Client.Command.RateLimiting
@@ -37,8 +38,8 @@ namespace Reddit.NET.Client.Command.RateLimiting
         /// <param name="options">The options for the limiter to use.</param>
         public TokenBucketRateLimiter(ILogger logger, TokenBucketRateLimiterOptions options)
         {
-            _logger = logger;
-            _options = options;
+            _logger = Requires.NotNull(logger, nameof(logger));
+            _options = Requires.NotNull(options, nameof(options));
             _renewTimer = new Timer(
                 Replenish,
                 this,
