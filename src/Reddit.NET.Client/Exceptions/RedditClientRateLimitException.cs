@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Exceptions
     /// This exception occurs when too many requests have been made,
     /// resulting in a response with a <see cref="HttpStatusCode.BadRequest" /> status code.
     /// </remarks>
-    public class RedditClientRateLimitException : RedditClientException
+    public sealed class RedditClientRateLimitException : RedditClientException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientRateLimitException" /> class.

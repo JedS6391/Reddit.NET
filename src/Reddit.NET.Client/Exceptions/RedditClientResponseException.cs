@@ -9,7 +9,7 @@ namespace Reddit.NET.Client.Exceptions
     /// This exception occurs when the response has a status code that the client does not have
     /// a specific exception type for.
     /// </remarks>
-    public class RedditClientResponseException : RedditClientException
+    public sealed class RedditClientResponseException : RedditClientException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientResponseException" /> class.

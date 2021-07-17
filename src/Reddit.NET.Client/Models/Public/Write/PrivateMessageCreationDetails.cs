@@ -5,7 +5,7 @@ namespace Reddit.NET.Client.Models.Public.Write
     /// <summary>
     /// Represents the details to create a private message to another user.
     /// </summary>
-    public class PrivateMessageCreationDetails
+    public sealed class PrivateMessageCreationDetails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PrivateMessageCreationDetails" /> class.

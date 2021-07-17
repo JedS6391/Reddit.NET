@@ -6,7 +6,7 @@ namespace Reddit.NET.Client.Models.Public.Write
     /// <summary>
     /// Represents the details to create a link submission.
     /// </summary>
-    public class LinkSubmissionCreationDetails
+    public sealed class LinkSubmissionCreationDetails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="LinkSubmissionCreationDetails" /> class.

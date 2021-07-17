@@ -6,7 +6,7 @@ namespace Reddit.NET.Client.Models.Public.Write
     /// <summary>
     /// Represents the details to create a multireddit.
     /// </summary>
-    public class MultiredditCreationDetails
+    public sealed class MultiredditCreationDetails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="MultiredditCreationDetails" /> class.

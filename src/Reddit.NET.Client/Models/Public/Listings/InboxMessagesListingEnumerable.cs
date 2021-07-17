@@ -13,7 +13,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
     /// <summary>
     /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the messages in the authenticated user's inbox.
     /// </summary>
-    public class InboxMessagesListingEnumerable
+    public sealed class InboxMessagesListingEnumerable
         : ListingEnumerable<Message.Listing, Message.Details, MessageDetails, InboxMessagesListingEnumerable.Options>
     {
         private readonly RedditClient _client;

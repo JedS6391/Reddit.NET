@@ -5,7 +5,7 @@ namespace Reddit.NET.Client.Models.Public.Write
     /// <summary>
     /// Represents the details to create a text submission.
     /// </summary>
-    public class TextSubmissionCreationDetails
+    public sealed class TextSubmissionCreationDetails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="TextSubmissionCreationDetails" /> class.
