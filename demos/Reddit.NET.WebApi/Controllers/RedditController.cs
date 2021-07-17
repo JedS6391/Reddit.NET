@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 using Reddit.NET.WebApi.Services.Interfaces;
 
 namespace Reddit.NET.WebApi.Controllers
