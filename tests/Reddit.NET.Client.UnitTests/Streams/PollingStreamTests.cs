@@ -16,7 +16,7 @@ namespace Reddit.NET.Client.UnitTests.Streams
             var dataSource = new PeriodicDataSource();
 
             var stream = PollingStream.Create(new PollingStreamOptions<string, string, string>(
-                () => dataSource.GetData(),
+                (ct) => dataSource.GetData(),
                 mapper: v => v,
                 idSelector: v => v));
 
