@@ -52,7 +52,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
                 cancellationToken.ThrowIfCancellationRequested();
 
                 var hasNewData = false;
-                var data = await options.GetDataAsync().ConfigureAwait(false);
+                var data = await options.GetDataAsync(cancellationToken).ConfigureAwait(false);
 
                 foreach (var record in data)
                 {

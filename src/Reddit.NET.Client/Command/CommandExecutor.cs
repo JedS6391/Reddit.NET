@@ -5,6 +5,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Polly;
@@ -83,6 +84,7 @@ namespace Reddit.NET.Client.Command
         /// Executes the provided <see cref="ClientCommand" /> instance.
         /// </summary>
         /// <param name="command">The command to execute.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
         /// <exception cref="RedditClientRateLimitException">
         /// Thrown when:
@@ -102,11 +104,11 @@ namespace Reddit.NET.Client.Command
         /// <exception cref="RedditClientResponseException">
         /// Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.
         /// </exception>
-        public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command)
+        public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, CancellationToken cancellationToken = default)
         {
             _logger.LogDebug("Executing '{CommandId}' command", command.Id);
 
-            return await ExecuteRequestAsync(() => command.BuildRequest()).ConfigureAwait(false);
+            return await ExecuteRequestAsync(() => command.BuildRequest(), cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -120,6 +122,7 @@ namespace Reddit.NET.Client.Command
         /// </remarks>
         /// <param name="command">The command to execute.</param>
         /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to handle authentication for the command.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
         /// <exception cref="CommandNotSupportedException">Thrown when the command cannot be executed in the available <see cref="AuthenticationContext" />.</exception>
         /// <exception cref="RedditClientRateLimitException">
@@ -140,9 +143,9 @@ namespace Reddit.NET.Client.Command
         /// <exception cref="RedditClientResponseException">
         /// Thrown when the reddit API returns a non-successful status code that the client does not have any specific exception for.
         /// </exception>
-        public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, IAuthenticator authenticator)
+        public async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, IAuthenticator authenticator, CancellationToken cancellationToken = default)
         {
-            var authenticationContext = await authenticator.GetAuthenticationContextAsync().ConfigureAwait(false);
+            var authenticationContext = await authenticator.GetAuthenticationContextAsync(cancellationToken).ConfigureAwait(false);
 
             if (!authenticationContext.CanExecute(command))
             {
@@ -162,11 +165,11 @@ namespace Reddit.NET.Client.Command
                 AddAuthorizationHeader(request, authenticationContext);
 
                 return request;
-            })
+            }, cancellationToken)
             .ConfigureAwait(false);
         }
 
-        private async Task<HttpResponseMessage> ExecuteRequestAsync(Func<HttpRequestMessage> requestFunc)
+        private async Task<HttpResponseMessage> ExecuteRequestAsync(Func<HttpRequestMessage> requestFunc, CancellationToken cancellationToken)
         {
             using var lease = await _rateLimiter.AcquireAsync();
 
@@ -181,16 +184,18 @@ namespace Reddit.NET.Client.Command
                 .HandleResult<HttpResponseMessage>(r => s_httpStatusCodesToRetry.Contains(r.StatusCode))
                 .WaitAndRetryAsync(RetryCount, s_retrySleepDurationStrategy);
 
-            var response = await retryPolicy.ExecuteAsync(async () =>
+            var response = await retryPolicy.ExecuteAsync(async (ct) =>
             {
+                ct.ThrowIfCancellationRequested();
+
                 var request = requestFunc.Invoke();
 
                 _logger.LogDebug("Executing {Method} request to '{Uri}'", request.Method, request.RequestUri);
 
                 return await client
-                    .SendAsync(request)
+                    .SendAsync(request, ct)
                     .ConfigureAwait(false);
-            });
+            }, cancellationToken);
 
             if (response.IsSuccessStatusCode)
             {

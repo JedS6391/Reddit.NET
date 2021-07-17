@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Models.Internal;
@@ -36,7 +37,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <returns>An asynchronous enumerator over new submissions in the subreddit.</returns>
         public IAsyncEnumerable<SubmissionDetails> SubmissionsAsync() =>
             PollingStream.Create(new PollingStreamOptions<IThing<Submission.Details>, SubmissionDetails, string>(
-                GetNewSubmissionsAsync,
+                ct => GetNewSubmissionsAsync(ct),
                 mapper: s => new SubmissionDetails(s),
                 idSelector: s => s.Data.Id));
 
@@ -49,11 +50,11 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <returns>An asynchronous enumerator over new comments in the subreddit.</returns>
         public IAsyncEnumerable<CommentDetails> CommentsAsync() =>
             PollingStream.Create(new PollingStreamOptions<IThing<Comment.Details>, CommentDetails, string>(
-                GetNewCommentsAsync,
+                ct => GetNewCommentsAsync(ct),
                 mapper: c => new CommentDetails(c),
                 idSelector: c => c.Data.Id));
 
-        private async Task<IEnumerable<IThing<Submission.Details>>> GetNewSubmissionsAsync()
+        private async Task<IEnumerable<IThing<Submission.Details>>> GetNewSubmissionsAsync(CancellationToken cancellationToken)
         {
             var commandParameters = new GetSubredditSubmissionsCommand.Parameters()
             {
@@ -65,13 +66,13 @@ namespace Reddit.NET.Client.Models.Public.Streams
             var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(commandParameters);
 
             var submissions = await _client
-                .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand)
+                .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return submissions.Children;
         }
 
-        private async Task<IEnumerable<IThing<Comment.Details>>> GetNewCommentsAsync()
+        private async Task<IEnumerable<IThing<Comment.Details>>> GetNewCommentsAsync(CancellationToken cancellationToken)
         {
             var commandParameters = new GetSubredditCommentsCommand.Parameters()
             {
@@ -82,7 +83,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
             var getSubredditCommentsCommand = new GetSubredditCommentsCommand(commandParameters);
 
             var comments = await _client
-                .ExecuteCommandAsync<Comment.Listing>(getSubredditCommentsCommand)
+                .ExecuteCommandAsync<Comment.Listing>(getSubredditCommentsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return comments.Children;

@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft;
 using Reddit.NET.Client.Authentication.Abstract;
@@ -128,18 +129,20 @@ namespace Reddit.NET.Client
         /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />.
         /// </summary>
         /// <param name="command">The command to execute.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the response of the command execution.</returns>
-        internal async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command) =>
-            await _commandExecutor.ExecuteCommandAsync(command, _authenticator).ConfigureAwait(false);
+        internal async Task<HttpResponseMessage> ExecuteCommandAsync(ClientCommand command, CancellationToken cancellationToken) =>
+            await _commandExecutor.ExecuteCommandAsync(command, _authenticator, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Executes the provided <see cref="ClientCommand" /> via the clients <see cref="CommandExecutor" />, parsing the response to an instance of type <typeparamref name="TResponse" />.
         /// </summary>
         /// <param name="command">The command to execute.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
-        internal async Task<TResponse> ExecuteCommandAsync<TResponse>(ClientCommand command) =>
-            await _commandExecutor.ExecuteCommandAsync<TResponse>(command, _authenticator).ConfigureAwait(false);
+        internal async Task<TResponse> ExecuteCommandAsync<TResponse>(ClientCommand command, CancellationToken cancellationToken) =>
+            await _commandExecutor.ExecuteCommandAsync<TResponse>(command, _authenticator, cancellationToken).ConfigureAwait(false);
     }
 }

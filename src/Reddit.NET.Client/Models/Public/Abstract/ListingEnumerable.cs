@@ -52,8 +52,9 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// <remarks>
         /// This method won't be called until enumeration starts (i.e. the enumerator is lazy).
         /// </remarks>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the initial listing data.</returns>
-        internal abstract Task<TListing> GetInitialListingAsync();
+        internal abstract Task<TListing> GetInitialListingAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Provides the data for the next listing.
@@ -62,8 +63,10 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// This method will be called after the data in the current page has been enumerated.
         /// If the current page indicates no next page (i.e. <see cref="ListingData{TData}.After" /> is <see langword="null" />).
         /// </remarks>
+        /// <param name="currentListing">The current listing.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the next listing data.</returns>
-        internal abstract Task<TListing> GetNextListingAsync(TListing currentListing);
+        internal abstract Task<TListing> GetNextListingAsync(TListing currentListing, CancellationToken cancellationToken);
 
         /// <summary>
         /// Maps a <see cref="Thing{TData}" /> entity to an instance of type <typeparamref name="TMapped" />.
@@ -101,8 +104,8 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             /// <param name="cancellationToken">A <see cref="CancellationToken" /> that may be used to cancel the asynchronous iteration.</param>
             internal ListingEnumerator(
                 TOptions options,
-                Func<Task<TListing>> initialListingProvider,
-                Func<TListing, Task<TListing>> nextListingProvider,
+                Func<CancellationToken, Task<TListing>> initialListingProvider,
+                Func<TListing, CancellationToken, Task<TListing>> nextListingProvider,
                 Func<IThing<TData>, TMapped> mapper,
                 CancellationToken cancellationToken = default)
             {
@@ -168,7 +171,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
 
                 var initialListing = await _context
                     .InitialListingProvider
-                    .Invoke()
+                    .Invoke(_context.CancellationToken)
                     .ConfigureAwait(false);
 
                 if (initialListing == null || !initialListing.Data.Children.Any())
@@ -190,7 +193,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
 
                 var nextListing = await _context
                     .NextListingProvider
-                    .Invoke(_context.CurrentListing)
+                    .Invoke(_context.CurrentListing, _context.CancellationToken)
                     .ConfigureAwait(false);
 
                 if (nextListing == null || !nextListing.Data.Children.Any())
@@ -208,8 +211,8 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             {
                 public ListingEnumeratorContext(
                     TOptions options,
-                    Func<Task<TListing>> initialListingProvider,
-                    Func<TListing, Task<TListing>> nextListingProvider,
+                    Func<CancellationToken, Task<TListing>> initialListingProvider,
+                    Func<TListing, CancellationToken, Task<TListing>> nextListingProvider,
                     Func<IThing<TData>, TMapped> mapper,
                     CancellationToken cancellationToken)
                 {
@@ -225,8 +228,8 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                 }
 
                 public TOptions Options { get; }
-                public Func<Task<TListing>> InitialListingProvider { get; }
-                public Func<TListing, Task<TListing>> NextListingProvider { get; }
+                public Func<CancellationToken, Task<TListing>> InitialListingProvider { get; }
+                public Func<TListing, CancellationToken, Task<TListing>> NextListingProvider { get; }
                 public Func<IThing<TData>, TMapped> Mapper { get; }
                 public TListing CurrentListing { get; private set; }
                 public int Position { get; private set; }

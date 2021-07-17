@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
@@ -33,11 +34,11 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <returns>An asynchronous enumerator over unread messages in the authenticated user's inbox.</returns>
         public IAsyncEnumerable<MessageDetails> UnreadMessagesAsync() =>
             PollingStream.Create(new PollingStreamOptions<IThing<Message.Details>, MessageDetails, string>(
-                GetUnreadMessagesAsync,
+                ct => GetUnreadMessagesAsync(ct),
                 mapper: m => new MessageDetails(m),
                 idSelector: s => s.Data.Id));
 
-        private async Task<IEnumerable<IThing<Message.Details>>> GetUnreadMessagesAsync()
+        private async Task<IEnumerable<IThing<Message.Details>>> GetUnreadMessagesAsync(CancellationToken cancellationToken)
         {
             var getMyInboxMessagesCommand = new GetMyInboxMessagesCommand(new GetMyInboxMessagesCommand.Parameters()
             {
@@ -46,7 +47,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
             });
 
             var messages = await _client
-                .ExecuteCommandAsync<Message.Listing>(getMyInboxMessagesCommand)
+                .ExecuteCommandAsync<Message.Listing>(getMyInboxMessagesCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return messages.Children;

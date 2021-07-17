@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Concurrent;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -17,7 +18,7 @@ namespace Reddit.NET.Client.Authentication.Storage
         private static readonly ConcurrentDictionary<Guid, Token> s_tokens = new ConcurrentDictionary<Guid, Token>();
 
         /// <inheritdoc />
-        public Task<Token> GetTokenAsync(Guid sessionId)
+        public Task<Token> GetTokenAsync(Guid sessionId, CancellationToken cancellationToken = default)
         {
             if (s_tokens.TryGetValue(sessionId, out var token))
             {
@@ -28,7 +29,7 @@ namespace Reddit.NET.Client.Authentication.Storage
         }
 
         /// <inheritdoc />
-        public Task<Guid> StoreTokenAsync(Token token)
+        public Task<Guid> StoreTokenAsync(Token token, CancellationToken cancellationToken = default)
         {
             var sessionId = Guid.NewGuid();
 
@@ -38,7 +39,7 @@ namespace Reddit.NET.Client.Authentication.Storage
         }
 
         /// <inheritdoc />
-        public Task RemoveTokenAsync(Guid sessionId)
+        public Task RemoveTokenAsync(Guid sessionId, CancellationToken cancellationToken = default)
         {
             s_tokens.TryRemove(sessionId, out _);
 

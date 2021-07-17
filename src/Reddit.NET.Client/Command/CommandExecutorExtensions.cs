@@ -2,6 +2,7 @@ using System;
 using System.Net;
 using System.Net.Http.Json;
 using System.Text.Json;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Exceptions;
@@ -21,6 +22,7 @@ namespace Reddit.NET.Client.Command
         /// </summary>
         /// <param name="executor">A <see cref="CommandExecutor" /> instance.</param>
         /// <param name="command">The command to execute.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
@@ -44,13 +46,14 @@ namespace Reddit.NET.Client.Command
         /// </exception>
         public static async Task<TResponse> ExecuteCommandAsync<TResponse>(
             this CommandExecutor executor,
-            ClientCommand command)
+            ClientCommand command,
+            CancellationToken cancellationToken = default)
         {
-            var response = await executor.ExecuteCommandAsync(command).ConfigureAwait(false);
+            var response = await executor.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
 
             return await response
                 .Content
-                .ReadFromJsonAsync<TResponse>()
+                .ReadFromJsonAsync<TResponse>(s_jsonSerializerOptions.Value, cancellationToken)
                 .ConfigureAwait(false);
         }
 
@@ -60,6 +63,7 @@ namespace Reddit.NET.Client.Command
         /// <param name="executor">A <see cref="CommandExecutor" /> instance.</param>
         /// <param name="command">The command to execute.</param>
         /// <param name="authenticator">An <see cref="IAuthenticator" /> instance used to handle authentication for the command.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains the response of the command execution parsed as an instance of type <typeparamref name="TResponse" />.
         /// </returns>
@@ -85,13 +89,14 @@ namespace Reddit.NET.Client.Command
         public static async Task<TResponse> ExecuteCommandAsync<TResponse>(
             this CommandExecutor executor,
             ClientCommand command,
-            IAuthenticator authenticator)
+            IAuthenticator authenticator,
+            CancellationToken cancellationToken = default)
         {
-            var response = await executor.ExecuteCommandAsync(command, authenticator).ConfigureAwait(false);
+            var response = await executor.ExecuteCommandAsync(command, authenticator, cancellationToken).ConfigureAwait(false);
 
             return await response
                 .Content
-                .ReadFromJsonAsync<TResponse>(s_jsonSerializerOptions.Value)
+                .ReadFromJsonAsync<TResponse>(s_jsonSerializerOptions.Value, cancellationToken)
                 .ConfigureAwait(false);
         }
 

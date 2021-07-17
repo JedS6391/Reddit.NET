@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
@@ -53,7 +54,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <returns>An asynchronous enumerator over new submissions made by the user.</returns>
         public IAsyncEnumerable<SubmissionDetails> SubmissionsAsync() =>
             PollingStream.Create(new PollingStreamOptions<Submission, SubmissionDetails, string>(
-                () => GetNewHistoryAsync<Submission>(UserHistoryType.Submitted),
+                (ct) => GetNewHistoryAsync<Submission>(UserHistoryType.Submitted, ct),
                 mapper: s => new SubmissionDetails(s),
                 idSelector: s => s.Data.Id));
 
@@ -66,11 +67,11 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <returns>An asynchronous enumerator over new comments made by the user.</returns>
         public IAsyncEnumerable<CommentDetails> CommentsAsync() =>
             PollingStream.Create(new PollingStreamOptions<Comment, CommentDetails, string>(
-                () => GetNewHistoryAsync<Comment>(UserHistoryType.Comments),
+                (ct) => GetNewHistoryAsync<Comment>(UserHistoryType.Comments, ct),
                 mapper: c => new CommentDetails(c),
                 idSelector: c => c.Data.Id));
 
-        private async Task<IEnumerable<TThing>> GetNewHistoryAsync<TThing>(UserHistoryType historyType)
+        private async Task<IEnumerable<TThing>> GetNewHistoryAsync<TThing>(UserHistoryType historyType, CancellationToken cancellationToken)
         {
             var commandParameters = new GetUserHistoryCommand.Parameters()
             {
@@ -85,7 +86,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
                 var getMyDetailsCommand = new GetMyDetailsCommand();
 
                 var user = await _client
-                    .ExecuteCommandAsync<User.Details>(getMyDetailsCommand)
+                    .ExecuteCommandAsync<User.Details>(getMyDetailsCommand, cancellationToken)
                     .ConfigureAwait(false);
 
                 commandParameters.Username = user.Name;
@@ -98,7 +99,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
             var getUserHistoryCommand = new GetUserHistoryCommand(commandParameters);
 
             var history = await _client
-                .ExecuteCommandAsync<Listing<IUserContent>>(getUserHistoryCommand)
+                .ExecuteCommandAsync<Listing<IUserContent>>(getUserHistoryCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return history.Children.OfType<TThing>();

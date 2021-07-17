@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Reddit.NET.Client.Models.Public.Streams
@@ -12,7 +13,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
     /// <typeparam name="TId">The type of the identifier of the data source records.</typeparam>
     internal class PollingStreamOptions<TData, TMapped, TId>
     {
-        private readonly Func<Task<IEnumerable<TData>>> _dataProvider;
+        private readonly Func<CancellationToken, Task<IEnumerable<TData>>> _dataProvider;
         private readonly Func<TData, TMapped> _mapper;
         private readonly Func<TData, TId> _idSelector;
 
@@ -23,7 +24,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <param name="mapper">A function that can be used to map data source records returned by the data provider.</param>
         /// <param name="idSelector">A function that can be used to select the identifier of a data source record.</param>
         public PollingStreamOptions(
-            Func<Task<IEnumerable<TData>>> dataProvider,
+            Func<CancellationToken, Task<IEnumerable<TData>>> dataProvider,
             Func<TData, TMapped> mapper,
             Func<TData, TId> idSelector)
         {
@@ -35,8 +36,10 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <summary>
         /// Queries the underlying data source to obtain a new set of records.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the new data source records.</returns>
-        public async Task<IEnumerable<TData>> GetDataAsync() => await _dataProvider.Invoke().ConfigureAwait(false);
+        public async Task<IEnumerable<TData>> GetDataAsync(CancellationToken cancellationToken) =>
+            await _dataProvider.Invoke(cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Maps the provided data source record to an instance of type <typeparamref name="TMapped" />.

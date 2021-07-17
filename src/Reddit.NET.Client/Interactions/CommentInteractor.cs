@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Interactions.Abstract;
@@ -29,8 +30,9 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the details of the comment.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the comment.</returns>
-        public async Task<CommentDetails> GetDetailsAsync()
+        public async Task<CommentDetails> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
@@ -42,7 +44,7 @@ namespace Reddit.NET.Client.Interactions
             var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
 
             var submissionWithComments = await Client
-                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             // Find the comment in the listing returned. The listing should have only one child which is

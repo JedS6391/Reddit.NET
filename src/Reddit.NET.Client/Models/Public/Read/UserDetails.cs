@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Internal;
@@ -64,9 +65,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public UserInteractor Interact(RedditClient client) => client.User(Name);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await Interact(client).GetDetailsAsync();
+            var details = await Interact(client).GetDetailsAsync(cancellationToken);
 
             Name = details.Name;
             CommentKarma = details.CommentKarma;

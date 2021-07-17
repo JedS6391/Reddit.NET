@@ -6,6 +6,7 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Subreddits;
+using System.Threading;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -41,23 +42,24 @@ namespace Reddit.NET.Client.Models.Public.Listings
         }
 
         /// <inheritdoc />
-        internal override async Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Submission.Listing> GetInitialListingAsync(CancellationToken cancellationToken) =>
+            await GetListingAsync(cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal override async Task<Submission.Listing> GetNextListingAsync(Submission.Listing currentListing)
+        internal override async Task<Submission.Listing> GetNextListingAsync(Submission.Listing currentListing, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
                 return null;
             }
 
-            return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
+            return await GetListingAsync(cancellationToken, currentListing.Data.After).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         internal override SubmissionDetails MapThing(IThing<Submission.Details> thing) => new SubmissionDetails(thing);
 
-        private async Task<Submission.Listing> GetListingAsync(string after = null)
+        private async Task<Submission.Listing> GetListingAsync(CancellationToken cancellationToken, string after = null)
         {
             var commandParameters = new GetMultiredditSubmissionsCommand.Parameters()
             {
@@ -76,7 +78,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             var getMultiredditSubmissionsCommand = new GetMultiredditSubmissionsCommand(commandParameters);
 
             var submissions = await _client
-                .ExecuteCommandAsync<Submission.Listing>(getMultiredditSubmissionsCommand)
+                .ExecuteCommandAsync<Submission.Listing>(getMultiredditSubmissionsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return submissions;

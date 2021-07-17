@@ -7,7 +7,6 @@ using Microsoft;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Builder;
 using Reddit.NET.Client.Models.Public.Listings.Options;
-using Reddit.NET.Client.Models.Public.Listings;
 
 namespace Reddit.NET.Console.Examples
 {

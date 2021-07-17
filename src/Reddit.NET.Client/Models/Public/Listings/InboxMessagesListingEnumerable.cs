@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
@@ -28,23 +29,24 @@ namespace Reddit.NET.Client.Models.Public.Listings
         }
 
         /// <inheritdoc />
-        internal override async Task<Message.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Message.Listing> GetInitialListingAsync(CancellationToken cancellationToken) =>
+            await GetListingAsync(cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal override async Task<Message.Listing> GetNextListingAsync(Message.Listing currentListing)
+        internal override async Task<Message.Listing> GetNextListingAsync(Message.Listing currentListing, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
                 return null;
             }
 
-            return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
+            return await GetListingAsync(cancellationToken, currentListing.Data.After).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         internal override MessageDetails MapThing(IThing<Message.Details> thing) => new MessageDetails(thing);
 
-        private async Task<Message.Listing> GetListingAsync(string after = null)
+        private async Task<Message.Listing> GetListingAsync(CancellationToken cancellationToken, string after = null)
         {
             var getMyInboxMessagesCommand = new GetMyInboxMessagesCommand(new GetMyInboxMessagesCommand.Parameters()
             {
@@ -54,7 +56,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             });
 
             var messages = await _client
-                .ExecuteCommandAsync<Message.Listing>(getMyInboxMessagesCommand)
+                .ExecuteCommandAsync<Message.Listing>(getMyInboxMessagesCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return messages;

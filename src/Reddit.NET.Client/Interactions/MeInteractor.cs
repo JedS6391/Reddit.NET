@@ -9,6 +9,7 @@ using Reddit.NET.Client.Interactions.Abstract;
 using System.Linq;
 using Reddit.NET.Client.Models.Public.Write;
 using Reddit.NET.Client.Models.Public.Streams;
+using System.Threading;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -42,14 +43,17 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the details of the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the authenticated user.</returns>
-        public async Task<UserDetails> GetDetailsAsync()
+        public async Task<UserDetails> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var getMyDetailsCommand = new GetMyDetailsCommand();
 
             // We use the data model type to deserialize the response as the user details
             // API returns a plain data object, rather than wrapping the data within a thing.
-            var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand).ConfigureAwait(false);
+            var user = await _client
+                .ExecuteCommandAsync<User.Details>(getMyDetailsCommand, cancellationToken)
+                .ConfigureAwait(false);
 
             return new UserDetails(user);
         }
@@ -72,13 +76,14 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the multireddits that belong to the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the multireddits of the authenticated user.</returns>
-        public async Task<IReadOnlyList<MultiredditDetails>> GetMultiredditsAsync()
+        public async Task<IReadOnlyList<MultiredditDetails>> GetMultiredditsAsync(CancellationToken cancellationToken = default)
         {
             var getMyMultiredditsCommand = new GetMyMultiredditsCommand();
 
             var multireddits = await _client
-                .ExecuteCommandAsync<IReadOnlyList<Multireddit>>(getMyMultiredditsCommand)
+                .ExecuteCommandAsync<IReadOnlyList<Multireddit>>(getMyMultiredditsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return multireddits.Select(mr => new MultiredditDetails(mr)).ToList();
@@ -108,13 +113,14 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the karma breakdown of the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the karma breakdown of the authenticated user.</returns>
-        public async Task<IReadOnlyList<KarmaBreakdownDetails>> GetKarmaBreakdownAsync()
+        public async Task<IReadOnlyList<KarmaBreakdownDetails>> GetKarmaBreakdownAsync(CancellationToken cancellationToken = default)
         {
             var getMyKarmaBreakdownCommand = new GetMyKarmaBreakdownCommand();
 
             var karmaBreakdown = await _client
-                .ExecuteCommandAsync<KarmaList>(getMyKarmaBreakdownCommand)
+                .ExecuteCommandAsync<KarmaList>(getMyKarmaBreakdownCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return karmaBreakdown
@@ -126,13 +132,14 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the trophies of the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the trophies of the authenticated user.</returns>
-        public async Task<IReadOnlyList<TrophyDetails>> GetTrophiesAsync()
+        public async Task<IReadOnlyList<TrophyDetails>> GetTrophiesAsync(CancellationToken cancellationToken = default)
         {
             var getMyTrophiesCommand = new GetMyTrophiesCommand();
 
             var trophyList = await _client
-                .ExecuteCommandAsync<TrophyList>(getMyTrophiesCommand)
+                .ExecuteCommandAsync<TrophyList>(getMyTrophiesCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return trophyList
@@ -146,10 +153,11 @@ namespace Reddit.NET.Client.Interactions
         /// Creates a new multireddit belonging to the authenticated user.
         /// </summary>
         /// <param name="details">The details of a multireddit to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the created multireddit details.
         /// </returns>
-        public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details)
+        public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details, CancellationToken cancellationToken = default)
         {
             var commandParameters = new CreateMultiredditCommand.Parameters()
             {
@@ -159,7 +167,9 @@ namespace Reddit.NET.Client.Interactions
 
             var createMultiredditCommand = new CreateMultiredditCommand(commandParameters);
 
-            var multireddit = await _client.ExecuteCommandAsync<Multireddit>(createMultiredditCommand).ConfigureAwait(false);
+            var multireddit = await _client
+                .ExecuteCommandAsync<Multireddit>(createMultiredditCommand, cancellationToken)
+                .ConfigureAwait(false);
 
             return new MultiredditDetails(multireddit);
         }

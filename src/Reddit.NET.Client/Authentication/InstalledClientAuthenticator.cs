@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication.Abstract;
@@ -29,7 +30,7 @@ namespace Reddit.NET.Client.Authentication
         }
 
         /// <inheritdoc />
-        protected override async Task<AuthenticationContext> DoAuthenticateAsync()
+        protected override async Task<AuthenticationContext> DoAuthenticateAsync(CancellationToken cancellationToken)
         {
             var authenticateCommand = new AuthenticateWithInstalledClientCommand(new AuthenticateWithInstalledClientCommand.Parameters()
             {
@@ -38,13 +39,13 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await CommandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+            var token = await CommandExecutor.ExecuteCommandAsync<Token>(authenticateCommand, cancellationToken).ConfigureAwait(false);
 
             return new InstalledClientAuthenticationContext(token);
         }
 
         /// <inheritdoc />
-        protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)
+        protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext, CancellationToken cancellationToken)
         {
             var refreshTokenCommand = new AuthenticateWithRefreshTokenCommand(new AuthenticateWithRefreshTokenCommand.Parameters()
             {
@@ -53,7 +54,7 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await CommandExecutor.ExecuteCommandAsync<Token>(refreshTokenCommand).ConfigureAwait(false);
+            var token = await CommandExecutor.ExecuteCommandAsync<Token>(refreshTokenCommand, cancellationToken).ConfigureAwait(false);
 
             return new InstalledClientAuthenticationContext(token);
         }

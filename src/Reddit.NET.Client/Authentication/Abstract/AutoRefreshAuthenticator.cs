@@ -50,32 +50,34 @@ namespace Reddit.NET.Client.Authentication.Abstract
         /// <remarks>
         /// This method is called when authentication has not been previously performed (i.e. the initial authentication).
         /// </remarks>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the authentication context.</returns>
-        protected abstract Task<AuthenticationContext> DoAuthenticateAsync();
+        protected abstract Task<AuthenticationContext> DoAuthenticateAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Performs the refresh authentication operation.
         /// </summary>
         /// <param name="currentContext">The current <see cref="AuthenticationContext" /> instance used by the authenticator.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the new authentication context.</returns>
-        protected abstract Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext);
+        protected abstract Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext, CancellationToken cancellationToken);
 
 
         /// <inheritdoc />
-        public override async Task<AuthenticationContext> GetAuthenticationContextAsync()
+        public override async Task<AuthenticationContext> GetAuthenticationContextAsync(CancellationToken cancellationToken = default)
         {
             if (ShouldCreateContext())
             {
                 Logger.LogDebug("Creating authentication context...");
 
-                await CreateContextAsync().ConfigureAwait(false);
+                await CreateContextAsync(cancellationToken).ConfigureAwait(false);
             }
 
             if (ShouldRefreshContext())
             {
                 Logger.LogDebug("Refreshing authentication context...");
 
-                await RefreshContextAsync().ConfigureAwait(false);
+                await RefreshContextAsync(cancellationToken).ConfigureAwait(false);
             }
 
             return _authenticationContext;
@@ -87,9 +89,9 @@ namespace Reddit.NET.Client.Authentication.Abstract
             _authenticationContext != null &&
             _authenticationContextCreatedAt.Value.Add(TimeSpan.FromSeconds(_authenticationContext.Token.ExpiresIn)) < DateTimeOffset.UtcNow;
 
-        private async Task CreateContextAsync()
+        private async Task CreateContextAsync(CancellationToken cancellationToken)
         {
-            await s_authenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
+            await s_authenticationContextCreationLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
             if (!ShouldCreateContext())
             {
@@ -101,7 +103,7 @@ namespace Reddit.NET.Client.Authentication.Abstract
                 return;
             }
 
-            var context = await DoAuthenticateAsync().ConfigureAwait(false);
+            var context = await DoAuthenticateAsync(cancellationToken).ConfigureAwait(false);
 
             _authenticationContextCreatedAt = DateTimeOffset.UtcNow;
             _authenticationContext = context;
@@ -111,11 +113,11 @@ namespace Reddit.NET.Client.Authentication.Abstract
             s_authenticationContextCreationLock.Release();
         }
 
-        private async Task RefreshContextAsync()
+        private async Task RefreshContextAsync(CancellationToken cancellationToken)
         {
-            await s_authenticationContextCreationLock.WaitAsync().ConfigureAwait(false);
+            await s_authenticationContextCreationLock.WaitAsync(cancellationToken).ConfigureAwait(false);
 
-            var context = await DoRefreshAsync(_authenticationContext).ConfigureAwait(false);
+            var context = await DoRefreshAsync(_authenticationContext, cancellationToken).ConfigureAwait(false);
 
             _authenticationContextCreatedAt = DateTimeOffset.UtcNow;
             _authenticationContext = context;

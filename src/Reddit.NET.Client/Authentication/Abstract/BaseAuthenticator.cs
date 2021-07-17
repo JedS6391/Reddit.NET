@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft;
 using Reddit.NET.Client.Command;
@@ -24,6 +25,6 @@ namespace Reddit.NET.Client.Authentication.Abstract
         protected CommandExecutor CommandExecutor { get; }
 
         /// <inheritdoc />
-        public abstract Task<AuthenticationContext> GetAuthenticationContextAsync();
+        public abstract Task<AuthenticationContext> GetAuthenticationContextAsync(CancellationToken cancellationToken = default);
     }
 }
