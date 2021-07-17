@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -11,12 +12,12 @@ namespace Reddit.NET.Client.Authentication.Storage
     public sealed class NullTokenStorage : ITokenStorage
     {
         /// <inheritdoc />
-        public Task<Token> GetTokenAsync(Guid sessionId) => Task.FromResult<Token>(null);
+        public Task<Token> GetTokenAsync(Guid sessionId, CancellationToken cancellationToken = default) => Task.FromResult<Token>(null);
 
         /// <inheritdoc />
-        public Task<Guid> StoreTokenAsync(Token token) => Task.FromResult(Guid.Empty);
+        public Task<Guid> StoreTokenAsync(Token token, CancellationToken cancellationToken = default) => Task.FromResult(Guid.Empty);
 
         /// <inheritdoc />
-        public Task RemoveTokenAsync(Guid sessionId) => Task.CompletedTask;
+        public Task RemoveTokenAsync(Guid sessionId, CancellationToken cancellationToken = default) => Task.CompletedTask;
     }
 }

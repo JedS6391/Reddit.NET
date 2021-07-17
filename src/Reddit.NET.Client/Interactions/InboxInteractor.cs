@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Command.UserContent;
 using Reddit.NET.Client.Interactions.Abstract;
@@ -54,10 +55,11 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="message">The message to reply to.</param>
         /// <param name="text">The text of the reply to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the reply message details.
         /// </returns>
-        public async Task<MessageDetails> ReplyAsync(MessageDetails message, string text)
+        public async Task<MessageDetails> ReplyAsync(MessageDetails message, string text, CancellationToken cancellationToken = default)
         {
             var createCommentCommand = new ReplyToMessageCommand(new ReplyToMessageCommand.Parameters()
             {
@@ -66,7 +68,7 @@ namespace Reddit.NET.Client.Interactions
             });
 
             var response = await _client
-                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand)
+                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return new MessageDetails(thing: response.Data.Things[0] as IThing<Message.Details>);

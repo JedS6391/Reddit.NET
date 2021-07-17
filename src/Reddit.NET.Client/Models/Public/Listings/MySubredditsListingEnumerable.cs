@@ -4,6 +4,7 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Users;
+using System.Threading;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -27,23 +28,24 @@ namespace Reddit.NET.Client.Models.Public.Listings
         }
 
         /// <inheritdoc />
-        internal override async Task<Subreddit.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Subreddit.Listing> GetInitialListingAsync(CancellationToken cancellationToken) =>
+            await GetListingAsync(cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal override async Task<Subreddit.Listing> GetNextListingAsync(Subreddit.Listing currentListing)
+        internal override async Task<Subreddit.Listing> GetNextListingAsync(Subreddit.Listing currentListing, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
                 return null;
             }
 
-            return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
+            return await GetListingAsync(cancellationToken, currentListing.Data.After).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         internal override SubredditDetails MapThing(IThing<Subreddit.Details> thing) => new SubredditDetails(thing);
 
-        private async Task<Subreddit.Listing> GetListingAsync(string after = null)
+        private async Task<Subreddit.Listing> GetListingAsync(CancellationToken cancellationToken, string after = null)
         {
             var getUserSubredditsCommand = new GetMySubredditsCommand(new GetMySubredditsCommand.Parameters()
             {
@@ -52,7 +54,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             });
 
             var subreddits = await _client
-                .ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand)
+                .ExecuteCommandAsync<Subreddit.Listing>(getUserSubredditsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return subreddits;

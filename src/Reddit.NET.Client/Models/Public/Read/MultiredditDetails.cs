@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Internal;
@@ -60,9 +61,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public MultiredditInteractor Interact(RedditClient client) => client.Multireddit(Username, Id);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await Interact(client).GetDetailsAsync();
+            var details = await Interact(client).GetDetailsAsync(cancellationToken);
 
             Name = details.Name;
             Subreddits = details.Subreddits;

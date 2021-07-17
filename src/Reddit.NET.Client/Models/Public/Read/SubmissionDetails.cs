@@ -4,6 +4,7 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
 using System;
+using System.Threading;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -88,9 +89,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(Id);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await client.Submission(Id).GetDetailsAsync();
+            var details = await client.Submission(Id).GetDetailsAsync(cancellationToken);
 
             Title = details.Title;
             Subreddit = details.Subreddit;

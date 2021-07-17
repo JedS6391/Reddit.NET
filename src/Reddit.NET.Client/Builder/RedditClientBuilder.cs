@@ -1,5 +1,6 @@
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
@@ -99,10 +100,11 @@ namespace Reddit.NET.Client.Builder
         /// When using an interactive authentication mode, the builder will asynchronously complete the
         /// authentication flow to create the appropriate credentials.
         /// </remarks>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains a <see cref="RedditClient" /> instance configured based on the builder.
         /// </returns>
-        public async Task<RedditClient> BuildAsync()
+        public async Task<RedditClient> BuildAsync(CancellationToken cancellationToken = default)
         {
             CheckValidity();
 
@@ -126,7 +128,7 @@ namespace Reddit.NET.Client.Builder
 
             // Note that the credential builder may need to execute commands (e.g. for interactive credentials).
             var credentials = await credentialsBuilder
-                .BuildCredentialsAsync(commandExecutor, _tokenStorage)
+                .BuildCredentialsAsync(commandExecutor, _tokenStorage, cancellationToken)
                 .ConfigureAwait(false);
 
             var authenticator = authenticatorFactory.GetAuthenticator(credentials);

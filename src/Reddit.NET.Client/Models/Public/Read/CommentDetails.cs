@@ -4,6 +4,7 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
 using System;
+using System.Threading;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -65,9 +66,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         public CommentInteractor Interact(RedditClient client) => client.Comment(SubmissionId, Id);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await client.Comment(SubmissionId, Id).GetDetailsAsync();
+            var details = await client.Comment(SubmissionId, Id).GetDetailsAsync(cancellationToken);
 
             Body = details.Body;
             Subreddit = details.Subreddit;
