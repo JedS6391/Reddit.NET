@@ -1,3 +1,4 @@
+using Microsoft;
 using Reddit.NET.Client.Models.Internal;
 
 namespace Reddit.NET.Client.Models.Public.Read
@@ -13,6 +14,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="karmaList">The karma breakdown data.</param>
         internal KarmaBreakdownDetails(KarmaList.Details karmaList)
         {
+            Requires.NotNull(karmaList, nameof(karmaList));
+
             Subreddit = karmaList.Subreddit;
             CommentKarma = karmaList.CommentKarma;
             SubmissionKarma = karmaList.LinkKarma;

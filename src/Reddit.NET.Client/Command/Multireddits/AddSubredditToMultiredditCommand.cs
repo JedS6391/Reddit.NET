@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Multireddits
@@ -22,7 +23,7 @@ namespace Reddit.NET.Client.Command.Multireddits
         public AddSubredditToMultiredditCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

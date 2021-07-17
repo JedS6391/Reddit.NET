@@ -1,3 +1,5 @@
+using Microsoft;
+
 namespace Reddit.NET.Client.Models.Public.Listings.Options
 {
     /// <summary>
@@ -11,7 +13,7 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         /// <param name="name">The name of the option.</param>
         protected NamedOption(string name)
         {
-            Name = name;
+            Name = Requires.NotNull(name, nameof(name));
         }
 
         /// <summary>

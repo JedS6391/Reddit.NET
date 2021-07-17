@@ -1,6 +1,7 @@
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -24,7 +25,7 @@ namespace Reddit.NET.Client.Interactions
         internal CommentInteractor(RedditClient client, string submissionId, string commentId)
             : base(client, kind: Constants.Kind.Comment, id: commentId)
         {
-            _submissionId = submissionId;
+            _submissionId = Requires.NotNull(submissionId, nameof(submissionId));
         }
 
         /// <summary>

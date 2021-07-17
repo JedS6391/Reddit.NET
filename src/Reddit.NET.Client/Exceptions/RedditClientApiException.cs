@@ -1,4 +1,5 @@
 using System.Net;
+using Microsoft;
 using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Exceptions
@@ -10,7 +11,7 @@ namespace Reddit.NET.Client.Exceptions
     /// This exception occurs when there is a validation error for the request,
     /// resulting in a response with a <see cref="HttpStatusCode.NotFound" /> status code.
     /// </remarks>
-    public class RedditClientApiException : RedditClientException
+    public sealed class RedditClientApiException : RedditClientException
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientApiException" /> class.
@@ -20,7 +21,7 @@ namespace Reddit.NET.Client.Exceptions
         public RedditClientApiException(string message, ErrorDetails details)
             : base(message)
         {
-            Details = details;
+            Details = Requires.NotNull(details, nameof(details));
         }
 
         /// <summary>

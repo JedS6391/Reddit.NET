@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using Microsoft;
 
 namespace Reddit.NET.Client.Command.Authentication
 {
@@ -19,7 +20,7 @@ namespace Reddit.NET.Client.Command.Authentication
         public AuthenticateWithUsernamePasswordCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

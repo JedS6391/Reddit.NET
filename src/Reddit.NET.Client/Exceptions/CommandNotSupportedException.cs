@@ -1,3 +1,5 @@
+using Microsoft;
+
 namespace Reddit.NET.Client.Exceptions
 {
     /// <summary>
@@ -17,7 +19,7 @@ namespace Reddit.NET.Client.Exceptions
         public CommandNotSupportedException(string message, string commandId)
             : base(message)
         {
-            CommandId = commandId;
+            CommandId = Requires.NotNull(commandId, nameof(commandId));
         }
 
         /// <summary>

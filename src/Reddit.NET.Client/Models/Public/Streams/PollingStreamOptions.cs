@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Streams
 {
@@ -28,9 +29,9 @@ namespace Reddit.NET.Client.Models.Public.Streams
             Func<TData, TMapped> mapper,
             Func<TData, TId> idSelector)
         {
-            _dataProvider = dataProvider;
-            _mapper = mapper;
-            _idSelector = idSelector;
+            _dataProvider = Requires.NotNull(dataProvider, nameof(dataProvider));
+            _mapper = Requires.NotNull(mapper, nameof(mapper));
+            _idSelector = Requires.NotNull(idSelector, nameof(idSelector));
         }
 
         /// <summary>

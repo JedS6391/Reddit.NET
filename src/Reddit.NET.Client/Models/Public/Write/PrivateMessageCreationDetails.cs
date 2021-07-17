@@ -1,3 +1,5 @@
+using Microsoft;
+
 namespace Reddit.NET.Client.Models.Public.Write
 {
     /// <summary>
@@ -12,6 +14,9 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <param name="body">The message content.</param>
         public PrivateMessageCreationDetails(string subject, string body)
         {
+            Requires.NotNullOrWhiteSpace(subject, nameof(subject));
+            Requires.NotNullOrWhiteSpace(body, nameof(body));
+
             Subject = subject;
             Body = body;
         }

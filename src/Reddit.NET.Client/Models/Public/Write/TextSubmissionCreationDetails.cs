@@ -1,3 +1,5 @@
+using Microsoft;
+
 namespace Reddit.NET.Client.Models.Public.Write
 {
     /// <summary>
@@ -12,6 +14,9 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <param name="text">The text of the submission to create.</param>
         public TextSubmissionCreationDetails(string title, string text)
         {
+            Requires.NotNullOrWhiteSpace(title, nameof(title));
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
             Title = title;
             Text = text;
         }
@@ -24,6 +29,6 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <summary>
         /// Gets the text of the submission to create.
         /// </summary>
-        public string Text { get; set; }
+        public string Text { get; }
     }
 }

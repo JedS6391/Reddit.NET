@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Web;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Subreddits
@@ -23,7 +24,7 @@ namespace Reddit.NET.Client.Command.Subreddits
         /// <param name="parameters">The parameters used by the command.</param>
         public SearchSubredditSubmissionsCommand(Parameters parameters)
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

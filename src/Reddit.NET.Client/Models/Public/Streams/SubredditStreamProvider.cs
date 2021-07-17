@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Subreddits;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -24,8 +25,8 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <param name="subredditName">The name of the subreddit to provide streams for.</param>
         public SubredditStreamProvider(RedditClient client, string subredditName)
         {
-            _client = client;
-            _subredditName = subredditName;
+            _client = Requires.NotNull(client, nameof(client));
+            _subredditName = Requires.NotNull(subredditName, nameof(subredditName));
         }
 
         /// <summary>

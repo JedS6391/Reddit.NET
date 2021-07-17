@@ -1,4 +1,5 @@
 using System;
+using Microsoft;
 using Reddit.NET.Client.Models.Internal;
 
 namespace Reddit.NET.Client.Models.Public.Read
@@ -14,6 +15,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="trophy">The TrophyDetails data.</param>
         internal TrophyDetails(Trophy trophy)
         {
+            Requires.NotNull(trophy, nameof(trophy));
+
             Name = trophy.Data.Name;
             Description = trophy.Data.Description;
             Icon40Url = trophy.Data.Icon40Url;

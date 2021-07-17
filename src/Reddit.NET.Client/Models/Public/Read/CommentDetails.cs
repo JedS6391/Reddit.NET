@@ -5,6 +5,7 @@ using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
 using System;
 using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -13,9 +14,15 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// </summary>
     public class CommentDetails : UserContentDetails, IToInteractor<CommentInteractor>, IReloadable
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CommentDetails" /> class.
+        /// </summary>
+        /// <param name="thing">A <see cref="Thing{TData}" /> containing a comment's data.</param>
         internal CommentDetails(IThing<Comment.Details> thing)
             : base(thing.Kind, thing.Data.Id)
         {
+            Requires.NotNull(thing, nameof(thing));
+
             SubmissionFullName = thing.Data.LinkFullName;
             Body = thing.Data.Body;
             Subreddit = thing.Data.Subreddit;
@@ -68,6 +75,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <inheritdoc />
         public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(client, nameof(client));
+
             var details = await client.Comment(SubmissionId, Id).GetDetailsAsync(cancellationToken);
 
             Body = details.Body;

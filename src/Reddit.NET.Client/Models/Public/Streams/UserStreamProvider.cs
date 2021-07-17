@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -26,9 +27,8 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// </remarks>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         public UserStreamProvider(RedditClient client)
+            : this(client, username: null)
         {
-            _client = client;
-            _username = null;
         }
 
         /// <summary>
@@ -41,7 +41,7 @@ namespace Reddit.NET.Client.Models.Public.Streams
         /// <param name="username">The name of the user to provide streams for.</param>
         public UserStreamProvider(RedditClient client, string username)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
             _username = username;
         }
 

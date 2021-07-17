@@ -5,6 +5,7 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Users;
 using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -24,7 +25,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
         public MySubredditsListingEnumerable(RedditClient client, Options options)
             : base(options)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <inheritdoc />

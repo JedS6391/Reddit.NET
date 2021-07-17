@@ -1,4 +1,5 @@
 using System.Net.Http;
+using Microsoft;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Reddit.NET.Client.Builder
@@ -20,6 +21,9 @@ namespace Reddit.NET.Client.Builder
         /// <returns>The updated <see cref="IServiceCollection" />.</returns>
         public static IServiceCollection AddRedditHttpClient(this IServiceCollection services, string userAgent)
         {
+            Requires.NotNull(services, nameof(services));
+            Requires.NotNullOrWhiteSpace(userAgent, nameof(userAgent));
+
             services.AddHttpClient(Constants.HttpClientName, client =>
             {
                 client.DefaultRequestHeaders.Add("Accept", "application/json; charset=UTF-8");

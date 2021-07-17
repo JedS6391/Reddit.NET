@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 
@@ -71,6 +72,9 @@ namespace Reddit.NET.Client.Models.Public.Read
             IReadOnlyList<IThing<IHasParent>> replies,
             Comment parent)
         {
+            Requires.NotNull(submission, nameof(submission));
+            Requires.NotNull(replies, nameof(replies));
+
             _submission = submission;
             _parent = parent;
             _comments = replies.OfType<Comment>().ToList();

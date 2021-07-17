@@ -1,4 +1,5 @@
 using System;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Write
 {
@@ -15,6 +16,9 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <param name="resubmit">Whether the submission should be resubmitted if it already exists..</param>
         public LinkSubmissionCreationDetails(string title, Uri uri, bool resubmit = false)
         {
+            Requires.NotNullOrWhiteSpace(title, nameof(title));
+            Requires.NotNull(uri, nameof(uri));
+
             Title = title;
             Uri = uri;
             Resubmit = resubmit;

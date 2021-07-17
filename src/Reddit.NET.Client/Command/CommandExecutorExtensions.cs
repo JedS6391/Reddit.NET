@@ -4,6 +4,7 @@ using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Models.Internal.Json;
@@ -49,6 +50,8 @@ namespace Reddit.NET.Client.Command
             ClientCommand command,
             CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(command, nameof(command));
+
             var response = await executor.ExecuteCommandAsync(command, cancellationToken).ConfigureAwait(false);
 
             return await response
@@ -92,6 +95,9 @@ namespace Reddit.NET.Client.Command
             IAuthenticator authenticator,
             CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(command, nameof(command));
+            Requires.NotNull(authenticator, nameof(authenticator));
+
             var response = await executor.ExecuteCommandAsync(command, authenticator, cancellationToken).ConfigureAwait(false);
 
             return await response

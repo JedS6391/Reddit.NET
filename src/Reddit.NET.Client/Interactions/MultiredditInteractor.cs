@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Multireddits;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -27,9 +28,9 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="multiredditName">The name of the multireddit to interact with.</param>
         internal MultiredditInteractor(RedditClient client, string username, string multiredditName)
         {
-            _client = client;
-            _username = username;
-            _multiredditName = multiredditName;
+            _client = Requires.NotNull(client, nameof(client));
+            _username = Requires.NotNull(username, nameof(username));
+            _multiredditName = Requires.NotNull(multiredditName, nameof(multiredditName));
         }
 
         /// <summary>
@@ -102,6 +103,8 @@ namespace Reddit.NET.Client.Interactions
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task AddSubredditAsync(string subredditName, CancellationToken cancellationToken = default)
         {
+            Requires.NotNullOrWhiteSpace(subredditName, nameof(subredditName));
+
             var commandParameters = new AddSubredditToMultiredditCommand.Parameters()
             {
                 Username = _username,
@@ -122,6 +125,8 @@ namespace Reddit.NET.Client.Interactions
         /// <returns>A task representing the asynchronous operation.</returns>
         public async Task RemoveSubredditAsync(string subredditName, CancellationToken cancellationToken = default)
         {
+            Requires.NotNullOrWhiteSpace(subredditName, nameof(subredditName));
+
             var commandParameters = new RemoveSubredditFromMultiredditCommand.Parameters()
             {
                 Username = _username,
