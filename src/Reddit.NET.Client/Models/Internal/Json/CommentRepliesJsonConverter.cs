@@ -8,6 +8,9 @@ namespace Reddit.NET.Client.Models.Internal.Json
     /// <summary>
     /// A <see cref="JsonConverter{T}" /> implementation for reading JSON data to populate the <see cref="Comment.Details.Replies" /> property.
     /// </summary>
+    /// <remarks>
+    /// For some reason, when a comment has no replies or the replies aren't loaded, reddit will return an empty string rather than a <c>null</c> value.
+    /// </remarks>
     internal class CommentRepliesJsonConverter : JsonConverter<Listing<IHasParent>>
     {
         /// <inheritdoc />

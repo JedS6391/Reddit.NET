@@ -94,7 +94,7 @@ var client = await builder.BuildAsync();
 
 In some cases, it may desirable to authenticate a client and then re-use that authenticated client at a later point. For example, a web service will need to authenticate the user and then create a new authenticated client instance for that user on each request.
 
-Rather than require the user to completely re-authenticate each time, a session-based credential set can be used. 
+Rather than require the user to completely re-authenticate each time, a session-based credential set can be used.
 
 Upon successful authentication, the credentials generated will be allocated a unique session ID. This session ID will be associated with the access token obtained during the authentication flow. The session ID can then be used to configure an authenticated client, without needing to complete the interactive authentication flow.
 

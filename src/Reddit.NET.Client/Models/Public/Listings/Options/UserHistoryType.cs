@@ -15,32 +15,32 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         }
 
         /// <summary>
-        /// Gets the 'overview' type.
+        /// Gets the <i>overview</i> type.
         /// </summary>
         public static UserHistoryType Overview => new UserHistoryType("overview");
 
         /// <summary>
-        /// Gets the 'submitted' type.
+        /// Gets the <i>submitted</i> type.
         /// </summary>
         public static UserHistoryType Submitted => new UserHistoryType("submitted");
 
         /// <summary>
-        /// Gets the 'comments' type.
+        /// Gets the <i>comments</i> type.
         /// </summary>
         public static UserHistoryType Comments => new UserHistoryType("comments");
 
         /// <summary>
-        /// Gets the 'saved' type.
+        /// Gets the <i>saved</i> type.
         /// </summary>
         public static UserHistoryType Saved => new UserHistoryType("saved");
 
         /// <summary>
-        /// Gets the 'upvoted' type.
+        /// Gets the <i>upvoted</i> type.
         /// </summary>
         public static UserHistoryType Upvoted => new UserHistoryType("upvoted");
 
         /// <summary>
-        /// Gets the 'downvoted' type.
+        /// Gets the <i>downvoted</i> type.
         /// </summary>
         public static UserHistoryType Downvoted => new UserHistoryType("downvoted");
     }

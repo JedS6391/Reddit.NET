@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft;
@@ -170,17 +171,18 @@ namespace Reddit.NET.Client.Authentication.Credential
             /// </remarks>
             /// <param name="commandExecutor">A <see cref="CommandExecutor" /> instance used for executing commands.</param>
             /// <param name="tokenStorage">An <see cref="ITokenStorage" /> instance used for managing tokens.</param>
+            /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
             /// <returns>A task representing the asynchronous operation.</returns>
-            public async Task AuthenticateAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage)
+            public async Task AuthenticateAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage, CancellationToken cancellationToken = default)
             {
                 switch (_stage)
                 {
                     case Stage.AuthorizedWithCode:
-                        await AuthenticateWithCodeAsync(commandExecutor, tokenStorage).ConfigureAwait(false);
+                        await AuthenticateWithCodeAsync(commandExecutor, tokenStorage, cancellationToken).ConfigureAwait(false);
                         break;
 
                     case Stage.AuthorizedWithSessionId:
-                        await AuthenticateWithSessionIdAsync(tokenStorage).ConfigureAwait(false);
+                        await AuthenticateWithSessionIdAsync(tokenStorage, cancellationToken).ConfigureAwait(false);
                         break;
 
                     default:
@@ -208,7 +210,7 @@ namespace Reddit.NET.Client.Authentication.Credential
                     _token);
             }
 
-            private async Task AuthenticateWithCodeAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage)
+            private async Task AuthenticateWithCodeAsync(CommandExecutor commandExecutor, ITokenStorage tokenStorage, CancellationToken cancellationToken)
             {
                 var parameters = new AuthenticateWithAuthorizationCodeCommand.Parameters()
                 {
@@ -220,18 +222,18 @@ namespace Reddit.NET.Client.Authentication.Credential
 
                 var authenticateCommand = new AuthenticateWithAuthorizationCodeCommand(parameters);
 
-                var token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+                var token = await commandExecutor.ExecuteCommandAsync<Token>(authenticateCommand, cancellationToken).ConfigureAwait(false);
 
-                var sessionId = await tokenStorage.StoreTokenAsync(token);
+                var sessionId = await tokenStorage.StoreTokenAsync(token, cancellationToken);
 
                 _token = token;
                 _sessionId = sessionId;
                 _stage = Stage.Authenticated;
             }
 
-            private async Task AuthenticateWithSessionIdAsync(ITokenStorage tokenStorage)
+            private async Task AuthenticateWithSessionIdAsync(ITokenStorage tokenStorage, CancellationToken cancellationToken)
             {
-                var token = await tokenStorage.GetTokenAsync(_sessionId.Value);
+                var token = await tokenStorage.GetTokenAsync(_sessionId.Value, cancellationToken);
 
                 if (token == null)
                 {

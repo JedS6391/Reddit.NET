@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Net.Http;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
@@ -22,7 +23,7 @@ namespace Reddit.NET.Client.Command.Users
         public GetUserHistoryCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

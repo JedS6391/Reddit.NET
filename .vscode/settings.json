@@ -3,5 +3,20 @@
         "**/.vs": true,
         "**/bin": true,
         "**/obj": true
-    }
+    },
+    "cSpell.words": [
+        "Interactor",
+        "Subreddits",
+        "deserialization",
+        "downvote",
+        "interactors",
+        "lucene",
+        "multireddits",
+        "nuget",
+        "reddit's",
+        "subreddit",
+        "unvote",
+        "upvote",
+        "upvoted"
+    ]
 }

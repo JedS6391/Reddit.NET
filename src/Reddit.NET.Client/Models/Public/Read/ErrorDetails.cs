@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft;
 using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Models.Public.Read
@@ -21,9 +22,9 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="fields">The input fields associated with the error, if any.</param>
         internal ErrorDetails(string type, string message, IReadOnlyList<string> fields)
         {
-            Type = type;
-            Message = message;
-            Fields = fields;
+            Type = Requires.NotNull(type, nameof(type));
+            Message = Requires.NotNull(message, nameof(message));
+            Fields = Requires.NotNull(fields, nameof(fields));
         }
 
         /// <summary>
@@ -49,6 +50,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <returns>An <see cref="ErrorDetails" /> instance.</returns>
         internal static ErrorDetails FromResponse<T>(JsonDataResponse<T> response)
         {
+            Requires.NotNull(response, nameof(response));
+
             if (response.Json.Errors == null || !response.Json.Errors.Any())
             {
                 return null;

@@ -28,6 +28,40 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
+        public async Task StreamSubmissionsAsync_ValidUser_ShouldStreamSubmissions()
+        {
+            var me = _client.Me();
+
+            var stream = me.Stream.SubmissionsAsync();
+
+            Assert.IsNotNull(stream);
+
+            // We only take the first 100 as we don't want to actually wait polling in the test.
+            var submissions = await stream.Take(100).ToListAsync();
+
+            Assert.IsNotNull(submissions);
+            Assert.IsNotEmpty(submissions);
+            Assert.AreEqual(100, submissions.Count);
+        }
+
+        [Test]
+        public async Task StreamCommentsAsync_ValidSubreddit_ShouldStreamComments()
+        {
+            var me = _client.Me();
+
+            var stream = me.Stream.CommentsAsync();
+
+            Assert.IsNotNull(stream);
+
+            // See the comment above for the submissions stream regarding why the number 100.
+            var comments = await stream.Take(100).ToListAsync();
+
+            Assert.IsNotNull(comments);
+            Assert.IsNotEmpty(comments);
+            Assert.AreEqual(100, comments.Count);
+        }
+
+        [Test]
         public async Task GetSubredditsAsync_OneHundredSubreddits_ShouldGetSubreddits()
         {
             var me = _client.Me();
@@ -83,6 +117,26 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(multireddits);
             Assert.IsNotEmpty(multireddits);
+        }
+
+        [Test]
+        public async Task GetKarmaBreakdownAsync_ValidUser_ShouldGetKarmabreakdown()
+        {
+            var me = _client.Me();
+
+            var karmaBreakdownDetails = await me.GetKarmaBreakdownAsync();
+
+            Assert.IsNotNull(karmaBreakdownDetails);
+        }
+
+        [Test]
+        public async Task GetTrophiesAsync_ValidUser_ShouldGetTrophies()
+        {
+            var me = _client.Me();
+
+            var trophyDetails = await me.GetTrophiesAsync();
+
+            Assert.IsNotNull(trophyDetails);
         }
 
         [Test]

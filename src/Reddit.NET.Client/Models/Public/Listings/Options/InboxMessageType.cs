@@ -11,37 +11,37 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         }
 
         /// <summary>
-        /// Gets the 'all' message type.
+        /// Gets the <i>all</i> message type.
         /// </summary>
         public static InboxMessageType All => new InboxMessageType("inbox");
 
         /// <summary>
-        /// Gets the 'inbox' message type.
+        /// Gets the <i>inbox</i> message type.
         /// </summary>
         public static InboxMessageType Unread => new InboxMessageType("unread");
 
         /// <summary>
-        /// Gets the 'sent' message type.
+        /// Gets the <i>sent</i> message type.
         /// </summary>
         public static InboxMessageType Sent => new InboxMessageType("sent");
 
         /// <summary>
-        /// Gets the 'mentions' message type.
+        /// Gets the <i>mentions</i> message type.
         /// </summary>
         public static InboxMessageType Mentions => new InboxMessageType("mentions");
 
         /// <summary>
-        /// Gets the 'private messages' message type.
+        /// Gets the <i>private messages</i> message type.
         /// </summary>
         public static InboxMessageType PrivateMessages => new InboxMessageType("messages");
 
         /// <summary>
-        /// Gets the 'comment replies' message type.
+        /// Gets the <i>comment replies</i> message type.
         /// </summary>
         public static InboxMessageType CommentReplies => new InboxMessageType("comments");
 
         /// <summary>
-        /// Gets the 'submission replies' message type.
+        /// Gets the <i>submission replies</i> message type.
         /// </summary>
         public static InboxMessageType SubmissionReplies => new InboxMessageType("selfreply");
     }

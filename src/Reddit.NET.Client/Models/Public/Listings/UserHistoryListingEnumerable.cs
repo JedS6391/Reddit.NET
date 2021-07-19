@@ -7,6 +7,8 @@ using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Users;
 using System.Linq;
+using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -37,22 +39,23 @@ namespace Reddit.NET.Client.Models.Public.Listings
             ListingParameters parameters)
             : base(options)
         {
-            _client = client;
-            _parameters = parameters;
+            _client = Requires.NotNull(client, nameof(client));
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />
-        internal override async Task<Listing<IUserContent>> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Listing<IUserContent>> GetInitialListingAsync(CancellationToken cancellationToken) =>
+            await GetListingAsync(cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal override async Task<Listing<IUserContent>> GetNextListingAsync(Listing<IUserContent> currentListing)
+        internal override async Task<Listing<IUserContent>> GetNextListingAsync(Listing<IUserContent> currentListing, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
                 return null;
             }
 
-            return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
+            return await GetListingAsync(cancellationToken, currentListing.Data.After).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -63,7 +66,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             _ => throw new ArgumentException("Unsupported thing type for user history.")
         };
 
-        private async Task<Listing<IUserContent>> GetListingAsync(string after = null)
+        private async Task<Listing<IUserContent>> GetListingAsync(CancellationToken cancellationToken, string after = null)
         {
             var commandParameters = new GetUserHistoryCommand.Parameters()
             {
@@ -79,7 +82,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 var getMyDetailsCommand = new GetMyDetailsCommand();
 
                 var user = await _client
-                    .ExecuteCommandAsync<User.Details>(getMyDetailsCommand)
+                    .ExecuteCommandAsync<User.Details>(getMyDetailsCommand, cancellationToken)
                     .ConfigureAwait(false);
 
                 commandParameters.Username = user.Name;
@@ -97,7 +100,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             var getUserHistoryCommand = new GetUserHistoryCommand(commandParameters);
 
             var history = await _client
-                .ExecuteCommandAsync<Listing<IUserContent>>(getUserHistoryCommand)
+                .ExecuteCommandAsync<Listing<IUserContent>>(getUserHistoryCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return history;
@@ -159,6 +162,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithType(UserHistoryType type)
                 {
+                    Requires.NotNull(type, nameof(type));
+
                     Options.Type = type;
 
                     return this;
@@ -171,6 +176,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithSort(UserHistorySort sort)
                 {
+                    Requires.NotNull(sort, nameof(sort));
+
                     Options.Sort = sort;
 
                     return this;
@@ -183,6 +190,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithTimeRange(TimeRangeSort timeRange)
                 {
+                    Requires.NotNull(timeRange, nameof(timeRange));
+
                     Options.TimeRange = timeRange;
 
                     return this;

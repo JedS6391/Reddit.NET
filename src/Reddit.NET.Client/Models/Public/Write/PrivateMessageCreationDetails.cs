@@ -1,9 +1,11 @@
+using Microsoft;
+
 namespace Reddit.NET.Client.Models.Public.Write
 {
     /// <summary>
     /// Represents the details to create a private message to another user.
     /// </summary>
-    public class PrivateMessageCreationDetails
+    public sealed class PrivateMessageCreationDetails
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="PrivateMessageCreationDetails" /> class.
@@ -12,6 +14,9 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// <param name="body">The message content.</param>
         public PrivateMessageCreationDetails(string subject, string body)
         {
+            Requires.NotNullOrWhiteSpace(subject, nameof(subject));
+            Requires.NotNullOrWhiteSpace(body, nameof(body));
+
             Subject = subject;
             Body = body;
         }

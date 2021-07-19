@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Multireddits;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
@@ -24,18 +26,19 @@ namespace Reddit.NET.Client.Interactions
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="username">The name of the user the multireddit belongs to.</param>
         /// <param name="multiredditName">The name of the multireddit to interact with.</param>
-        public MultiredditInteractor(RedditClient client, string username, string multiredditName)
+        internal MultiredditInteractor(RedditClient client, string username, string multiredditName)
         {
-            _client = client;
-            _username = username;
-            _multiredditName = multiredditName;
+            _client = Requires.NotNull(client, nameof(client));
+            _username = Requires.NotNull(username, nameof(username));
+            _multiredditName = Requires.NotNull(multiredditName, nameof(multiredditName));
         }
 
         /// <summary>
         /// Gets the details of the multireddit.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the multireddit.</returns>
-        public async Task<MultiredditDetails> GetDetailsAsync()
+        public async Task<MultiredditDetails> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var commandParameters = new GetMultiredditDetailsCommand.Parameters()
             {
@@ -45,7 +48,9 @@ namespace Reddit.NET.Client.Interactions
 
             var getMultiredditDetailsCommand = new GetMultiredditDetailsCommand(commandParameters);
 
-            var multireddit = await _client.ExecuteCommandAsync<Multireddit>(getMultiredditDetailsCommand).ConfigureAwait(false);
+            var multireddit = await _client
+                .ExecuteCommandAsync<Multireddit>(getMultiredditDetailsCommand, cancellationToken)
+                .ConfigureAwait(false);
 
             return new MultiredditDetails(multireddit);
         }
@@ -75,8 +80,9 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Deletes the multireddit.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteAsync()
+        public async Task DeleteAsync(CancellationToken cancellationToken = default)
         {
             var commandParameters = new DeleteMultiredditCommand.Parameters()
             {
@@ -86,15 +92,19 @@ namespace Reddit.NET.Client.Interactions
 
             var deleteMultiredditCommand = new DeleteMultiredditCommand(commandParameters);
 
-            await _client.ExecuteCommandAsync(deleteMultiredditCommand).ConfigureAwait(false);
+            await _client.ExecuteCommandAsync(deleteMultiredditCommand, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Adds a subreddit to the multireddit.
         /// </summary>
+        /// <param name="subredditName">The name of the subreddit to add.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task AddSubredditAsync(string subredditName)
+        public async Task AddSubredditAsync(string subredditName, CancellationToken cancellationToken = default)
         {
+            Requires.NotNullOrWhiteSpace(subredditName, nameof(subredditName));
+
             var commandParameters = new AddSubredditToMultiredditCommand.Parameters()
             {
                 Username = _username,
@@ -104,15 +114,19 @@ namespace Reddit.NET.Client.Interactions
 
             var addSubredditToMultiredditCommand = new AddSubredditToMultiredditCommand(commandParameters);
 
-            await _client.ExecuteCommandAsync(addSubredditToMultiredditCommand).ConfigureAwait(false);
+            await _client.ExecuteCommandAsync(addSubredditToMultiredditCommand, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Removes a subreddit from the multireddit.
         /// </summary>
+        /// <param name="subredditName">The name of the subreddit to remove.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task RemoveSubredditAsync(string subredditName)
+        public async Task RemoveSubredditAsync(string subredditName, CancellationToken cancellationToken = default)
         {
+            Requires.NotNullOrWhiteSpace(subredditName, nameof(subredditName));
+
             var commandParameters = new RemoveSubredditFromMultiredditCommand.Parameters()
             {
                 Username = _username,
@@ -122,7 +136,7 @@ namespace Reddit.NET.Client.Interactions
 
             var removeSubredditFromMultiredditCommand = new RemoveSubredditFromMultiredditCommand(commandParameters);
 
-            await _client.ExecuteCommandAsync(removeSubredditFromMultiredditCommand).ConfigureAwait(false);
+            await _client.ExecuteCommandAsync(removeSubredditFromMultiredditCommand, cancellationToken).ConfigureAwait(false);
         }
     }
 }

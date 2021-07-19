@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 
 namespace Reddit.NET.Client.Command.Users
@@ -23,7 +24,7 @@ namespace Reddit.NET.Client.Command.Users
         public CreateMultiredditCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

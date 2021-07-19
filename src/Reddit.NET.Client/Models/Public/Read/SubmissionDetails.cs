@@ -4,6 +4,8 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
 using System;
+using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -19,6 +21,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         internal SubmissionDetails(IThing<Submission.Details> thing)
             : base(thing.Kind, thing.Data.Id)
         {
+            Requires.NotNull(thing, nameof(thing));
+
             Title = thing.Data.Title;
             Subreddit = thing.Data.Subreddit;
             Permalink = thing.Data.Permalink;
@@ -72,7 +76,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         public bool IsSelfPost { get; private set; }
 
         /// <summary>
-        /// Gets a value indicating whether the submission is 'Not Safe For Work' (NSFW).
+        /// Gets a value indicating whether the submission is <i>Not Safe For Work</i> (NSFW).
         /// </summary>
         public bool IsNsfw { get; private set; }
 
@@ -88,9 +92,11 @@ namespace Reddit.NET.Client.Models.Public.Read
         public SubmissionInteractor Interact(RedditClient client) => client.Submission(Id);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await client.Submission(Id).GetDetailsAsync();
+            Requires.NotNull(client, nameof(client));
+
+            var details = await client.Submission(Id).GetDetailsAsync(cancellationToken);
 
             Title = details.Title;
             Subreddit = details.Subreddit;

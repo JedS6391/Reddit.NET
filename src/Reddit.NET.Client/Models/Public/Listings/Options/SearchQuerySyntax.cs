@@ -15,17 +15,17 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         }
 
         /// <summary>
-        /// Gets the 'lucene' syntax.
+        /// Gets the <i>lucene</i> syntax.
         /// </summary>
         public static SearchQuerySyntax Lucene => new SearchQuerySyntax("lucene");
 
         /// <summary>
-        /// Gets the 'cloudsearch' syntax.
+        /// Gets the <i>cloudsearch</i> syntax.
         /// </summary>
         public static SearchQuerySyntax CloudSearch => new SearchQuerySyntax("cloudsearch");
 
         /// <summary>
-        /// Gets the 'plain' syntax.
+        /// Gets the <i>plain</i> syntax.
         /// </summary>
         public static SearchQuerySyntax Plain => new SearchQuerySyntax("plain");
     }

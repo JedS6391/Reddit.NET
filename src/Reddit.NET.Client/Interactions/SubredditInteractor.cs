@@ -12,6 +12,9 @@ using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using System.Linq;
 using Reddit.NET.Client.Exceptions;
+using Reddit.NET.Client.Models.Public.Streams;
+using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -28,24 +31,32 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="subredditName">The name of the subreddit to interact with.</param>
-        public SubredditInteractor(RedditClient client, string subredditName)
+        internal SubredditInteractor(RedditClient client, string subredditName)
         {
-            _client = client;
-            _subredditName = subredditName;
+            _client = Requires.NotNull(client, nameof(client));
+            _subredditName = Requires.NotNull(subredditName, nameof(subredditName));
         }
+
+        /// <summary>
+        /// Gets a <see cref="SubredditStreamProvider" /> that can be used to access streams of submissions or comments.
+        /// </summary>
+        public SubredditStreamProvider Stream => new SubredditStreamProvider(_client, _subredditName);
 
         /// <summary>
         /// Gets the details of the subreddit.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the subreddit.</returns>
-        public async Task<SubredditDetails> GetDetailsAsync()
+        public async Task<SubredditDetails> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var getSubredditDetailsCommand = new GetSubredditDetailsCommand(new GetSubredditDetailsCommand.Parameters()
             {
                 SubredditName = _subredditName
             });
 
-            var subreddit = await _client.ExecuteCommandAsync<Subreddit>(getSubredditDetailsCommand).ConfigureAwait(false);
+            var subreddit = await _client
+                .ExecuteCommandAsync<Subreddit>(getSubredditDetailsCommand, cancellationToken)
+                .ConfigureAwait(false);
 
             return new SubredditDetails(subreddit);
         }
@@ -84,6 +95,8 @@ namespace Reddit.NET.Client.Interactions
             string query,
             Action<SubredditSearchListingEnumerable.Options.Builder> configurationAction = null)
         {
+            Requires.NotNullOrWhiteSpace(query, nameof(query));
+
             var optionsBuilder = new SubredditSearchListingEnumerable.Options.Builder();
 
             configurationAction?.Invoke(optionsBuilder);
@@ -101,25 +114,32 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Subscribes to the subreddit.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SubscribeAsync() =>
-            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Subscribe);
+        public async Task SubscribeAsync(CancellationToken cancellationToken = default) =>
+            await UpdateSubredditSubscriptionAsync(
+                UpdateSubredditSubscriptionCommand.SubscriptionAction.Subscribe,
+                cancellationToken);
 
         /// <summary>
         /// Unsubscribes from the subreddit.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UnsubscribeAsync() =>
-            await UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction.Unubscribe);
+        public async Task UnsubscribeAsync(CancellationToken cancellationToken = default) =>
+            await UpdateSubredditSubscriptionAsync(
+                UpdateSubredditSubscriptionCommand.SubscriptionAction.Unubscribe,
+                cancellationToken);
 
         /// <summary>
         /// Creates a link submission in the subreddit.
         /// </summary>
         /// <param name="details">The details of a link submission to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the created submission details.
         /// </returns>
-        public async Task<SubmissionDetails> CreateSubmissionAsync(LinkSubmissionCreationDetails details) =>
+        public async Task<SubmissionDetails> CreateSubmissionAsync(LinkSubmissionCreationDetails details, CancellationToken cancellationToken = default) =>
             await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
             {
                 SubredditName = _subredditName,
@@ -127,25 +147,28 @@ namespace Reddit.NET.Client.Interactions
                 Title = details.Title,
                 Url = details.Uri.AbsoluteUri,
                 ForceResubmit = details.Resubmit
-            });
+            },
+            cancellationToken);
 
         /// <summary>
         /// Creates a text submission in the subreddit.
         /// </summary>
         /// <param name="details">The details of a text submission to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the created submission details.
         /// </returns>
-        public async Task<SubmissionDetails> CreateSubmissionAsync(TextSubmissionCreationDetails details) =>
+        public async Task<SubmissionDetails> CreateSubmissionAsync(TextSubmissionCreationDetails details, CancellationToken cancellationToken = default) =>
             await CreateSubmissionAsync(new CreateSubredditSubmissionCommand.Parameters()
             {
                 SubredditName = _subredditName,
                 Type = CreateSubredditSubmissionCommand.SubmissionType.Self,
                 Title = details.Title,
                 Text = details.Text
-            });
+            },
+            cancellationToken);
 
-        private async Task UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction action)
+        private async Task UpdateSubredditSubscriptionAsync(UpdateSubredditSubscriptionCommand.SubscriptionAction action, CancellationToken cancellationToken)
         {
             var commandParameters = new UpdateSubredditSubscriptionCommand.Parameters()
             {
@@ -155,15 +178,15 @@ namespace Reddit.NET.Client.Interactions
 
             var updateSubredditSubscriptionCommand = new UpdateSubredditSubscriptionCommand(commandParameters);
 
-            await _client.ExecuteCommandAsync(updateSubredditSubscriptionCommand).ConfigureAwait(false);
+            await _client.ExecuteCommandAsync(updateSubredditSubscriptionCommand, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task<SubmissionDetails> CreateSubmissionAsync(CreateSubredditSubmissionCommand.Parameters parameters)
+        private async Task<SubmissionDetails> CreateSubmissionAsync(CreateSubredditSubmissionCommand.Parameters parameters, CancellationToken cancellationToken)
         {
             var createSubredditSubmissionCommand = new CreateSubredditSubmissionCommand(parameters);
 
             var response = await _client
-                .ExecuteCommandAsync<JsonDataResponse<CreateSubmissionDataNode>>(createSubredditSubmissionCommand)
+                .ExecuteCommandAsync<JsonDataResponse<CreateSubmissionDataNode>>(createSubredditSubmissionCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             if (response.Json.Errors.Any())
@@ -171,10 +194,10 @@ namespace Reddit.NET.Client.Interactions
                 throw new RedditClientApiException("Failed to create submission.", ErrorDetails.FromResponse(response));
             }
 
-            return await GetSubmissionDetailsAsync(submissionId: response.Data.Id);
+            return await GetSubmissionDetailsAsync(submissionId: response.Data.Id, cancellationToken);
         }
 
-        private async Task<SubmissionDetails> GetSubmissionDetailsAsync(string submissionId)
+        private async Task<SubmissionDetails> GetSubmissionDetailsAsync(string submissionId, CancellationToken cancellationToken)
         {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
@@ -186,7 +209,7 @@ namespace Reddit.NET.Client.Interactions
             var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
 
             var submissionWithComments = await _client
-                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return new SubmissionDetails(submissionWithComments.Submission);

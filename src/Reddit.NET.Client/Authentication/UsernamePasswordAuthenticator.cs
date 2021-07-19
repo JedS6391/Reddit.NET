@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Reddit.NET.Client.Authentication.Abstract;
@@ -29,7 +30,7 @@ namespace Reddit.NET.Client.Authentication
         }
 
         /// <inheritdoc />
-        protected override async Task<AuthenticationContext> DoAuthenticateAsync()
+        protected override async Task<AuthenticationContext> DoAuthenticateAsync(CancellationToken cancellationToken)
         {
             var authenticateCommand = new AuthenticateWithUsernamePasswordCommand(new AuthenticateWithUsernamePasswordCommand.Parameters()
             {
@@ -39,17 +40,17 @@ namespace Reddit.NET.Client.Authentication
                 ClientSecret = Credentials.ClientSecret
             });
 
-            var token = await ExecuteCommandAsync<Token>(authenticateCommand).ConfigureAwait(false);
+            var token = await CommandExecutor.ExecuteCommandAsync<Token>(authenticateCommand, cancellationToken).ConfigureAwait(false);
 
             return new UsernamePasswordAuthenticationContext(token);
         }
 
         /// <inheritdoc />
-        protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext)
+        protected override async Task<AuthenticationContext> DoRefreshAsync(AuthenticationContext currentContext, CancellationToken cancellationToken)
         {
             // The password grant type does not support refresh tokens, so we need to completely re-authenticate.
             // TODO: Find a better way to support 2-FA, as any provided 2-FA code will have expired by the point we need to refresh.
-            return await DoAuthenticateAsync().ConfigureAwait(false);
+            return await DoAuthenticateAsync(cancellationToken).ConfigureAwait(false);
         }
     }
 }

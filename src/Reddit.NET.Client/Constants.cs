@@ -1,10 +1,4 @@
-using Reddit.NET.Client.Command.Submissions;
-using Reddit.NET.Client.Command.Subreddits;
-using Reddit.NET.Client.Command.Users;
-using Reddit.NET.Client.Command.UserContent;
-using System.Linq;
 using System.Net.Http;
-using Reddit.NET.Client.Command.Multireddits;
 
 namespace Reddit.NET.Client
 {
@@ -14,12 +8,12 @@ namespace Reddit.NET.Client
     internal static class Constants
     {
         /// <summary>
-        /// The named used for <see cref="HttpClient" /> instances.
+        /// The name used for <see cref="HttpClient" /> instances.
         /// </summary>
         public static string HttpClientName = $"Reddit.NET.Client";
 
         /// <summary>
-        /// Constants used to determine reddit 'thing' kinds.
+        /// Constants used to determine reddit <i>thing</i> kinds.
         /// </summary>
         public static class Kind
         {

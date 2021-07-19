@@ -1,4 +1,6 @@
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -11,7 +13,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
     /// <summary>
     /// A <see cref="ListingEnumerable{TListing, TData, TMapped, TOptions}" /> implementation over the messages in the authenticated user's inbox.
     /// </summary>
-    public class InboxMessagesListingEnumerable
+    public sealed class InboxMessagesListingEnumerable
         : ListingEnumerable<Message.Listing, Message.Details, MessageDetails, InboxMessagesListingEnumerable.Options>
     {
         private readonly RedditClient _client;
@@ -24,27 +26,28 @@ namespace Reddit.NET.Client.Models.Public.Listings
         public InboxMessagesListingEnumerable(RedditClient client, Options options)
             : base(options)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <inheritdoc />
-        internal override async Task<Message.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Message.Listing> GetInitialListingAsync(CancellationToken cancellationToken) =>
+            await GetListingAsync(cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal override async Task<Message.Listing> GetNextListingAsync(Message.Listing currentListing)
+        internal override async Task<Message.Listing> GetNextListingAsync(Message.Listing currentListing, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
                 return null;
             }
 
-            return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
+            return await GetListingAsync(cancellationToken, currentListing.Data.After).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         internal override MessageDetails MapThing(IThing<Message.Details> thing) => new MessageDetails(thing);
 
-        private async Task<Message.Listing> GetListingAsync(string after = null)
+        private async Task<Message.Listing> GetListingAsync(CancellationToken cancellationToken, string after = null)
         {
             var getMyInboxMessagesCommand = new GetMyInboxMessagesCommand(new GetMyInboxMessagesCommand.Parameters()
             {
@@ -54,7 +57,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             });
 
             var messages = await _client
-                .ExecuteCommandAsync<Message.Listing>(getMyInboxMessagesCommand)
+                .ExecuteCommandAsync<Message.Listing>(getMyInboxMessagesCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return messages;
@@ -86,6 +89,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithMessageType(InboxMessageType type)
                 {
+                    Requires.NotNull(type, nameof(type));
+
                     Options.MessageType = type;
 
                     return this;

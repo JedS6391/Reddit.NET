@@ -1,4 +1,5 @@
 using System;
+using Microsoft;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 
@@ -9,8 +10,14 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// </summary>
     public class MessageDetails
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MessageDetails" /> class.
+        /// </summary>
+        /// <param name="thing">A <see cref="Thing{TData}" /> containing a message's data.</param>
         internal MessageDetails(IThing<Message.Details> thing)
         {
+            Requires.NotNull(thing, nameof(thing));
+
             Author = thing.Data.Author;
             Body = thing.Data.Body;
             CreatedAtUtc = thing.Data.CreatedAtUtc;

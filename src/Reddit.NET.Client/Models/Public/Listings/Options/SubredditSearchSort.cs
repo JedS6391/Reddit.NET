@@ -15,27 +15,27 @@ namespace Reddit.NET.Client.Models.Public.Listings.Options
         }
 
         /// <summary>
-        /// Gets the 'relevance' sort option.
+        /// Gets the <i>relevance</i> sort option.
         /// </summary>
         public static SubredditSearchSort Relevance => new SubredditSearchSort("relevance");
 
         /// <summary>
-        /// Gets the 'hot' sort option.
+        /// Gets the <i>hot</i> sort option.
         /// </summary>
         public static SubredditSearchSort Hot => new SubredditSearchSort("hot");
 
         /// <summary>
-        /// Gets the 'top' sort option.
+        /// Gets the <i>top</i> sort option.
         /// </summary>
         public static SubredditSearchSort Top => new SubredditSearchSort("top");
 
         /// <summary>
-        /// Gets the 'new' sort option.
+        /// Gets the <i>new</i> sort option.
         /// </summary>
         public static SubredditSearchSort New => new SubredditSearchSort("new");
 
         /// <summary>
-        /// Gets the 'comments' sort option.
+        /// Gets the <i>comments</i> sort option.
         /// </summary>
         public static SubredditSearchSort Comments => new SubredditSearchSort("comments");
     }

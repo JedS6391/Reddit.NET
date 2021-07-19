@@ -1,5 +1,7 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -18,6 +20,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="thing">A <see cref="Thing{TData}" /> containing a user's data.</param>
         internal UserDetails(IThing<User.Details> thing)
         {
+            Requires.NotNull(thing, nameof(thing));
+
             Name = thing.Data.Name;
             CommentKarma = thing.Data.CommentKarma;
             SubmissionKarma = thing.Data.LinkKarma;
@@ -30,6 +34,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="user">The user data.</param>
         internal UserDetails(User.Details user)
         {
+            Requires.NotNull(user, nameof(user));
+
             Name = user.Name;
             CommentKarma = user.CommentKarma;
             SubmissionKarma = user.LinkKarma;
@@ -64,9 +70,11 @@ namespace Reddit.NET.Client.Models.Public.Read
         public UserInteractor Interact(RedditClient client) => client.User(Name);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await Interact(client).GetDetailsAsync();
+            Requires.NotNull(client, nameof(client));
+
+            var details = await Interact(client).GetDetailsAsync(cancellationToken);
 
             Name = details.Name;
             CommentKarma = details.CommentKarma;

@@ -6,6 +6,8 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Command.Subreddits;
+using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Listings
 {
@@ -36,28 +38,29 @@ namespace Reddit.NET.Client.Models.Public.Listings
             ListingParameters parameters)
             : base(options)
         {
-            _client = client;
-            _parameters = parameters;
+            _client = Requires.NotNull(client, nameof(client));
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />
-        internal override async Task<Submission.Listing> GetInitialListingAsync() => await GetListingAsync().ConfigureAwait(false);
+        internal override async Task<Submission.Listing> GetInitialListingAsync(CancellationToken cancellationToken) =>
+            await GetListingAsync(cancellationToken).ConfigureAwait(false);
 
         /// <inheritdoc />
-        internal override async Task<Submission.Listing> GetNextListingAsync(Submission.Listing currentListing)
+        internal override async Task<Submission.Listing> GetNextListingAsync(Submission.Listing currentListing, CancellationToken cancellationToken)
         {
             if (string.IsNullOrEmpty(currentListing.Data.After))
             {
                 return null;
             }
 
-            return await GetListingAsync(currentListing.Data.After).ConfigureAwait(false);
+            return await GetListingAsync(cancellationToken, currentListing.Data.After).ConfigureAwait(false);
         }
 
         /// <inheritdoc />
         internal override SubmissionDetails MapThing(IThing<Submission.Details> thing) => new SubmissionDetails(thing);
 
-        private async Task<Submission.Listing> GetListingAsync(string after = null)
+        private async Task<Submission.Listing> GetListingAsync(CancellationToken cancellationToken, string after = null)
         {
             var commandParameters = new GetSubredditSubmissionsCommand.Parameters()
             {
@@ -75,7 +78,7 @@ namespace Reddit.NET.Client.Models.Public.Listings
             var getSubredditSubmissionsCommand = new GetSubredditSubmissionsCommand(commandParameters);
 
             var submissions = await _client
-                .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand)
+                .ExecuteCommandAsync<Submission.Listing>(getSubredditSubmissionsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return submissions;
@@ -124,6 +127,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithSort(SubredditSubmissionSort sort)
                 {
+                    Requires.NotNull(sort, nameof(sort));
+
                     Options.Sort = sort;
 
                     return this;
@@ -136,6 +141,8 @@ namespace Reddit.NET.Client.Models.Public.Listings
                 /// <returns>The updated builder.</returns>
                 public Builder WithTimeRange(TimeRangeSort timeRange)
                 {
+                    Requires.NotNull(timeRange, nameof(timeRange));
+
                     Options.TimeRange = timeRange;
 
                     return this;

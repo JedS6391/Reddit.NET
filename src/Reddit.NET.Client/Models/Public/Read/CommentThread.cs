@@ -1,3 +1,4 @@
+using Microsoft;
 using Reddit.NET.Client.Models.Internal;
 
 namespace Reddit.NET.Client.Models.Public.Read
@@ -20,8 +21,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="comment">The top-level comment of the thread.</param>
         internal CommentThread(Submission submission, Comment comment)
         {
-            _submission = submission;
-            _comment = comment;
+            _submission = Requires.NotNull(submission, nameof(submission));
+            _comment = Requires.NotNull(comment, nameof(comment));
         }
 
         /// <summary>

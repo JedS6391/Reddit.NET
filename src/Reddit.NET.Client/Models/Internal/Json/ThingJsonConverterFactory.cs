@@ -12,11 +12,15 @@ namespace Reddit.NET.Client.Models.Internal.Json
     /// A factory for <see cref="JsonConverter{T}" /> instances responsible for converting JSON to <see cref="IThing{TData}" /> objects.
     /// </summary>
     /// <remarks>
-    /// Internally, we use the <see cref="IThing{TData}" /> abstraction to represent the data returned by reddit. We can't
-    /// convert to an abstract type though, so we need a converter to handle that.
+    /// <para>
+    /// Internally, the <see cref="IThing{TData}" /> abstraction is used to represent the data returned by reddit.
     ///
+    /// It is not possible to convert to an interface/abstract class though, so we need a converter to handle that.
+    /// </para>
+    /// <para>
     /// This converter is also able to handle polymorphic data that sometimes reddit returns (e.g. an array of comments and submissions),
-    /// by dynamically determining the correct type based on the kind of the data.
+    /// by dynamically determining the correct <i>thing</i> type based on the kind of the data.
+    /// </para>
     /// </remarks>
     internal class ThingJsonConverterFactory : JsonConverterFactory
     {
@@ -102,7 +106,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
                 // Take a copy of the reader, so it can be deserialized after the initial parse to determine the type.
                 var readerCopy = reader;
 
-                // TODO: It would be more inefficient to read the 'kind' property directly via the reader.
+                // TODO: It would be more efficient to read the 'kind' property directly via the reader.
                 // The down side is it is more complex, so for now we simply parse the entire data.
                 if (!JsonDocument.TryParseValue(ref readerCopy, out var document))
                 {

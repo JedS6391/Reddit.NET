@@ -10,7 +10,7 @@ This section details the internals of the client, including some of the componen
 
 ## HTTP
 
-The client relies on the `IHttpClientFactory` abstraction to obtain `HttpClient` instance for all HTTP communication. This ensures the pooling and lifetime of the underlying message handler is managed appropriately. 
+The client relies on the `IHttpClientFactory` abstraction to obtain `HttpClient` instance for all HTTP communication. This ensures the pooling and lifetime of the underlying message handler is managed appropriately.
 
 All HTTP communication is performed asynchronously, making it clear which methods will perform a network request to obtain the data required.
 
@@ -18,7 +18,7 @@ The only component that actually issues HTTP requests is the `CommandExecutor` c
 
 ## Rate limiting
 
-The reddit API imposes rate limits for its endpoints. The client aims to respect the 60 requests per minute limit through the `RateLimiter` abstraction. Before each HTTP request, the client will attempt to obtain a permit for making that request. If no permits are available, the client will wait until permits are replenished so it can make the request. 
+The reddit API imposes rate limits for its endpoints. The client aims to respect the 60 requests per minute limit through the `RateLimiter` abstraction. Before each HTTP request, the client will attempt to obtain a permit for making that request. If no permits are available, the client will wait until permits are replenished so it can make the request.
 
 By default, permits are replenished at a rate of 1 permit per second. The client will allow up to a maximum of 5 permits to be leased at one time (i.e. 5 HTTP requests could be made at once).
 
@@ -26,22 +26,22 @@ This strategy aims to stay well under the limit, but in future it may be possibl
 
 ## Retries
 
-The client will attempt to retry a request up to three times when a transient HTTP response status code is returned by the reddit API. An exponential back-off sleep strategy is used between request retries. 
+The client will attempt to retry a request up to three times when a transient HTTP response status code is returned by the reddit API. An exponential back-off sleep strategy is used between request retries.
 
 **Transient HTTP response status codes:**
 
-- [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500) 
-- [502 Bad Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502) 
-- [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503) 
-- [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504) 
+- [500 Internal Server Error](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/500)
+- [502 Bad Gateway](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/502)
+- [503 Service Unavailable](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/503)
+- [504 Gateway Timeout](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/504)
 
 ## Logging
 
-Components used by the client are provided loggers via an `ILoggerFactory`. 
+Components used by the client are provided loggers via an `ILoggerFactory`.
 
 ## Authentication
 
-The client uses the reddit OAuth2 support to authenticate. This authentication is managed by an `IAuthenticator` implementation which provides access to a given `AuthenticationContext`. The `AuthenticationContext` contains an access token which will be used to authorize requests. 
+The client uses the reddit OAuth2 support to authenticate. This authentication is managed by an `IAuthenticator` implementation which provides access to a given `AuthenticationContext`. The `AuthenticationContext` contains an access token which will be used to authorize requests.
 
 The context also controls which commands can be executed, as certain commands will not be permitted in certain contexts (e.g. if no user is authenticated, then only read-only commands can be executed).
 
@@ -108,11 +108,11 @@ The `Listing<TData>` class represents this structure and serves as a base class 
 
 ### Converters
 
-The client employs a number of `JsonConverter` implementations for custom deserialization behaviour where appropriate. 
+The client employs a number of `JsonConverter` implementations for custom deserialization behaviour where appropriate.
 
 The `ThingJsonConverterFactory` is the most complex of these and provides the following benefits:
 
-- Deserialization of JSON to a generic `IThing<TData>` instance 
+- Deserialization of JSON to a generic `IThing<TData>` instance
 - Deserialization of polymorphic JSON (e.g. a list of comments and submissions)
 
 ## References

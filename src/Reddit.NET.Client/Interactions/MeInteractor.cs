@@ -8,7 +8,9 @@ using Reddit.NET.Client.Command.Users;
 using Reddit.NET.Client.Interactions.Abstract;
 using System.Linq;
 using Reddit.NET.Client.Models.Public.Write;
-using Reddit.NET.Client.Command.Multireddits;
+using Reddit.NET.Client.Models.Public.Streams;
+using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -23,9 +25,9 @@ namespace Reddit.NET.Client.Interactions
         /// Initializes a new instance of the <see cref="MeInteractor" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
-        public MeInteractor(RedditClient client)
+        internal MeInteractor(RedditClient client)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
 
         /// <summary>
@@ -35,16 +37,24 @@ namespace Reddit.NET.Client.Interactions
         public InboxInteractor Inbox() => new InboxInteractor(_client);
 
         /// <summary>
+        /// Gets a <see cref="UserStreamProvider" /> that can be used to access streams of submissions or comments.
+        /// </summary>
+        public UserStreamProvider Stream => new UserStreamProvider(_client);
+
+        /// <summary>
         /// Gets the details of the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the authenticated user.</returns>
-        public async Task<UserDetails> GetDetailsAsync()
+        public async Task<UserDetails> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var getMyDetailsCommand = new GetMyDetailsCommand();
 
             // We use the data model type to deserialize the response as the user details
             // API returns a plain data object, rather than wrapping the data within a thing.
-            var user = await _client.ExecuteCommandAsync<User.Details>(getMyDetailsCommand).ConfigureAwait(false);
+            var user = await _client
+                .ExecuteCommandAsync<User.Details>(getMyDetailsCommand, cancellationToken)
+                .ConfigureAwait(false);
 
             return new UserDetails(user);
         }
@@ -67,13 +77,14 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the multireddits that belong to the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the multireddits of the authenticated user.</returns>
-        public async Task<IReadOnlyList<MultiredditDetails>> GetMultiredditsAsync()
+        public async Task<IReadOnlyList<MultiredditDetails>> GetMultiredditsAsync(CancellationToken cancellationToken = default)
         {
             var getMyMultiredditsCommand = new GetMyMultiredditsCommand();
 
             var multireddits = await _client
-                .ExecuteCommandAsync<IReadOnlyList<Multireddit>>(getMyMultiredditsCommand)
+                .ExecuteCommandAsync<IReadOnlyList<Multireddit>>(getMyMultiredditsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return multireddits.Select(mr => new MultiredditDetails(mr)).ToList();
@@ -103,13 +114,14 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the karma breakdown of the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the karma breakdown of the authenticated user.</returns>
-        public async Task<IReadOnlyList<KarmaBreakdownDetails>> GetKarmaBreakdownAsync()
+        public async Task<IReadOnlyList<KarmaBreakdownDetails>> GetKarmaBreakdownAsync(CancellationToken cancellationToken = default)
         {
             var getMyKarmaBreakdownCommand = new GetMyKarmaBreakdownCommand();
 
             var karmaBreakdown = await _client
-                .ExecuteCommandAsync<KarmaList>(getMyKarmaBreakdownCommand)
+                .ExecuteCommandAsync<KarmaList>(getMyKarmaBreakdownCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return karmaBreakdown
@@ -121,13 +133,14 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the trophies of the authenticated user.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the trophies of the authenticated user.</returns>
-        public async Task<IReadOnlyList<TrophyDetails>> GetTrophiesAsync()
+        public async Task<IReadOnlyList<TrophyDetails>> GetTrophiesAsync(CancellationToken cancellationToken = default)
         {
             var getMyTrophiesCommand = new GetMyTrophiesCommand();
 
             var trophyList = await _client
-                .ExecuteCommandAsync<TrophyList>(getMyTrophiesCommand)
+                .ExecuteCommandAsync<TrophyList>(getMyTrophiesCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return trophyList
@@ -141,11 +154,14 @@ namespace Reddit.NET.Client.Interactions
         /// Creates a new multireddit belonging to the authenticated user.
         /// </summary>
         /// <param name="details">The details of a multireddit to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the created multireddit details.
         /// </returns>
-        public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details)
+        public async Task<MultiredditDetails> CreateMultiredditAsync(MultiredditCreationDetails details, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(details, nameof(details));
+
             var commandParameters = new CreateMultiredditCommand.Parameters()
             {
                 Name = details.Name,
@@ -154,7 +170,9 @@ namespace Reddit.NET.Client.Interactions
 
             var createMultiredditCommand = new CreateMultiredditCommand(commandParameters);
 
-            var multireddit = await _client.ExecuteCommandAsync<Multireddit>(createMultiredditCommand).ConfigureAwait(false);
+            var multireddit = await _client
+                .ExecuteCommandAsync<Multireddit>(createMultiredditCommand, cancellationToken)
+                .ConfigureAwait(false);
 
             return new MultiredditDetails(multireddit);
         }

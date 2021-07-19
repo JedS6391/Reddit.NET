@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Net.Http;
+using Microsoft;
 using Reddit.NET.Client.Authentication.Context;
 using Reddit.NET.Client.Models.Public.Read;
 
@@ -22,7 +23,7 @@ namespace Reddit.NET.Client.Command.UserContent
         public ApplyVoteCommand(Parameters parameters)
             : base()
         {
-            _parameters = parameters;
+            _parameters = Requires.NotNull(parameters, nameof(parameters));
         }
 
         /// <inheritdoc />

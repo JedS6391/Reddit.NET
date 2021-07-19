@@ -4,10 +4,13 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// Defines the base attributes shared by all reddit API objects.
     /// </summary>
     /// <remarks>
-    /// Each <see cref="IThing{TData}" /> has a kind which will define the type of data the thing represents 
-    /// (e.g. a comment 'thing' will have different data than a subreddit 'thing').
-    /// 
+    /// <para>
+    /// Each <see cref="IThing{TData}" /> has a kind which will define the type of data the thing represents
+    /// (e.g. a <i>comment thing</i> will have different data than a <i>subreddit thing</i>).
+    /// </para>
+    /// <para>
     /// This interface allows thing implementations to be cast in a number of ways, due to the covariant type parameter.
+    /// </para>
     /// </remarks>
     /// <see href="https://github.com/reddit-archive/reddit/wiki/JSON#thing-reddit-base-class" />
     /// <typeparam name="TData">The type of data this kind of thing contains.</typeparam>
@@ -23,7 +26,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
         /// </summary>
         /// <remarks>
         /// Full names are a combination of a thing's type and its identifier. For example, <c>t1_h0zsb4o</c>.
-        /// </remarks>        
+        /// </remarks>
         string Name { get; }
 
         /// <summary>

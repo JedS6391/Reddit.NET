@@ -4,6 +4,7 @@ using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Command.Submissions;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Public.Listings.Options;
+using System.Threading;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -17,7 +18,7 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
         /// <param name="submissionId">The base-36 ID of the submission to interact with.</param>
-        public SubmissionInteractor(RedditClient client, string submissionId)
+        internal SubmissionInteractor(RedditClient client, string submissionId)
             : base(client, kind: Constants.Kind.Submission, id: submissionId)
         {
         }
@@ -25,8 +26,9 @@ namespace Reddit.NET.Client.Interactions
         /// <summary>
         /// Gets the details of the submission.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The result contains the details of the submission.</returns>
-        public async Task<SubmissionDetails> GetDetailsAsync()
+        public async Task<SubmissionDetails> GetDetailsAsync(CancellationToken cancellationToken = default)
         {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
@@ -38,7 +40,7 @@ namespace Reddit.NET.Client.Interactions
             var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
 
             var submissionWithComments = await Client
-                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return new SubmissionDetails(submissionWithComments.Submission);
@@ -49,10 +51,14 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="limit">The number of comments to retrieve.</param>
         /// <param name="sort">The sort order to retrieve comments with.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The result contains a navigator over the comments.
         /// </returns>
-        public async Task<CommentThreadNavigator> GetCommentsAsync(int? limit = null, SubmissionsCommentSort sort = null)
+        public async Task<CommentThreadNavigator> GetCommentsAsync(
+            int? limit = null,
+            SubmissionsCommentSort sort = null,
+            CancellationToken cancellationToken = default)
         {
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
@@ -64,7 +70,7 @@ namespace Reddit.NET.Client.Interactions
             var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
 
             var submissionWithComments = await Client
-                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand)
+                .ExecuteCommandAsync<Submission.SubmissionWithComments>(getSubmissionDetailsWithCommentsCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return new CommentThreadNavigator(

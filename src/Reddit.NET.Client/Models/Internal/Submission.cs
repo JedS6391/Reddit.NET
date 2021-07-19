@@ -65,7 +65,7 @@ namespace Reddit.NET.Client.Models.Internal
             public bool IsSelfPost { get; private set; }
 
             /// <summary>
-            /// Gets a value indicating whether the submission is 'Not Safe For Work' (NSFW).
+            /// Gets a value indicating whether the submission is <i>Not Safe For Work</i> (NSFW).
             /// </summary>
             [JsonPropertyName("over_18")]
             [JsonInclude]

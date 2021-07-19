@@ -1,12 +1,15 @@
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.UserContent;
 using Reddit.NET.Client.Interactions.Abstract;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Listings;
 using Reddit.NET.Client.Models.Public.Read;
+using Reddit.NET.Client.Models.Public.Streams;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -21,10 +24,15 @@ namespace Reddit.NET.Client.Interactions
         /// Initializes a new instance of the <see cref="InboxInteractor" /> class.
         /// </summary>
         /// <param name="client">A <see cref="RedditClient" /> instance that can be used to interact with reddit.</param>
-        public InboxInteractor(RedditClient client)
+        internal InboxInteractor(RedditClient client)
         {
-            _client = client;
+            _client = Requires.NotNull(client, nameof(client));
         }
+
+        /// <summary>
+        /// Gets a <see cref="InboxStreamProvider" /> that can be used to access streams of inbox messages.
+        /// </summary>
+        public InboxStreamProvider Stream => new InboxStreamProvider(_client);
 
         /// <summary>
         /// Gets the messages in the authenticated user's inbox.
@@ -48,11 +56,15 @@ namespace Reddit.NET.Client.Interactions
         /// </summary>
         /// <param name="message">The message to reply to.</param>
         /// <param name="text">The text of the reply to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the reply message details.
         /// </returns>
-        public async Task<MessageDetails> ReplyAsync(MessageDetails message, string text)
+        public async Task<MessageDetails> ReplyAsync(MessageDetails message, string text, CancellationToken cancellationToken = default)
         {
+            Requires.NotNull(message, nameof(message));
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
             var createCommentCommand = new ReplyToMessageCommand(new ReplyToMessageCommand.Parameters()
             {
                 MessageFullName = message.FullName,
@@ -60,7 +72,7 @@ namespace Reddit.NET.Client.Interactions
             });
 
             var response = await _client
-                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand)
+                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return new MessageDetails(thing: response.Data.Things[0] as IThing<Message.Details>);

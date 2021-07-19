@@ -4,6 +4,8 @@ using Reddit.NET.Client.Models.Public.Abstract;
 using Reddit.NET.Client.Interactions;
 using System.Threading.Tasks;
 using System;
+using System.Threading;
+using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -18,6 +20,8 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <param name="thing">A <see cref="Thing{TData}" /> containing a subreddit's data.</param>
         internal SubredditDetails(IThing<Subreddit.Details> thing)
         {
+            Requires.NotNull(thing, nameof(thing));
+
             Name = thing.Data.DisplayName;
             Title = thing.Data.Title;
             Description = thing.Data.Description;
@@ -64,9 +68,11 @@ namespace Reddit.NET.Client.Models.Public.Read
         public SubredditInteractor Interact(RedditClient client) => client.Subreddit(Name);
 
         /// <inheritdoc />
-        public async Task ReloadAsync(RedditClient client)
+        public async Task ReloadAsync(RedditClient client, CancellationToken cancellationToken = default)
         {
-            var details = await Interact(client).GetDetailsAsync();
+            Requires.NotNull(client, nameof(client));
+
+            var details = await Interact(client).GetDetailsAsync(cancellationToken);
 
             Name = details.Name;
             Title = details.Title;

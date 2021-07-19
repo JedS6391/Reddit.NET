@@ -1,4 +1,6 @@
+using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Command.UserContent;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -7,7 +9,7 @@ using Reddit.NET.Client.Models.Public.Read;
 namespace Reddit.NET.Client.Interactions.Abstract
 {
     /// <summary>
-    /// Defines functionality shared by user content interactors.
+    /// Defines functionality shared by user content interactors i.e. submissions and comments.
     /// </summary>
     public abstract class UserContentInteractor : IInteractor
     {
@@ -19,9 +21,9 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// <param name="id">The base-36 ID of the user content to interact with.</param>
         protected UserContentInteractor(RedditClient client, string kind, string id)
         {
-            Client = client;
-            Kind = kind;
-            Id = id;
+            Client = Requires.NotNull(client, nameof(client));
+            Kind = Requires.NotNull(kind, nameof(kind));
+            Id = Requires.NotNull(id, nameof(id));
         }
 
         /// <summary>
@@ -47,32 +49,42 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// <summary>
         /// Upvotes the content.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UpvoteAsync() => await ApplyVoteAsync(VoteDirection.Upvoted).ConfigureAwait(false);
+        public async Task UpvoteAsync(CancellationToken cancellationToken = default) =>
+            await ApplyVoteAsync(VoteDirection.Upvoted, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Downvotes the content.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DownvoteAsync() => await ApplyVoteAsync(VoteDirection.Downvoted).ConfigureAwait(false);
+        public async Task DownvoteAsync(CancellationToken cancellationToken = default) =>
+            await ApplyVoteAsync(VoteDirection.Downvoted, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Removes any vote on the content.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UnvoteAsync() => await ApplyVoteAsync(VoteDirection.NoVote).ConfigureAwait(false);
+        public async Task UnvoteAsync(CancellationToken cancellationToken = default) =>
+            await ApplyVoteAsync(VoteDirection.NoVote, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Saves the content.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task SaveAsync() => await SaveOrUnsaveAsync(unsave: false).ConfigureAwait(false);
+        public async Task SaveAsync(CancellationToken cancellationToken = default) =>
+            await SaveOrUnsaveAsync(unsave: false, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Unsaves the content.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task UnsaveAsync() => await SaveOrUnsaveAsync(unsave: true).ConfigureAwait(false);
+        public async Task UnsaveAsync(CancellationToken cancellationToken = default) =>
+            await SaveOrUnsaveAsync(unsave: true, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
         /// Adds a reply to the content.
@@ -91,11 +103,14 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// </list>
         /// </remarks>
         /// <param name="text">The text of the comment to create.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>
         /// A task representing the asynchronous operation. The task result contains the created comment details.
         /// </returns>
-        public async Task<CommentDetails> ReplyAsync(string text)
+        public async Task<CommentDetails> ReplyAsync(string text, CancellationToken cancellationToken = default)
         {
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
             var createCommentCommand = new CreateCommentCommand(new CreateCommentCommand.Parameters()
             {
                 ParentFullName = FullName,
@@ -103,7 +118,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
             });
 
             var response = await Client
-                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand)
+                .ExecuteCommandAsync<JsonDataResponse<CreateCommentDataNode>>(createCommentCommand, cancellationToken)
                 .ConfigureAwait(false);
 
             return new CommentDetails(thing: response.Data.Things[0] as IThing<Comment.Details>);
@@ -112,18 +127,19 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// <summary>
         /// Deletes the content.
         /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
-        public async Task DeleteAsync()
+        public async Task DeleteAsync(CancellationToken cancellationToken = default)
         {
             var deleteContentCommand = new DeleteContentCommand(new DeleteContentCommand.Parameters()
             {
                 FullName = FullName,
             });
 
-            await Client.ExecuteCommandAsync(deleteContentCommand).ConfigureAwait(false);
+            await Client.ExecuteCommandAsync(deleteContentCommand, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task ApplyVoteAsync(VoteDirection direction)
+        private async Task ApplyVoteAsync(VoteDirection direction, CancellationToken cancellationToken)
         {
             var applyVoteCommand = new ApplyVoteCommand(new ApplyVoteCommand.Parameters()
             {
@@ -131,10 +147,10 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 Direction = direction
             });
 
-            await Client.ExecuteCommandAsync(applyVoteCommand).ConfigureAwait(false);
+            await Client.ExecuteCommandAsync(applyVoteCommand, cancellationToken).ConfigureAwait(false);
         }
 
-        private async Task SaveOrUnsaveAsync(bool unsave)
+        private async Task SaveOrUnsaveAsync(bool unsave, CancellationToken cancellationToken)
         {
             var saveOrUnsaveContentCommand = new SaveOrUnsaveContentCommand(new SaveOrUnsaveContentCommand.Parameters()
             {
@@ -142,7 +158,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 Unsave = unsave
             });
 
-            await Client.ExecuteCommandAsync(saveOrUnsaveContentCommand).ConfigureAwait(false);
+            await Client.ExecuteCommandAsync(saveOrUnsaveContentCommand, cancellationToken).ConfigureAwait(false);
         }
     }
 }

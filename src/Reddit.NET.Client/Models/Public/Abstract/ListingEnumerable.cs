@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Reddit.NET.Client.Models.Internal.Base;
 
 namespace Reddit.NET.Client.Models.Public.Abstract
@@ -11,13 +12,17 @@ namespace Reddit.NET.Client.Models.Public.Abstract
     /// Provides mechanisms to asynchronously enumerate over the data contained in a <see cref="Listing{TData}" />.
     /// </summary>
     /// <remarks>
+    /// <para>
     /// A <see cref="Listing{TData}" /> is how the reddit API supports pagination.
-    ///
+    /// </para>
+    /// <para>
     /// A listing enumerable wraps a reddit API call that returns a listing and provides the ability to
     /// move through the data in each listing.
-    ///
+    /// </para>
+    /// <para>
     /// A listing enumerable instance operate in a lazy manner, meaning no API calls will be made until enumeration begins.
     /// The enumerator will request a page of data at a time and returned each child in that page before fetching the next page.
+    /// </para>
     /// </remarks>
     /// <typeparam name="TListing">The type of listing the enumerable manages.</typeparam>
     /// <typeparam name="TData">The type of data associated with the things that this listing contains.</typeparam>
@@ -34,7 +39,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// <param name="options">The options available to the listing.</param>
         protected ListingEnumerable(TOptions options)
         {
-            ListingOptions = options;
+            ListingOptions = Requires.NotNull(options, nameof(options));
         }
 
         /// <summary>
@@ -48,8 +53,9 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// <remarks>
         /// This method won't be called until enumeration starts (i.e. the enumerator is lazy).
         /// </remarks>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the initial listing data.</returns>
-        internal abstract Task<TListing> GetInitialListingAsync();
+        internal abstract Task<TListing> GetInitialListingAsync(CancellationToken cancellationToken);
 
         /// <summary>
         /// Provides the data for the next listing.
@@ -58,14 +64,16 @@ namespace Reddit.NET.Client.Models.Public.Abstract
         /// This method will be called after the data in the current page has been enumerated.
         /// If the current page indicates no next page (i.e. <see cref="ListingData{TData}.After" /> is <see langword="null" />).
         /// </remarks>
+        /// <param name="currentListing">The current listing.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation. The task result contains the next listing data.</returns>
-        internal abstract Task<TListing> GetNextListingAsync(TListing currentListing);
+        internal abstract Task<TListing> GetNextListingAsync(TListing currentListing, CancellationToken cancellationToken);
 
         /// <summary>
         /// Maps a <see cref="Thing{TData}" /> entity to an instance of type <typeparamref name="TMapped" />.
         /// </summary>
         /// <param name="thing">The thing to map.</param>
-        /// <returns></returns>
+        /// <returns>The mapped thing.</returns>
         internal abstract TMapped MapThing(IThing<TData> thing);
 
         /// <inheritdoc />
@@ -97,11 +105,16 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             /// <param name="cancellationToken">A <see cref="CancellationToken" /> that may be used to cancel the asynchronous iteration.</param>
             internal ListingEnumerator(
                 TOptions options,
-                Func<Task<TListing>> initialListingProvider,
-                Func<TListing, Task<TListing>> nextListingProvider,
+                Func<CancellationToken, Task<TListing>> initialListingProvider,
+                Func<TListing, CancellationToken, Task<TListing>> nextListingProvider,
                 Func<IThing<TData>, TMapped> mapper,
                 CancellationToken cancellationToken = default)
             {
+                Requires.NotNull(options, nameof(options));
+                Requires.NotNull(initialListingProvider, nameof(initialListingProvider));
+                Requires.NotNull(nextListingProvider, nameof(nextListingProvider));
+                Requires.NotNull(mapper, nameof(mapper));
+
                 _context = new ListingEnumeratorContext(
                     options,
                     initialListingProvider,
@@ -118,39 +131,31 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             {
                 _context.CancellationToken.ThrowIfCancellationRequested();
 
-                if (!_context.HasStarted)
+                if (!_context.HasStarted && !await TryLoadInitialPageAsync().ConfigureAwait(false))
                 {
-                    if (!await TryLoadInitialPageAsync().ConfigureAwait(false))
-                    {
-                        // No data for the initial page.
-                        return false;
-                    }
+                    // No data for the initial page.
+                    return false;
                 }
 
                 if (_context.Options.MaximumItems.HasValue && _context.Count >= _context.Options.MaximumItems)
                 {
+                    // The maximum number of items to enumerate has been met.
                     return false;
                 }
 
                 _context.MoveNext();
 
-                if (!_context.HasMoreData)
+                if (!_context.HasMoreData && !await TryLoadNextPageAsync().ConfigureAwait(false))
                 {
-                    if (!await TryLoadNextPageAsync().ConfigureAwait(false))
-                    {
-                        // No data for the next page.
-                        return false;
-                    }
+                    // No data for the next page.
+                    return false;
                 }
 
                 return _context.HasMoreData;
             }
 
             /// <inheritdoc />
-            public void Reset()
-            {
-                throw new NotSupportedException();
-            }
+            public void Reset() => throw new NotSupportedException();
 
             /// <inheritdoc />
             public ValueTask DisposeAsync() => ValueTask.CompletedTask;
@@ -164,7 +169,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
 
                 var initialListing = await _context
                     .InitialListingProvider
-                    .Invoke()
+                    .Invoke(_context.CancellationToken)
                     .ConfigureAwait(false);
 
                 if (initialListing == null || !initialListing.Data.Children.Any())
@@ -186,7 +191,7 @@ namespace Reddit.NET.Client.Models.Public.Abstract
 
                 var nextListing = await _context
                     .NextListingProvider
-                    .Invoke(_context.CurrentListing)
+                    .Invoke(_context.CurrentListing, _context.CancellationToken)
                     .ConfigureAwait(false);
 
                 if (nextListing == null || !nextListing.Data.Children.Any())
@@ -204,11 +209,16 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             {
                 public ListingEnumeratorContext(
                     TOptions options,
-                    Func<Task<TListing>> initialListingProvider,
-                    Func<TListing, Task<TListing>> nextListingProvider,
+                    Func<CancellationToken, Task<TListing>> initialListingProvider,
+                    Func<TListing, CancellationToken, Task<TListing>> nextListingProvider,
                     Func<IThing<TData>, TMapped> mapper,
                     CancellationToken cancellationToken)
                 {
+                    Requires.NotNull(options, nameof(options));
+                    Requires.NotNull(initialListingProvider, nameof(initialListingProvider));
+                    Requires.NotNull(nextListingProvider, nameof(nextListingProvider));
+                    Requires.NotNull(mapper, nameof(mapper));
+
                     Options = options;
                     InitialListingProvider = initialListingProvider;
                     NextListingProvider = nextListingProvider;
@@ -221,8 +231,8 @@ namespace Reddit.NET.Client.Models.Public.Abstract
                 }
 
                 public TOptions Options { get; }
-                public Func<Task<TListing>> InitialListingProvider { get; }
-                public Func<TListing, Task<TListing>> NextListingProvider { get; }
+                public Func<CancellationToken, Task<TListing>> InitialListingProvider { get; }
+                public Func<TListing, CancellationToken, Task<TListing>> NextListingProvider { get; }
                 public Func<IThing<TData>, TMapped> Mapper { get; }
                 public TListing CurrentListing { get; private set; }
                 public int Position { get; private set; }
@@ -236,6 +246,8 @@ namespace Reddit.NET.Client.Models.Public.Abstract
 
                 public void UpdateListing(TListing listing)
                 {
+                    Requires.NotNull(listing, nameof(listing));
+
                     Exhausted = listing.Data.After == CurrentListing?.Data.After ||
                         string.IsNullOrEmpty(listing.Data.After);
 

@@ -9,14 +9,14 @@ namespace Reddit.NET.Client.Models.Internal.Base
     internal class JsonDataResponse<TDataNode>
     {
         /// <summary>
-        /// Gets the 'json' node.
+        /// Gets the <c>json</c> node.
         /// </summary>
         [JsonPropertyName("json")]
         [JsonInclude]
         public JsonNode<TDataNode> Json { get; private set; }
 
         /// <summary>
-        /// Gets the 'data' node of the 'json' node.
+        /// Gets the <c>data</c> node of the <c>json</c> node.
         /// </summary>
         [JsonIgnore]
         public TDataNode Data => Json.Data;
@@ -28,7 +28,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     internal class JsonNode<TDataNode>
     {
         /// <summary>
-        /// Gets the 'errors' list.
+        /// Gets the <c>errors</c> list.
         /// </summary>
         /// <remarks>
         /// Errors are represented as lists, which requires a nested list. An example of an error would be:
@@ -39,7 +39,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
         public List<List<string>> Errors { get; private set; }
 
         /// <summary>
-        /// Gets the 'data' node.
+        /// Gets the <c>data</c> node.
         /// </summary>
         [JsonPropertyName("data")]
         [JsonInclude]
@@ -68,21 +68,21 @@ namespace Reddit.NET.Client.Models.Internal.Base
     internal class CreateSubmissionDataNode
     {
         /// <summary>
-        /// Gets the 'url'.
+        /// Gets the <c>url</c>.
         /// </summary>
         [JsonPropertyName("url")]
         [JsonInclude]
         public string Url { get; private set; }
 
         /// <summary>
-        /// Gets the 'id'.
+        /// Gets the <c>id</c>.
         /// </summary>
         [JsonPropertyName("id")]
         [JsonInclude]
         public string Id { get; private set; }
 
         /// <summary>
-        /// Gets the 'name'.
+        /// Gets the <c>name</c>.
         /// </summary>
         [JsonPropertyName("name")]
         [JsonInclude]
@@ -116,7 +116,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     internal class CreateCommentDataNode
     {
         /// <summary>
-        /// Gets the 'things'.
+        /// Gets the <c>things</c>.
         /// </summary>
         [JsonPropertyName("things")]
         [JsonInclude]

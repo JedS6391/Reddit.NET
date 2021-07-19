@@ -5,7 +5,7 @@ namespace Reddit.NET.Client.Exceptions
     /// <summary>
     /// Represents an error that occurs when building a <see cref="RedditClient" /> instance.
     /// </summary>
-    public class RedditClientBuilderException : Exception
+    public sealed class RedditClientBuilderException : Exception
     {
         /// <summary>
         /// Initializes a new instance of the <see cref="RedditClientBuilderException" /> class.
