@@ -131,29 +131,24 @@ namespace Reddit.NET.Client.Models.Public.Abstract
             {
                 _context.CancellationToken.ThrowIfCancellationRequested();
 
-                if (!_context.HasStarted)
+                if (!_context.HasStarted && !await TryLoadInitialPageAsync().ConfigureAwait(false))
                 {
-                    if (!await TryLoadInitialPageAsync().ConfigureAwait(false))
-                    {
-                        // No data for the initial page.
-                        return false;
-                    }
+                    // No data for the initial page.
+                    return false;
                 }
 
                 if (_context.Options.MaximumItems.HasValue && _context.Count >= _context.Options.MaximumItems)
                 {
+                    // The maximum number of items to enumerate has been met.
                     return false;
                 }
 
                 _context.MoveNext();
 
-                if (!_context.HasMoreData)
+                if (!_context.HasMoreData && !await TryLoadNextPageAsync().ConfigureAwait(false))
                 {
-                    if (!await TryLoadNextPageAsync().ConfigureAwait(false))
-                    {
-                        // No data for the next page.
-                        return false;
-                    }
+                    // No data for the next page.
+                    return false;
                 }
 
                 return _context.HasMoreData;
