@@ -6,7 +6,7 @@ nav_order: 5
 
 # Samples
 
-Below are a few samples of common interactions that the client exposes.
+Below are a few samples of interactions that the client exposes.
 
 ## Retrieving subreddit submissions
 
@@ -67,6 +67,24 @@ await foreach (UserContentDetails content in savedHistory)
 }
 ```
 
+## Create a multireddit
+
+```cs
+MeInteractor me = client.Me(); 
+
+MultiredditDetails multiredditDetails = await me.CreateMultiredditAsync(new MultiredditCreationDetails(
+    name: "Ask X",
+    subreddits: new string[] { "askreddit", "askscience" }
+));
+
+// Add another subreddit to the newly created multireddit
+await multiredditDetails
+    .Interact(client)
+    .AddSubredditAsync("askcomputerscience");
+
+await multiredditDetails.ReloadAsync(client);
+```
+
 ## Voting on a submission/comment
 
 > **Warning**: Votes must be cast by a human (see the [reddit API documentation](https://www.reddit.com/dev/api/oauth#POST_api_vote) for details).
@@ -80,6 +98,17 @@ SubmissionInteractor submission = submissionDetails.Interact(client);
 
 // There are equivalent methods for downvote/unvote.
 await submission.UpvoteAsync();
+```
+
+## Create a submission
+
+```cs
+SubredditInteractor askReddit = client.Subreddit("askreddit");
+
+SubmissionDetails submission = await subreddit.CreateSubmissionAsync(new LinkSubmissionCreationDetails(
+    title: "Reddit.NET client",
+    uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
+    resubmit: true));
 ```
 
 ## Navigating a comment thread
@@ -97,5 +126,20 @@ foreach (CommentThread topLevelThread in comments)
     {
         // Do something with reply thread     
     }
+}
+```
+
+## Streaming new subreddit submissions
+
+```cs
+SubredditInteractor askReddit = client.Subreddit("askreddit");
+
+// No queries will be made until enumeration starts
+IAsyncEnumerable<SubmissionDetails> newSubmissions = askReddit.Stream.SubmissionsAsync();
+
+await foreach (SubmissionDetails submission in newSubmissions)
+{
+    // Do something with the new submission
+    ...
 }
 ```
