@@ -4,7 +4,7 @@ using Microsoft;
 namespace Reddit.NET.Client.Authentication.Credential
 {
     /// <summary>
-    /// Encapsulates the available details used during authentication with reddit.
+    /// Encapsulates the details available for authentication with reddit.
     /// </summary>
     public abstract class Credentials
     {

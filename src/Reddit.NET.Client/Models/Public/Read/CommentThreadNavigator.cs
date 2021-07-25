@@ -25,7 +25,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// </remarks>
     /// <example>
     /// Note that the replies in a thread can be directly enumerated over, as below:
-    /// <code>
+    /// <code language="cs">
     /// CommentThreadNavigator navigator = ...;
     ///
     /// foreach (CommentThread topLevelThread in navigator)
