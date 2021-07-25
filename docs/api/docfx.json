@@ -10,15 +10,15 @@
           "src": "../../src"
         }
       ],
-      "dest": "api"      
+      "dest": "reference"      
     }
   ],
   "build": {
     "content": [
       {
         "files": [
-          "api/**.yml",
-          "api/index.md"
+          "reference/**.yml",
+          "reference/index.md"
         ]
       },
       {
