@@ -51,7 +51,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// </summary>
     /// <example>
     /// An example of the data returned by the subreddit submission endpoint:
-    /// <code>
+    /// <code language="json">
     /// {
     ///     "json": {
     ///         "errors": [],
@@ -94,7 +94,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// </summary>
     /// <example>
     /// An example of the data returned by the subreddit submission endpoint:
-    /// <code>
+    /// <code language="json">
     /// {
     ///     "json": {
     ///         "errors" : [],

@@ -13,6 +13,9 @@ namespace Reddit.NET.Client.Authentication.Credential
     /// <summary>
     /// A <see cref="Credentials" /> implementation used for interactive authentication.
     /// </summary>
+    /// <remarks>
+    /// Interactive authentication requires a user to perform actions to complete the authentication.
+    /// </remarks>
     public sealed class InteractiveCredentials : Credentials
     {
         /// <summary>

@@ -8,7 +8,7 @@ using Reddit.NET.Client.Models.Internal;
 namespace Reddit.NET.Client.Authentication.Abstract
 {
     /// <summary>
-    /// Represents a context which can be used when performing operations that require authentication.
+    /// Represents a context for performing operations that require authentication.
     /// </summary>
     public abstract class AuthenticationContext
     {

@@ -31,8 +31,8 @@ namespace Reddit.NET.Client
     /// </remarks>
     /// <example>
     /// An example of interacting with a specific subreddit:
-    /// <code>
-    /// Interact with a subreddit
+    /// <code language="cs">
+    /// // Interact with a subreddit
     /// SubredditInteractor askReddit = client.Subreddit("askreddit");
     ///
     /// SubredditDetails askRedditDetails = await askReddit.GetDetailsAsync();
