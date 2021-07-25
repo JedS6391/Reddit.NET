@@ -4,7 +4,7 @@ title: About
 nav_order: 1
 ---
 
-# Reddit .NET Client
+# Reddit.NET
 
 A .NET client for interacting with [reddit](https://www.reddit.com).
 
