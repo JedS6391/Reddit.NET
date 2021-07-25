@@ -7,7 +7,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// Defines the attributes of a reddit API error object.
     /// </summary>
     /// <example>
-    /// <code>
+    /// <code language="json">
     /// {
     ///     "fields": [
     ///         "name"

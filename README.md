@@ -1,4 +1,4 @@
-# Reddit .NET client
+# Reddit.NET
 
 [![nuget][nuget-image]][nuget-url]
 [![status][status-image]][status-url]
