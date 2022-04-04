@@ -6,12 +6,12 @@ using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using System.Text.Json;
 using System.Threading;
+using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
 using Polly;
 using Reddit.NET.Client.Authentication.Abstract;
-using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Read;
@@ -53,7 +53,7 @@ namespace Reddit.NET.Client.Command
 
         private readonly ILogger<CommandExecutor> _logger;
         private readonly IHttpClientFactory _httpClientFactory;
-        private readonly IRateLimiter _rateLimiter;
+        private readonly RateLimiter _rateLimiter;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommandExecutor" /> class.
@@ -61,7 +61,7 @@ namespace Reddit.NET.Client.Command
         /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
         /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instanced used to create clients for HTTP communication.</param>
         public CommandExecutor(ILogger<CommandExecutor> logger, IHttpClientFactory httpClientFactory)
-            : this(logger, httpClientFactory, new TokenBucketRateLimiter(logger, TokenBucketRateLimiterOptions.Default))
+            : this(logger, httpClientFactory, new TokenBucketRateLimiter(DefaultTokenBucketRateLimiterOptions.Instance))
         {
         }
 
@@ -70,11 +70,11 @@ namespace Reddit.NET.Client.Command
         /// </summary>
         /// <param name="logger">An <see cref="ILogger{TCategoryName}" /> instance used for writing log messages.</param>
         /// <param name="httpClientFactory">An <see cref="IHttpClientFactory" /> instance used to create clients for HTTP communication.</param>
-        /// <param name="rateLimiter">An <see cref="IRateLimiter" /> instance used to respect request rate limits.</param>
+        /// <param name="rateLimiter">A <see cref="RateLimiter" /> instance used to respect request rate limits.</param>
         internal CommandExecutor(
             ILogger<CommandExecutor> logger,
             IHttpClientFactory httpClientFactory,
-            IRateLimiter rateLimiter)
+            RateLimiter rateLimiter)
         {
             _logger = Requires.NotNull(logger, nameof(logger));
             _httpClientFactory = Requires.NotNull(httpClientFactory, nameof(httpClientFactory));
@@ -177,7 +177,7 @@ namespace Reddit.NET.Client.Command
 
         private async Task<HttpResponseMessage> ExecuteRequestAsync(Func<HttpRequestMessage> requestFunc, CancellationToken cancellationToken)
         {
-            using var lease = await _rateLimiter.AcquireAsync();
+            using var lease = await _rateLimiter.WaitAsync(permitCount: 1, cancellationToken);
 
             if (!lease.IsAcquired)
             {

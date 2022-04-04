@@ -25,21 +25,18 @@
     <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
     <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.0.43" />
-    <PackageReference Include="System.Text.Json" Version="7.0.0" />
     <PackageReference Include="System.Net.Http.Json" Version="7.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.0" />
+    <PackageReference Include="System.Threading.RateLimiting" Version="7.0.0" />
     <PackageReference Include="Polly" Version="7.2.3" />
   </ItemGroup>
+
   <ItemGroup>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Reddit.NET.Client.UnitTests</_Parameter1>
     </AssemblyAttribute>
     <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
       <_Parameter1>Reddit.NET.Client.IntegrationTests</_Parameter1>
-    </AssemblyAttribute>
-    <!-- TODO: This is only needed because the IRateLimiter interface is not exposed publicly 
-               (which should eventually be replaced with BCL offerings). -->
-    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleToAttribute">
-      <_Parameter1>DynamicProxyGenAssembly2</_Parameter1>
     </AssemblyAttribute>    
   </ItemGroup>  
 </Project>

@@ -3,6 +3,8 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
+using System.Threading;
+using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 using System.Web;
 using Microsoft.Extensions.Logging;
@@ -12,7 +14,6 @@ using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Credential;
 using Reddit.NET.Client.Builder;
 using Reddit.NET.Client.Command;
-using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.UnitTests.Shared;
@@ -24,7 +25,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
     {
         private ILogger<CommandExecutor> _logger;
         private IHttpClientFactory _httpClientFactory;
-        private IRateLimiter _rateLimiter;
+        private RateLimiter _rateLimiter;
         private MockHttpMessageHandler _httpMessageHandler;
         private CommandExecutor _commandExecutor;
         private ITokenStorage _tokenStorage;
@@ -34,7 +35,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
         {
             _logger = Substitute.For<ILogger<CommandExecutor>>();
             _httpClientFactory = Substitute.For<IHttpClientFactory>();
-            _rateLimiter = Substitute.For<IRateLimiter>();
+            _rateLimiter = Substitute.For<RateLimiter>();
             _httpMessageHandler = new MockHttpMessageHandler();
 
             _httpMessageHandler.RequestFunc = (request) =>
@@ -47,7 +48,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var successfulLease = SuccessfulLease();
 
             _rateLimiter
-                .AcquireAsync(Arg.Any<int>())
+                .WaitAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
                 .Returns(successfulLease);
 
             _commandExecutor = new CommandExecutor(
@@ -442,9 +443,9 @@ namespace Reddit.NET.Client.UnitTests.Authentication
                 .CreateClient(Arg.Any<string>());
         }
 
-        private static ValueTask<PermitLease> SuccessfulLease()
+        private static ValueTask<RateLimitLease> SuccessfulLease()
         {
-            var lease = Substitute.For<PermitLease>();
+            var lease = Substitute.For<RateLimitLease>();
 
             lease.IsAcquired.Returns(true);
 
