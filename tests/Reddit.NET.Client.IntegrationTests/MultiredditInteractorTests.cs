@@ -31,7 +31,7 @@ namespace Reddit.NET.Client.IntegrationTests
             var multiredditDetails = await multireddit.GetDetailsAsync();
 
             Assert.IsNotNull(multiredditDetails);
-            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Name);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Id);
         }
 
         [Test]
@@ -84,7 +84,7 @@ namespace Reddit.NET.Client.IntegrationTests
                 subreddits: new string[] { "askreddit", "pics" }));
 
             Assert.IsNotNull(multiredditDetails);
-            Assert.AreEqual("Test multireddit deletion", multiredditDetails.Name);
+            Assert.AreEqual("Test multireddit deletion", multiredditDetails.DisplayName);
 
             await multiredditDetails.Interact(_client).DeleteAsync();
 
@@ -105,7 +105,7 @@ namespace Reddit.NET.Client.IntegrationTests
             var multiredditDetails = await multireddit.GetDetailsAsync();
 
             Assert.IsNotNull(multiredditDetails);
-            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Name);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Id);
 
             await multireddit.AddSubredditAsync("askreddit");
 
@@ -131,7 +131,7 @@ namespace Reddit.NET.Client.IntegrationTests
             var multiredditDetails = await multireddit.GetDetailsAsync();
 
             Assert.IsNotNull(multiredditDetails);
-            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Name);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Id);
 
             var exception = Assert.ThrowsAsync<RedditClientApiException>(async () =>
                 await multireddit.AddSubredditAsync(Guid.NewGuid().ToString()));
@@ -152,7 +152,7 @@ namespace Reddit.NET.Client.IntegrationTests
             var multiredditDetails = await multireddit.GetDetailsAsync();
 
             Assert.IsNotNull(multiredditDetails);
-            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Name);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_MULTIREDDIT_NAME"), multiredditDetails.Id);
 
             var exception = Assert.ThrowsAsync<RedditClientApiException>(async () =>
                 await multireddit.RemoveSubredditAsync(Guid.NewGuid().ToString()));
