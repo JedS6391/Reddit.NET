@@ -118,6 +118,8 @@ namespace Reddit.NET.Client.Models.Public.Read
             IsSelfPost = details.IsSelfPost;
             IsNsfw = details.IsNsfw;
             SelfText = details.SelfText;
+            FlairId = details.FlairId;
+            FlairText = details.FlairText;
             Author = details.Author;
             Upvotes = details.Upvotes;
             Downvotes = details.Downvotes;
