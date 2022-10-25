@@ -1,20 +1,20 @@
 using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using Reddit.NET.Client.Models.Internal;
-using Reddit.NET.Client.Models.Public.Listings;
-using Reddit.NET.Client.Models.Public.Read;
-using Reddit.NET.Client.Command.Subreddits;
-using Reddit.NET.Client.Interactions.Abstract;
-using Reddit.NET.Client.Models.Public.Write;
-using Reddit.NET.Client.Command.Submissions;
-using Reddit.NET.Client.Models.Internal.Base;
-using Reddit.NET.Client.Models.Public.Listings.Options;
 using System.Linq;
-using Reddit.NET.Client.Exceptions;
-using Reddit.NET.Client.Models.Public.Streams;
 using System.Threading;
+using System.Threading.Tasks;
 using Microsoft;
+using Reddit.NET.Client.Command.Submissions;
+using Reddit.NET.Client.Command.Subreddits;
+using Reddit.NET.Client.Exceptions;
+using Reddit.NET.Client.Interactions.Abstract;
+using Reddit.NET.Client.Models.Internal;
+using Reddit.NET.Client.Models.Internal.Base;
+using Reddit.NET.Client.Models.Public.Listings;
+using Reddit.NET.Client.Models.Public.Listings.Options;
+using Reddit.NET.Client.Models.Public.Read;
+using Reddit.NET.Client.Models.Public.Streams;
+using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -59,6 +59,27 @@ namespace Reddit.NET.Client.Interactions
                 .ConfigureAwait(false);
 
             return new SubredditDetails(subreddit);
+        }
+
+        /// <summary>
+        /// Gets the flairs available for submissions to the subreddit.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
+        /// <returns>A task representing the asynchronous operation. The result contains the available flairs of the subreddit.</returns>
+        public async Task<IReadOnlyList<SubmissionFlairDetails>> GetSubmissionFlairsAsync(CancellationToken cancellationToken = default)
+        {
+            var getSubredditFlairsCommand = new GetSubredditFlairsCommand(new GetSubredditFlairsCommand.Parameters()
+            {
+                SubredditName = _subredditName
+            });
+
+            var flairs = await _client
+                .ExecuteCommandAsync<IReadOnlyList<SubmissionFlair>>(getSubredditFlairsCommand, cancellationToken)
+                .ConfigureAwait(false);
+
+            return flairs
+                .Select(f => new SubmissionFlairDetails(f))
+                .ToList();
         }
 
         /// <summary>
