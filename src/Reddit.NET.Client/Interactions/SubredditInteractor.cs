@@ -167,7 +167,8 @@ namespace Reddit.NET.Client.Interactions
                 Type = CreateSubredditSubmissionCommand.SubmissionType.Link,
                 Title = details.Title,
                 Url = details.Uri.AbsoluteUri,
-                ForceResubmit = details.Resubmit
+                ForceResubmit = details.Resubmit,
+                FlairId = details.FlairId
             },
             cancellationToken);
 
@@ -185,7 +186,8 @@ namespace Reddit.NET.Client.Interactions
                 SubredditName = _subredditName,
                 Type = CreateSubredditSubmissionCommand.SubmissionType.Self,
                 Title = details.Title,
-                Text = details.Text
+                Text = details.Text,
+                FlairId = details.FlairId
             },
             cancellationToken);
 

@@ -13,8 +13,9 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// </summary>
         /// <param name="title">The title of the submission to create.</param>
         /// <param name="uri">The URI of the submission to create.</param>
-        /// <param name="resubmit">Whether the submission should be resubmitted if it already exists..</param>
-        public LinkSubmissionCreationDetails(string title, Uri uri, bool resubmit = false)
+        /// <param name="resubmit">Whether the submission should be resubmitted if it already exists.</param>
+        /// <param name="flairId">The identifier of the flair of the submission to create.</param>
+        public LinkSubmissionCreationDetails(string title, Uri uri, bool resubmit = false, string flairId = null)
         {
             Requires.NotNullOrWhiteSpace(title, nameof(title));
             Requires.NotNull(uri, nameof(uri));
@@ -22,6 +23,7 @@ namespace Reddit.NET.Client.Models.Public.Write
             Title = title;
             Uri = uri;
             Resubmit = resubmit;
+            FlairId = flairId;
         }
 
         /// <summary>
@@ -38,5 +40,10 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// Gets a value indicating whether the submission should be resubmitted if it already exists.
         /// </summary>
         public bool Resubmit { get; }
+
+        /// <summary>
+        /// Gets or sets the identifier of the flair of the submission to create.
+        /// </summary>
+        public string FlairId { get; }
     }
 }

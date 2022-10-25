@@ -12,13 +12,15 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// </summary>
         /// <param name="title">The title of the submission to create.</param>
         /// <param name="text">The text of the submission to create.</param>
-        public TextSubmissionCreationDetails(string title, string text)
+        /// <param name="flairId">The identifier of the flair of the submission to create.</param>
+        public TextSubmissionCreationDetails(string title, string text, string flairId = null)
         {
             Requires.NotNullOrWhiteSpace(title, nameof(title));
             Requires.NotNullOrWhiteSpace(text, nameof(text));
 
             Title = title;
             Text = text;
+            FlairId = flairId;
         }
 
         /// <summary>
@@ -30,5 +32,10 @@ namespace Reddit.NET.Client.Models.Public.Write
         /// Gets the text of the submission to create.
         /// </summary>
         public string Text { get; }
+
+        /// <summary>
+        /// Gets or sets the identifier of the flair of the submission to create.
+        /// </summary>
+        public string FlairId { get; }
     }
 }

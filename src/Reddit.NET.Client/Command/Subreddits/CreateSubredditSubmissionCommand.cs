@@ -36,6 +36,7 @@ namespace Reddit.NET.Client.Command.Subreddits
                 { "kind", MapSubmissionType(_parameters.Type) },
                 { "title", _parameters.Title },
                 { "resubmit", _parameters.ForceResubmit.ToString() },
+                { "flair_id", _parameters.FlairId },
                 // These parameters are required to ensure a proper JSON response is returned.
                 { "api_type", "json" },
                 { "extension", "json" }
@@ -110,6 +111,11 @@ namespace Reddit.NET.Client.Command.Subreddits
             /// Gets or sets a value indicating whether the submission should be resubmitted if it already exists.
             /// </summary>
             public bool ForceResubmit { get; set; }
+
+            /// <summary>
+            /// Gets or sets the identifier of the flair of the submission to create.
+            /// </summary>
+            public string FlairId { get; set; }
         }
 
         /// <summary>
