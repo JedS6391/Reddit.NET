@@ -60,7 +60,7 @@ namespace Reddit.NET.Client.Models.Internal
             /// </summary>
             [JsonPropertyName("user_is_subscriber")]
             [JsonInclude]
-            public bool IsSubscribed { get; private set; }
+            public bool? IsSubscribed { get; private set; }
         }
 
         /// <summary>
