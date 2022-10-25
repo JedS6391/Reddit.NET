@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         {
             Requires.NotNull(thing, nameof(thing));
 
-            Name = thing.Data.DisplayName;
+            DisplayName = thing.Data.DisplayName;
             Subreddits = thing.Data.Subreddits.Select(s => s.Name).ToList();
             Id = thing.Data.Name;
             Username = thing.Data.OwnerUsername;
@@ -34,7 +34,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets the name of the multireddit.
         /// </summary>
-        public string Name { get; private set; }
+        public string DisplayName { get; private set; }
 
         /// <summary>
         /// Gets the names of the subreddits that the multireddit is comprised of.
@@ -70,12 +70,12 @@ namespace Reddit.NET.Client.Models.Public.Read
 
             var details = await Interact(client).GetDetailsAsync(cancellationToken);
 
-            Name = details.Name;
+            DisplayName = details.DisplayName;
             Subreddits = details.Subreddits;
             LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
 
         /// <inheritdoc />
-        public override string ToString() => $"Multireddit [Name = {Name}]";
+        public override string ToString() => $"Multireddit [Name = {DisplayName}]";
     }
 }

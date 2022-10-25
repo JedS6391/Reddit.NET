@@ -150,7 +150,7 @@ namespace Reddit.NET.Client.IntegrationTests
             ));
 
             Assert.IsNotNull(newMultiredditDetails);
-            Assert.AreEqual("Test multireddit", newMultiredditDetails.Name);
+            Assert.AreEqual("Test multireddit", newMultiredditDetails.DisplayName);
             Assert.IsNotEmpty(newMultiredditDetails.Subreddits);
             CollectionAssert.AreEquivalent(
                 new string[] { "AskReddit", "pics", "askscience" },
