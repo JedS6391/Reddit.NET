@@ -1,11 +1,11 @@
+using System;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft;
+using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
 using Reddit.NET.Client.Models.Public.Abstract;
-using Reddit.NET.Client.Interactions;
-using System.Threading.Tasks;
-using System;
-using System.Threading;
-using Microsoft;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -31,6 +31,8 @@ namespace Reddit.NET.Client.Models.Public.Read
             IsSelfPost = thing.Data.IsSelfPost;
             IsNsfw = thing.Data.IsNsfw;
             SelfText = thing.Data.SelfText;
+            FlairId = thing.Data.FlairId;
+            FlairText = thing.Data.FlairText;
             Author = thing.Data.Author;
             Upvotes = thing.Data.Upvotes;
             Downvotes = thing.Data.Downvotes;
@@ -84,6 +86,16 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// Gets the raw text of the submission.
         /// </summary>
         public string SelfText { get; private set; }
+
+        /// <summary>
+        /// Gets the identifier of the flair associated with the submission.
+        /// </summary>
+        public string FlairId { get; set; }
+
+        /// <summary>
+        /// Gets the text of the flair associated with the submission.
+        /// </summary>
+        public string FlairText { get; set; }
 
         /// <inheritdoc />
         public DateTimeOffset LastLoadedAtUtc { get; private set; }
