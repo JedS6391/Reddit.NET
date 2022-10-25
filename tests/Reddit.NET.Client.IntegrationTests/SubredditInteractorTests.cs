@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.IntegrationTests
@@ -243,6 +244,19 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(createdSubmission);
             Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
             Assert.IsTrue(createdSubmission.SelfText == newSubmissionDetails.Text);
+        }
+
+        [Test]
+        public async Task GetSubmissionFlairsAsync_SubredditWithFlairs_ShouldRetrieveAvailableFlairs()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var flairs = await subreddit.GetSubmissionFlairsAsync();
+
+            Assert.IsNotNull(flairs);
+            Assert.AreEqual(2, flairs.Count);
+            Assert.That(flairs, Has.Exactly(1).Matches<SubmissionFlairDetails>(f => f.Text == "flair1"));
+            Assert.That(flairs, Has.Exactly(1).Matches<SubmissionFlairDetails>(f => f.Text == "flair2"));
         }
     }
 }
