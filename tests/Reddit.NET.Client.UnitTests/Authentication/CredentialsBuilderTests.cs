@@ -188,7 +188,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             Assert.AreEqual(state, queryString["state"]);
             Assert.AreEqual(redirectUri, queryString["redirect_uri"]);
             Assert.AreEqual("permanent", queryString["duration"]);
-            Assert.AreEqual("subscribe vote mysubreddits submit save read privatemessages identity account edit history", queryString["scope"]);
+            Assert.AreEqual("subscribe vote mysubreddits submit save read privatemessages identity account edit history flair", queryString["scope"]);
         }
 
         [Test]
@@ -222,7 +222,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             Assert.AreEqual(state, queryString["state"]);
             Assert.AreEqual(redirectUri, queryString["redirect_uri"]);
             Assert.AreEqual("permanent", queryString["duration"]);
-            Assert.AreEqual("subscribe vote mysubreddits submit save read privatemessages identity account edit history", queryString["scope"]);
+            Assert.AreEqual("subscribe vote mysubreddits submit save read privatemessages identity account edit history flair", queryString["scope"]);
         }
 
         [Test]

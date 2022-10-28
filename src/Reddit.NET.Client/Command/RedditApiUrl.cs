@@ -35,6 +35,7 @@ namespace Reddit.NET.Client.Command
         public static class Subreddit
         {
             public static string Details(string subredditName) => $"{RedditOAuthPath}/r/{subredditName}/about";
+            public static string Flairs(string subredditName) => $"{RedditOAuthPath}/r/{subredditName}/api/link_flair_v2";
             public static string Submissions(string subredditName, string sort)
                 => $"{RedditOAuthPath}/r/{subredditName}/{sort}";
             public static string Comments(string subredditName) => $"{RedditOAuthPath}/r/{subredditName}/comments";

@@ -78,6 +78,20 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonInclude]
             public string SelfText { get; private set; }
 
+            /// <summary>
+            /// Gets the identifier of the flair associated with the submission.
+            /// </summary>
+            [JsonPropertyName("link_flair_template_id")]
+            [JsonInclude]
+            public string FlairId { get; set; }
+
+            /// <summary>
+            /// Gets the text of the flair associated with the submission.
+            /// </summary>
+            [JsonPropertyName("link_flair_text")]
+            [JsonInclude]
+            public string FlairText { get; set; }
+
             /// <inheritdoc />
             [JsonPropertyName("author")]
             [JsonInclude]

@@ -59,7 +59,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// <summary>
         /// Gets a value indicating whether the currently authenticated user is subscribed to the subreddit.
         /// </summary>
-        public bool IsSubscribed { get; private set; }
+        public bool? IsSubscribed { get; private set; }
 
         /// <inheritdoc />
         public DateTimeOffset LastLoadedAtUtc { get; private set; }

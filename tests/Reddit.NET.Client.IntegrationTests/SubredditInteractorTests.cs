@@ -5,6 +5,7 @@ using NUnit.Framework;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Models.Public.Listings.Options;
+using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Models.Public.Write;
 
 namespace Reddit.NET.Client.IntegrationTests
@@ -243,6 +244,66 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(createdSubmission);
             Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
             Assert.IsTrue(createdSubmission.SelfText == newSubmissionDetails.Text);
+        }
+
+        [Test]
+        public async Task CreateSubmissionAsync_LinkSubmissionWithFlair_ShouldCreateLinkSubmissionWithFlair()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var flairs = await subreddit.GetSubmissionFlairsAsync();
+
+            var flair = flairs.ElementAt(0);
+
+            var newSubmissionDetails = new LinkSubmissionCreationDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
+                resubmit: true,
+                flairId: flair.Id);
+
+            var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
+
+            Assert.IsNotNull(createdSubmission);
+            Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
+            Assert.IsTrue(createdSubmission.Url == newSubmissionDetails.Uri.AbsoluteUri);
+            Assert.IsTrue(createdSubmission.FlairId == flair.Id);
+            Assert.IsTrue(createdSubmission.FlairText == flair.Text);
+        }
+
+        [Test]
+        public async Task CreateSubmissionAsync_TextSubmissionWithFlair_ShouldCreateTextSubmissionWithFlair()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var flairs = await subreddit.GetSubmissionFlairsAsync();
+
+            var flair = flairs.ElementAt(0);
+
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                text: "Test submission made by Reddit.NET client integration tests.",
+                flairId: flair.Id);
+
+            var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
+
+            Assert.IsNotNull(createdSubmission);
+            Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
+            Assert.IsTrue(createdSubmission.SelfText == newSubmissionDetails.Text);
+            Assert.IsTrue(createdSubmission.FlairId == flair.Id);
+            Assert.IsTrue(createdSubmission.FlairText == flair.Text);
+        }
+
+        [Test]
+        public async Task GetSubmissionFlairsAsync_SubredditWithFlairs_ShouldRetrieveAvailableFlairs()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var flairs = await subreddit.GetSubmissionFlairsAsync();
+
+            Assert.IsNotNull(flairs);
+            Assert.AreEqual(2, flairs.Count);
+            Assert.That(flairs, Has.Exactly(1).Matches<SubmissionFlairDetails>(f => f.Text == "flair1"));
+            Assert.That(flairs, Has.Exactly(1).Matches<SubmissionFlairDetails>(f => f.Text == "flair2"));
         }
     }
 }
