@@ -177,7 +177,7 @@ namespace Reddit.NET.Client.Command
 
         private async Task<HttpResponseMessage> ExecuteRequestAsync(Func<HttpRequestMessage> requestFunc, CancellationToken cancellationToken)
         {
-            using var lease = await _rateLimiter.WaitAsync(permitCount: 1, cancellationToken);
+            using var lease = await _rateLimiter.AcquireAsync(permitCount: 1, cancellationToken);
 
             if (!lease.IsAcquired)
             {

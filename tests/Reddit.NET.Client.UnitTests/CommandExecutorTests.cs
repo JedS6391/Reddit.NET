@@ -41,7 +41,7 @@ namespace Reddit.NET.Client.UnitTests
             var successfulLease = SuccessfulLease();
 
             _rateLimiter
-                .WaitAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+                .AcquireAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
                 .Returns(successfulLease);
 
             _commandExecutor = new CommandExecutor(
@@ -62,7 +62,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _ = _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .Received(1)
@@ -91,7 +91,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .Received(1)
@@ -114,7 +114,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .Received(1)
@@ -153,7 +153,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .Received(1)
@@ -177,7 +177,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .Received(1)
@@ -203,7 +203,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .Received(1)
@@ -218,7 +218,7 @@ namespace Reddit.NET.Client.UnitTests
             var failedLease = FailedLease();
 
             _rateLimiter
-                .WaitAsync(Arg.Any<int>())
+                .AcquireAsync(Arg.Any<int>())
                 .Returns(failedLease);
 
             var exception = Assert.ThrowsAsync<RedditClientRateLimitException>(async () =>
@@ -229,7 +229,7 @@ namespace Reddit.NET.Client.UnitTests
 
             _rateLimiter
                 .Received(1)
-                .WaitAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
+                .AcquireAsync(permitCount: Arg.Is(1), Arg.Any<CancellationToken>());
 
             _httpClientFactory
                 .DidNotReceive()

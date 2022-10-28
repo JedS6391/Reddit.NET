@@ -48,7 +48,7 @@ namespace Reddit.NET.Client.UnitTests.Authentication
             var successfulLease = SuccessfulLease();
 
             _rateLimiter
-                .WaitAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
+                .AcquireAsync(Arg.Any<int>(), Arg.Any<CancellationToken>())
                 .Returns(successfulLease);
 
             _commandExecutor = new CommandExecutor(

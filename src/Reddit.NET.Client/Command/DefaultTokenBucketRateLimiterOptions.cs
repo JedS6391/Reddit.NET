@@ -11,11 +11,13 @@ namespace Reddit.NET.Client.Command
         /// <summary>
         /// Gets the default options instance.
         /// </summary>
-        public static TokenBucketRateLimiterOptions Instance => new TokenBucketRateLimiterOptions(
-            tokenLimit: 5,
-            queueProcessingOrder: QueueProcessingOrder.OldestFirst,
-            queueLimit: 10,
-            replenishmentPeriod: TimeSpan.FromSeconds(1),
-            tokensPerPeriod: 1);
+        public static TokenBucketRateLimiterOptions Instance => new TokenBucketRateLimiterOptions()
+        {
+            TokenLimit = 5,
+            QueueProcessingOrder = QueueProcessingOrder.OldestFirst,
+            QueueLimit = 10,
+            ReplenishmentPeriod = TimeSpan.FromSeconds(1),
+            TokensPerPeriod = 1
+        };
     }
 }
