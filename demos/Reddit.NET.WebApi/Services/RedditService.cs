@@ -136,7 +136,7 @@ namespace Reddit.NET.WebApi.Services
 
         private static string GetRandomState()
         {
-            using var random = new RNGCryptoServiceProvider();
+            using var random = RandomNumberGenerator.Create();
 
             var tokenData = new byte[32];
 
