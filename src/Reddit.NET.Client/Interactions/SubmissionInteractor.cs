@@ -1,10 +1,13 @@
-using System.Threading.Tasks;
-using Reddit.NET.Client.Models.Public.Read;
-using Reddit.NET.Client.Interactions.Abstract;
-using Reddit.NET.Client.Command.Submissions;
-using Reddit.NET.Client.Models.Internal;
-using Reddit.NET.Client.Models.Public.Listings.Options;
+using System;
+using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
+using Reddit.NET.Client.Command.Submissions;
+using Reddit.NET.Client.Interactions.Abstract;
+using Reddit.NET.Client.Models.Internal;
+using Reddit.NET.Client.Models.Public.Listings;
+using Reddit.NET.Client.Models.Public.Listings.Options;
+using Reddit.NET.Client.Models.Public.Read;
 
 namespace Reddit.NET.Client.Interactions
 {
@@ -44,6 +47,28 @@ namespace Reddit.NET.Client.Interactions
                 .ConfigureAwait(false);
 
             return new SubmissionDetails(submissionWithComments.Submission);
+        }
+
+        /// <summary>
+        /// Gets the duplicates of the submission.
+        /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the duplicates of the submission.</returns>
+        public IAsyncEnumerable<SubmissionDetails> GetDuplicatesAsync(
+            Action<DuplicateSubmissionsListingEnumerable.Options.Builder> configurationAction = null
+        )
+        {
+            var optionsBuilder = new DuplicateSubmissionsListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new DuplicateSubmissionsListingEnumerable(
+                Client,
+                optionsBuilder.Options,
+                new DuplicateSubmissionsListingEnumerable.ListingParameters()
+                {
+                    SubmissionId = Id
+                });
         }
 
         /// <summary>

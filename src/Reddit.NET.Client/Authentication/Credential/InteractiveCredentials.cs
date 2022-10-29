@@ -65,7 +65,8 @@ namespace Reddit.NET.Client.Authentication.Credential
                 "account",
                 "edit",
                 "history",
-                "flair"
+                "flair",
+                "creddits"
             };
 
             private readonly AuthenticationMode _mode;

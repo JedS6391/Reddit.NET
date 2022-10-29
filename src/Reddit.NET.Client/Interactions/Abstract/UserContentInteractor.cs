@@ -87,6 +87,24 @@ namespace Reddit.NET.Client.Interactions.Abstract
             await SaveOrUnsaveAsync(unsave: true, cancellationToken).ConfigureAwait(false);
 
         /// <summary>
+        /// Awards the content.
+        /// </summary>
+        /// <remarks>
+        /// Note that currently only gold awards can be given (often known as <i>gilding</i>).
+        /// </remarks>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task AwardAsync(CancellationToken cancellationToken = default)
+        {
+            var awardContentCommand = new AwardContentCommand(new AwardContentCommand.Parameters()
+            {
+                FullName = FullName
+            });
+
+            await Client.ExecuteCommandAsync(awardContentCommand, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Adds a reply to the content.
         /// </summary>
         /// <remarks>
@@ -122,6 +140,25 @@ namespace Reddit.NET.Client.Interactions.Abstract
                 .ConfigureAwait(false);
 
             return new CommentDetails(thing: response.Data.Things[0] as IThing<Comment.Details>);
+        }
+
+        /// <summary>
+        /// Edits the text of the content.
+        /// </summary>
+        /// <param name="text">The text to update the content with.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task EditAsync(string text, CancellationToken cancellationToken = default)
+        {
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
+            var editContentCommand = new EditContentCommand(new EditContentCommand.Parameters()
+            {
+                FullName = FullName,
+                Text = text
+            });
+
+            await Client.ExecuteCommandAsync(editContentCommand, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

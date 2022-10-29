@@ -24,7 +24,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         {
             Type = Requires.NotNull(type, nameof(type));
             Message = Requires.NotNull(message, nameof(message));
-            Fields = Requires.NotNull(fields, nameof(fields));
+            Fields = fields ?? Array.Empty<string>();
         }
 
         /// <summary>

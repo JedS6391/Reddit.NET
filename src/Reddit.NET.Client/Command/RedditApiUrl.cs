@@ -62,6 +62,9 @@ namespace Reddit.NET.Client.Command
         {
             public static string DetailsWithComments(string submissionId) =>
                 $"{RedditOAuthPath}/comments/{submissionId}";
+
+            public static string Duplicates(string submissionId) =>
+                $"{RedditOAuthPath}/duplicates/{submissionId}";
         }
 
         public static class UserContent
@@ -71,6 +74,8 @@ namespace Reddit.NET.Client.Command
             public static string Unsave => $"{RedditOAuthPath}/api/unsave";
             public static string Reply => $"{RedditOAuthPath}/api/comment";
             public static string Delete => $"{RedditOAuthPath}/api/del";
+            public static string Edit => $"{RedditOAuthPath}/api/editusertext";
+            public static string Award(string id) => $"{RedditOAuthPath}/api/v1/gold/gild/{id}";
         }
     }
 }
