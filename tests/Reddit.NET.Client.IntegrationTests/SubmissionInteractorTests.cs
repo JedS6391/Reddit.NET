@@ -158,7 +158,7 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task SaveUnsaveAsync_ValidSubmission_ShouldSave()
+        public async Task SaveAsync_ValidSubmission_ShouldSave()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
@@ -174,18 +174,61 @@ namespace Reddit.NET.Client.IntegrationTests
 
             var submission = submissionDetails.Interact(_client);
 
-            await RunFuncAndAssertSaved(submission, true, submission => submission.SaveAsync());
+            await submission.SaveAsync();
 
-            await RunFuncAndAssertSaved(submission, false, submission => submission.UnsaveAsync());
+            await submissionDetails.ReloadAsync(_client);
 
-            static async Task RunFuncAndAssertSaved(SubmissionInteractor submission, bool expectedSaved, Func<SubmissionInteractor, Task> func)
-            {
-                await func.Invoke(submission);
+            Assert.IsTrue(submissionDetails.Saved);
+        }
 
-                var submissionDetails = await submission.GetDetailsAsync();
+        [Test]
+        public async Task UnsaveAsync_ValidSubmission_ShouldUnsave()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
-                Assert.AreEqual(expectedSaved, submissionDetails.Saved);
-            }
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(submissionDetails);
+
+            var submission = submissionDetails.Interact(_client);
+
+            await submission.UnsaveAsync();
+
+            await submissionDetails.ReloadAsync(_client);
+
+            Assert.IsFalse(submissionDetails.Saved);
+        }
+
+        // Note we are only testing the failure scenario as otherwise it would
+        // require a testing account with a balance which means $$$.
+        [Test]
+        public async Task AwardAsync_InsufficientCoins_ThrowsRedditClientApiException()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var submissionDetails = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(submissionDetails);
+
+            var submission = submissionDetails.Interact(_client);
+
+            var exception = Assert.ThrowsAsync<RedditClientApiException>(async () => await submission.AwardAsync());
+
+            Assert.IsNotNull(exception);
+            Assert.IsNotNull(exception.Details);
+            Assert.AreEqual("INSUFFICIENT_COINS", exception.Details.Type);
         }
 
         [Test]
