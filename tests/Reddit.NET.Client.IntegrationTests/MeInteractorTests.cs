@@ -122,7 +122,7 @@ namespace Reddit.NET.Client.IntegrationTests
 
             var friend = friends.First();
 
-            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_FRIEND_USERNAME"), friend.Name);
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_FRIEND_USERNAME1"), friend.Name);
         }
 
         [Test]

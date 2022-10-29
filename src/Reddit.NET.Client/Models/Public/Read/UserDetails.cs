@@ -25,6 +25,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Name = thing.Data.Name;
             CommentKarma = thing.Data.CommentKarma;
             SubmissionKarma = thing.Data.LinkKarma;
+            IsFriend = thing.Data.IsFriend;
             CreatedAtUtc = thing.Data.CreatedAtUtc;
         }
 
@@ -39,6 +40,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Name = user.Name;
             CommentKarma = user.CommentKarma;
             SubmissionKarma = user.LinkKarma;
+            IsFriend = user.IsFriend;
             CreatedAtUtc = user.CreatedAtUtc;
             LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
@@ -57,6 +59,11 @@ namespace Reddit.NET.Client.Models.Public.Read
         /// Gets the link karma of the user earned from submissions.
         /// </summary>
         public int SubmissionKarma { get; private set; }
+
+        /// <summary>
+        /// Gets a value indicating whether the user is a friend of the authenticated user.
+        /// </summary>
+        public bool IsFriend { get; private set; }
 
         /// <summary>
         /// Gets the date and time the user was created.
@@ -79,6 +86,7 @@ namespace Reddit.NET.Client.Models.Public.Read
             Name = details.Name;
             CommentKarma = details.CommentKarma;
             SubmissionKarma = details.SubmissionKarma;
+            IsFriend = details.IsFriend;
             CreatedAtUtc = details.CreatedAtUtc;
             LastLoadedAtUtc = DateTimeOffset.UtcNow;
         }
