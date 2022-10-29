@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
 using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Public.Listings.Options;
@@ -188,7 +189,69 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task DeleteSubmissionAsync_TextSubmission_ShouldDeleteSubmission()
+        public async Task EditAsync_TextSubmission_ShouldUpdateSubmissionText()
+        {
+            const string OriginalText = "Test submission made by Reddit.NET client integration tests.";
+
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                text: OriginalText);
+
+            var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
+
+            Assert.IsNotNull(createdSubmission);
+            Assert.AreEqual(OriginalText, createdSubmission.SelfText);
+
+            var submission = createdSubmission.Interact(_client);
+
+            var updatedText = $"{createdSubmission.SelfText} [edited {Guid.NewGuid()}]";
+
+            await submission.EditAsync(updatedText);
+
+            await createdSubmission.ReloadAsync(_client);
+
+            Assert.IsNotNull(createdSubmission);
+            Assert.AreEqual(updatedText, createdSubmission.SelfText);
+        }
+
+        [Test]
+        public async Task DeleteAsync_LinkSubmission_ShouldDeleteSubmission()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            var newSubmissionDetails = new LinkSubmissionCreationDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
+                resubmit: true);
+
+            var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
+
+            Assert.IsNotNull(createdSubmission);
+
+            var submission = createdSubmission.Interact(_client);
+
+            await submission.DeleteAsync();
+
+            // We can't simply check if a submission is deleted, so we instead get the latest submission and
+            // check it is not the one we've deleted.
+            var latestSubmission = await subreddit
+                .GetSubmissionsAsync(builder =>
+                    builder
+                        .WithSort(SubredditSubmissionSort.New)
+                        .WithItemsPerRequest(1)
+                        .WithMaximumItems(1))
+                .FirstAsync();
+
+            Assert.IsNotNull(latestSubmission);
+
+            Assert.AreNotEqual(createdSubmission.Id, latestSubmission.Id);
+            Assert.AreNotEqual(createdSubmission.Title, latestSubmission.Title);
+        }
+
+        [Test]
+        public async Task DeleteAsync_TextSubmission_ShouldDeleteSubmission()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
@@ -204,7 +267,9 @@ namespace Reddit.NET.Client.IntegrationTests
 
             await submission.DeleteAsync();
 
-            var submissionDetails = await subreddit
+            // We can't simply check if a submission is deleted, so we instead get the latest submission and
+            // check it is not the one we've deleted.
+            var latestSubmission = await subreddit
                 .GetSubmissionsAsync(builder =>
                     builder
                         .WithSort(SubredditSubmissionSort.New)
@@ -212,9 +277,10 @@ namespace Reddit.NET.Client.IntegrationTests
                         .WithMaximumItems(1))
                 .FirstAsync();
 
-            Assert.IsNotNull(submissionDetails);
+            Assert.IsNotNull(latestSubmission);
 
-            Assert.AreNotEqual(createdSubmission.Title, submissionDetails.Title);
+            Assert.AreNotEqual(createdSubmission.Id, latestSubmission.Id);
+            Assert.AreNotEqual(createdSubmission.Title, latestSubmission.Title);
         }
     }
 }

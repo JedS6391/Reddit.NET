@@ -81,5 +81,40 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.AreEqual(firstCommentText, firstCommentDetails.Body);
             Assert.AreEqual(replyCommentText, replyCommentDetails.Body);
         }
+
+        [Test]
+        public async Task EditAsync_ExistingComment_ShouldUpdateCommentText()
+        {
+            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+
+            // Create a submission to comment on.
+            var newSubmissionDetails = new TextSubmissionCreationDetails(
+                title: $"Test submission {Guid.NewGuid()}",
+                text: "Test submission made by Reddit.NET client integration tests.");
+
+            var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
+
+            Assert.IsNotNull(createdSubmission);
+
+            var submission = createdSubmission.Interact(_client);
+
+            var originalText = $"Test comment made by Reddit.NET client integration tests.";
+
+            var commentDetails = await submission.ReplyAsync(originalText);
+
+            Assert.IsNotNull(commentDetails);
+            Assert.AreEqual(originalText, commentDetails.Body);
+
+            var comment = commentDetails.Interact(_client);
+
+            var updatedText = $"{commentDetails.Body} [edited {Guid.NewGuid()}]";
+
+            await comment.EditAsync(updatedText);
+
+            await commentDetails.ReloadAsync(_client);
+
+            Assert.IsNotNull(commentDetails);
+            Assert.AreEqual(updatedText, commentDetails.Body);
+        }
     }
 }
