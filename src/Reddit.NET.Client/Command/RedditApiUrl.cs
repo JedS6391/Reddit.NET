@@ -72,6 +72,7 @@ namespace Reddit.NET.Client.Command
             public static string Reply => $"{RedditOAuthPath}/api/comment";
             public static string Delete => $"{RedditOAuthPath}/api/del";
             public static string Edit => $"{RedditOAuthPath}/api/editusertext";
+            public static string Award(string id) => $"{RedditOAuthPath}/api/v1/gold/gild/{id}";
         }
     }
 }
