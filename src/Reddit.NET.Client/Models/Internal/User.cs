@@ -43,6 +43,13 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonInclude]
             public int LinkKarma { get; private set; }
 
+            /// <summary>
+            /// Gets a value indicating whether the user is a friend of the authenticated user.
+            /// </summary>
+            [JsonPropertyName("is_friend")]
+            [JsonInclude]
+            public bool IsFriend { get; private set; }
+
             /// <inheritdoc />
             [JsonPropertyName("created_utc")]
             [JsonInclude]
