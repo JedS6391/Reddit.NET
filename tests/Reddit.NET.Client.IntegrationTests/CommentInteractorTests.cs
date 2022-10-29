@@ -221,12 +221,12 @@ namespace Reddit.NET.Client.IntegrationTests
 
         private async Task<CommentDetails> GetRandomSubmissionComment()
         {
-            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
+            var subreddit = _client.Subreddit("askreddit");
 
             var submissionDetails = await subreddit
                 .GetSubmissionsAsync(builder =>
                     builder
-                        .WithSort(SubredditSubmissionSort.New)
+                        .WithSort(SubredditSubmissionSort.Hot)
                         .WithItemsPerRequest(1)
                         .WithMaximumItems(1))
                 .FirstAsync();
@@ -234,6 +234,8 @@ namespace Reddit.NET.Client.IntegrationTests
             var submission = submissionDetails.Interact(_client);
 
             var commentThread = await submission.GetCommentsAsync();
+
+            Assert.IsNotEmpty(commentThread);
 
             return commentThread[RandomNumberGenerator.GetInt32(commentThread.Count)].Details;
         }

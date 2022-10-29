@@ -4,7 +4,6 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.Exceptions;
 using Reddit.NET.Client.IntegrationTests.Shared;
-using Reddit.NET.Client.Interactions;
 using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.Models.Public.Write;
@@ -53,6 +52,23 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.AreEqual("AskReddit", details.Subreddit);
             Assert.AreEqual("Stan Lee has passed away at 95 years old", details.Title);
             Assert.AreNotEqual(lastLoadedAtUtcBeforeReload, details.LastLoadedAtUtc);
+        }
+
+        [Test]
+        public async Task GetDuplicatesAsync_ValidSubmission_ShouldGetDuplicates()
+        {
+            // https://old.reddit.com/r/programming/comments/ybmnzb/tomorrow_is_unix_timestamp_1666666666_peak/
+            var submission = _client.Submission("ybmnzb");
+
+            var submissionDetails = await submission.GetDetailsAsync();
+
+            Assert.IsNotNull(submissionDetails);
+
+            var duplicates = await submission.GetDuplicatesAsync().ToListAsync();
+
+            Assert.IsNotNull(duplicates);
+            Assert.IsNotEmpty(duplicates);
+            Assert.AreEqual(2, duplicates.Count);
         }
 
         [Test]
