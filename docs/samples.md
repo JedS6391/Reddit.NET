@@ -25,6 +25,33 @@ await foreach (SubmissionDetails submission in fiftyNewSubmissions)
 }
 ```
 
+## Search for submissions
+
+```cs
+SubredditInteractor askReddit = client.Subreddit("askreddit");
+
+IAsyncEnumerable<SubmissionDetails> searchResults = await subreddit.SearchSubmissionsAsync(
+        query: "Reddit.NET client",
+        builder => builder
+            .WithSort(SubredditSearchSort.Relevance)
+            .WithSyntax(SearchQuerySyntax.Lucene)
+            .WithMaximumItems(50));
+
+await foreach (SubmissionDetails submission in searchResults)
+{
+    // Do something with submission
+    ...
+}
+```
+
+## Subscribe to a subreddit
+
+```cs
+SubredditInteractor askReddit = client.Subreddit("askreddit");
+
+await askReddit.SubscribeAsync();
+```
+
 ## Retrieving subscribed subreddits
 
 ```cs
@@ -100,15 +127,32 @@ SubmissionInteractor submission = submissionDetails.Interact(client);
 await submission.UpvoteAsync();
 ```
 
+## Award a submission/comment
+
+_Note that currently only gold awards can be given._
+
+```cs
+// Obtain a submission interactor e.g. by getting the submissions in a subreddit
+SubmissionInteractor submission = ...;
+
+await submission.AwardAsync();
+```
+
 ## Create a submission
 
 ```cs
-SubredditInteractor askReddit = client.Subreddit("askreddit");
+// Link submission
+SubredditInteractor subreddit = client.Subreddit("...");
 
 SubmissionDetails submission = await subreddit.CreateSubmissionAsync(new LinkSubmissionCreationDetails(
     title: "Reddit.NET client",
     uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
     resubmit: true));
+
+// Text submission
+SubmissionDetails submission = await subreddit.CreateSubmissionAsync(new TextSubmissionCreationDetails(
+    title: $"Reddit.NET client",
+    text: "Submission made using [Reddit.NET client](https://github.com/JedS6391/Reddit.NET)."););
 ```
 
 ## Navigating a comment thread
@@ -142,6 +186,44 @@ await foreach (SubmissionDetails submission in newSubmissions)
     // Do something with the new submission
     ...
 }
+```
+
+## Streaming unread inbox messages
+
+```cs
+InboxInteractor inbox = client.Me().Inbox();
+
+// No queries will be made until enumeration starts
+IAsyncEnumerable<MessageDetails> newMessages = inbox.Stream.UnreadMessagesAsync();
+
+await foreach (MessageDetails message in newMessages)
+{
+    // Do something with the new message
+    ...
+}
+```
+
+## Message another user
+
+```cs
+UserInteractor user = client.User("...");
+
+var message = new PrivateMessageCreationDetails(
+    subject: "Hi!",
+    body: "I sent this message using Reddit.NET client.");
+
+await user.SendMessageAsync(message);
+```
+
+## Reply to an inbox message
+
+```cs
+InboxInteractor inbox = client.Me().Inbox();
+
+// Obtain a message e.g. by streaming new messages as they arrive
+MessageDetails message = ...;
+
+await inbox.ReplyAsync(message, "Replied using Reddit.NET client");
 ```
 
 ## Reloading data
