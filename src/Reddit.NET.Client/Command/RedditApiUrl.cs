@@ -71,6 +71,7 @@ namespace Reddit.NET.Client.Command
             public static string Unsave => $"{RedditOAuthPath}/api/unsave";
             public static string Reply => $"{RedditOAuthPath}/api/comment";
             public static string Delete => $"{RedditOAuthPath}/api/del";
+            public static string Edit => $"{RedditOAuthPath}/api/editusertext";
         }
     }
 }

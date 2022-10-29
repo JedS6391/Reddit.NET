@@ -125,6 +125,25 @@ namespace Reddit.NET.Client.Interactions.Abstract
         }
 
         /// <summary>
+        /// Edits the text of the content.
+        /// </summary>
+        /// <param name="text">The text to update the content with.</param>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task EditAsync(string text, CancellationToken cancellationToken = default)
+        {
+            Requires.NotNullOrWhiteSpace(text, nameof(text));
+
+            var editContentCommand = new EditContentCommand(new EditContentCommand.Parameters()
+            {
+                FullName = FullName,
+                Text = text
+            });
+
+            await Client.ExecuteCommandAsync(editContentCommand, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Deletes the content.
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
