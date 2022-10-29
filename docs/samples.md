@@ -143,3 +143,30 @@ await foreach (SubmissionDetails submission in newSubmissions)
     ...
 }
 ```
+
+## Reloading data
+
+_Subreddit, submission, and comment models provide the ability to be reloaded._
+
+```cs
+// Reload the details of a particular subreddit
+SubredditDetails subredditDetails = ...;
+
+SubredditInteractor subreddit = subredditDetails.Interact(client);
+
+await subreddit.ReloadAsync();
+
+// Reload the details of a particular submission
+SubmissionDetails submissionDetails = ...;
+
+SubmissionInteractor submission = submissionDetails.Interact(client);
+
+await submission.ReloadAsync();
+
+// Reload the details of a particular comment
+CommentDetails commentDetails = ...;
+
+CommentInteractor comment = commentDetails.Interact(client);
+
+await comment.ReloadAsync();
+```
