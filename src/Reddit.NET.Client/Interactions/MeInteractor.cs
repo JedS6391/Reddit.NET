@@ -112,6 +112,23 @@ namespace Reddit.NET.Client.Interactions
         }
 
         /// <summary>
+        /// Gets the friends of the authenticated user.
+        /// </summary>
+        /// <param name="configurationAction">An <see cref="Action{T}" /> used to configure listing options.</param>
+        /// <returns>An asynchronous enumerator over the authenticated user's friends.</returns>
+        public IAsyncEnumerable<FriendDetails> GetFriendsAsync(
+            Action<MyFriendsListingEnumerable.Options.Builder> configurationAction = null)
+        {
+            var optionsBuilder = new MyFriendsListingEnumerable.Options.Builder();
+
+            configurationAction?.Invoke(optionsBuilder);
+
+            return new MyFriendsListingEnumerable(
+                _client,
+                optionsBuilder.Options);
+        }
+
+        /// <summary>
         /// Gets the karma breakdown of the authenticated user.
         /// </summary>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>

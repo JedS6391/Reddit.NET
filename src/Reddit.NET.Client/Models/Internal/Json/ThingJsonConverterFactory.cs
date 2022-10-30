@@ -29,6 +29,7 @@ namespace Reddit.NET.Client.Models.Internal.Json
         {
             { typeof(Comment.Details), typeof(Comment) },
             { typeof(User.Details), typeof(User) },
+            { typeof(Friend.Details), typeof(Friend) },
             { typeof(Submission.Details), typeof(Submission) },
             { typeof(Subreddit.Details), typeof(Subreddit) },
             { typeof(KarmaList.Details), typeof(KarmaList) },

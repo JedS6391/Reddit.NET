@@ -226,6 +226,30 @@ MessageDetails message = ...;
 await inbox.ReplyAsync(message, "Replied using Reddit.NET client");
 ```
 
+## Retrieving friends
+
+```cs
+MeInteractor me = client.Me();
+
+IAsyncEnumerable<FriendDetails> friends = me.GetFriendsAsync();
+
+await foreach (FriendDetails friend in in friends)
+{
+    // Do something with friend
+    ...
+}
+```
+
+## Add or remove friends
+
+```cs
+UserInteractor user = client.User("...");
+
+await user.FriendAsync();
+
+await user.UnfriendAsync();
+```
+
 ## Reloading data
 
 _Subreddit, submission, and comment models provide the ability to be reloaded._

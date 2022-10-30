@@ -8,7 +8,7 @@ nav_order: 2
 
 ## Prerequisites
 
-- [.NET 5.0](https://dotnet.microsoft.com/download/dotnet/5.0)
+- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
 
 ## Installation
 

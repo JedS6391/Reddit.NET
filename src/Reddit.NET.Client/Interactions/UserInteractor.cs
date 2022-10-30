@@ -133,5 +133,35 @@ namespace Reddit.NET.Client.Interactions
 
             await _client.ExecuteCommandAsync(sendMessageCommand, cancellationToken).ConfigureAwait(false);
         }
+
+        /// <summary>
+        /// Creates a friendship between the user and the currently authenticated user.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task FriendAsync(CancellationToken cancellationToken = default)
+        {
+            var addFriendCommand = new AddFriendCommand(new AddFriendCommand.Parameters()
+            {
+                Username = _username
+            });
+
+            await _client.ExecuteCommandAsync(addFriendCommand, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Removes a friendship between the user and the currently authenticated user.
+        /// </summary>
+        /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
+        /// <returns>A task representing the asynchronous operation.</returns>
+        public async Task UnfriendAsync(CancellationToken cancellationToken = default)
+        {
+            var removeFriendCommand = new RemoveFriendCommand(new RemoveFriendCommand.Parameters()
+            {
+                Username = _username
+            });
+
+            await _client.ExecuteCommandAsync(removeFriendCommand, cancellationToken).ConfigureAwait(false);
+        }
     }
 }

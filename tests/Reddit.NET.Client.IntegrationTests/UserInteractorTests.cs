@@ -141,5 +141,39 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsNotNull(message);
             Assert.AreEqual(privateMessage.Body, message.Body);
         }
+
+        [Test]
+        public async Task FriendAsync_ValidUser_ShouldCreateFriendship()
+        {
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_FRIEND_USERNAME2"));
+
+            var userDetails = await user.GetDetailsAsync();
+
+            Assert.IsNotNull(userDetails);
+
+            await user.FriendAsync();
+
+            await userDetails.ReloadAsync(_client);
+
+            Assert.IsNotNull(userDetails);
+            Assert.IsTrue(userDetails.IsFriend);
+        }
+
+        [Test]
+        public async Task UnfriendAsync_ValidUser_ShouldCreateFriendship()
+        {
+            var user = _client.User(Environment.GetEnvironmentVariable("TEST_REDDIT_FRIEND_USERNAME2"));
+
+            var userDetails = await user.GetDetailsAsync();
+
+            Assert.IsNotNull(userDetails);
+
+            await user.UnfriendAsync();
+
+            await userDetails.ReloadAsync(_client);
+
+            Assert.IsNotNull(userDetails);
+            Assert.IsFalse(userDetails.IsFriend);
+        }
     }
 }

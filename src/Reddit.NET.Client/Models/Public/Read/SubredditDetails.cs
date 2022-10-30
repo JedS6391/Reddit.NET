@@ -15,7 +15,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     public class SubredditDetails : IToInteractor<SubredditInteractor>, IReloadable
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="UserDetails" /> class.
+        /// Initializes a new instance of the <see cref="SubredditDetails" /> class.
         /// </summary>
         /// <param name="thing">A <see cref="Thing{TData}" /> containing a subreddit's data.</param>
         internal SubredditDetails(IThing<Subreddit.Details> thing)

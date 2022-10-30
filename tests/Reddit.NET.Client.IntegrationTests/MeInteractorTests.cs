@@ -1,3 +1,4 @@
+using System;
 using System.Linq;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -106,6 +107,22 @@ namespace Reddit.NET.Client.IntegrationTests
 
             Assert.IsNotNull(history);
             Assert.IsNotEmpty(history);
+        }
+
+        [Test]
+        public async Task GetFriendsAsync_ValidUser_ShouldGetFriends()
+        {
+            var me = _client.Me();
+
+            var friends = await me.GetFriendsAsync().ToListAsync();
+
+            Assert.IsNotNull(friends);
+            Assert.IsNotEmpty(friends);
+            Assert.AreEqual(1, friends.Count);
+
+            var friend = friends.First();
+
+            Assert.AreEqual(Environment.GetEnvironmentVariable("TEST_REDDIT_FRIEND_USERNAME1"), friend.Name);
         }
 
         [Test]
