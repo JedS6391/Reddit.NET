@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
@@ -199,6 +200,35 @@ namespace Reddit.NET.Client.UnitTests
                 }
 
                 i++;
+            }
+        }
+
+        [Test]
+        public void Flatten_MultiLevelCommentThread_ShouldProduceCorrectOrder()
+        {
+            var submission = RandomSubmission();
+            var comment1 = RandomComment(generateRandomReplies: true);
+            var comment2 = RandomComment(generateRandomReplies: true);
+            var replies = new List<IThing<IHasParent>>()
+            {
+                comment1,
+                comment2,
+                new MoreComments()
+            };
+            var expectedFlattenedCommentIds = new List<string>();
+
+            expectedFlattenedCommentIds.Add(comment1.Data.Id);
+            expectedFlattenedCommentIds.AddRange(comment1.Data.Replies.Children.OfType<Comment>().Select(c => c.Data.Id));
+            expectedFlattenedCommentIds.Add(comment2.Data.Id);
+            expectedFlattenedCommentIds.AddRange(comment2.Data.Replies.Children.OfType<Comment>().Select(c => c.Data.Id));
+
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
+
+            var flattenedComments = navigator.Flatten();
+
+            foreach (var (comment, expectedCommentId) in flattenedComments.Zip(expectedFlattenedCommentIds))
+            {
+                Assert.AreEqual(expectedCommentId, comment.Details.Id);
             }
         }
 
