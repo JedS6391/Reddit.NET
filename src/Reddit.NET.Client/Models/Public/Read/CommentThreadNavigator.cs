@@ -28,6 +28,7 @@ namespace Reddit.NET.Client.Models.Public.Read
     /// will be set to <see langword="null" />.
     /// </para>
     /// <para>
+    /// When a navigator is first created, there may be <i>unresolved</i> comment threads that can be loaded via a call to <see cref="LoadAllCommentsAsync(RedditClient, int?, CancellationToken)"/>.
     /// </para>
     /// </remarks>
     /// <example>
