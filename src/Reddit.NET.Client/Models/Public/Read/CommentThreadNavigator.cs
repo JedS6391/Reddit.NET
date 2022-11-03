@@ -118,6 +118,37 @@ namespace Reddit.NET.Client.Models.Public.Read
         IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
         /// <summary>
+        /// Creates a flattened representation of all comment threads and their children.
+        /// </summary>
+        /// <returns>An enumerable representing the flattened comment thread.</returns>
+        public IEnumerable<CommentThread> Flatten()
+        {
+            var comments = new Stack<Comment>(Enumerable.Reverse(_comments));
+
+            while (comments.Any())
+            {
+                var comment = comments.Pop();
+                var replies = comment.Data.Replies?.Children;
+
+                yield return new CommentThread(_submission, comment, _sort);
+
+                if (replies == null)
+                {
+                    continue;
+                }
+
+                foreach (var reply in replies.Reverse())
+                {
+                    if (reply is Comment)
+                    {
+                        comments.Push(reply as Comment);
+                    }
+                }
+
+            }
+        }
+
+        /// <summary>
         /// Loads all unresolved comment threads at the current level this navigator manages and adds them to the navigator.
         /// </summary>
         /// <remarks>
