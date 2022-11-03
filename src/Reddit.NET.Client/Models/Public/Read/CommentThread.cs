@@ -1,5 +1,6 @@
 using Microsoft;
 using Reddit.NET.Client.Models.Internal;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 
 namespace Reddit.NET.Client.Models.Public.Read
 {
@@ -13,16 +14,19 @@ namespace Reddit.NET.Client.Models.Public.Read
     {
         private readonly Submission _submission;
         private readonly Comment _comment;
+        private readonly SubmissionsCommentSort _sort;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CommentThread" /> class.
         /// </summary>
         /// <param name="submission">The submission the thread belongs to.</param>
         /// <param name="comment">The top-level comment of the thread.</param>
-        internal CommentThread(Submission submission, Comment comment)
+        /// <param name="sort">The option the replies are sorted by.</param>
+        internal CommentThread(Submission submission, Comment comment, SubmissionsCommentSort sort)
         {
             _submission = Requires.NotNull(submission, nameof(submission));
             _comment = Requires.NotNull(comment, nameof(comment));
+            _sort = sort;
         }
 
         /// <summary>
@@ -45,6 +49,7 @@ namespace Reddit.NET.Client.Models.Public.Read
         public CommentThreadNavigator Replies => new CommentThreadNavigator(
             _submission,
             _comment.Data.Replies.Children,
+            _sort,
             parent: _comment);
     }
 }

@@ -64,7 +64,7 @@ namespace Reddit.NET.Client.Command
         {
             public static string DetailsWithComments(string submissionId) =>
                 $"{RedditOAuthPath}/comments/{submissionId}";
-
+            public static string MoreComments => $"{RedditOAuthPath}/api/morechildren";
             public static string Duplicates(string submissionId) =>
                 $"{RedditOAuthPath}/duplicates/{submissionId}";
         }

@@ -93,6 +93,20 @@ namespace Reddit.NET.Client.Models.Internal
             [JsonInclude]
             [JsonConverter(typeof(EpochSecondJsonConverter))]
             public DateTimeOffset CreatedAtUtc { get; private set; }
+
+            /// <summary>
+            /// Adds the provided comment to the replies.
+            /// </summary>
+            /// <param name="comment">The comment to add.</param>
+            internal void AddCommentToReplies(Comment comment)
+            {
+                if (Replies == null)
+                {
+                    Replies = new Listing<IHasParent>();
+                }
+
+                Replies.Data.AddChild(comment);
+            }
         }
 
         /// <summary>
@@ -100,6 +114,15 @@ namespace Reddit.NET.Client.Models.Internal
         /// </summary>
         public class Listing : Listing<Details>
         {
+        }
+
+        /// <summary>
+        /// Adds the provided comment to the replies.
+        /// </summary>
+        /// <param name="comment">The comment to add.</param>
+        internal void AddCommentToReplies(Comment comment)
+        {
+            Data.AddCommentToReplies(comment);
         }
     }
 }
