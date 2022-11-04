@@ -1,8 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Reddit.NET.Client.Models.Internal;
 using Reddit.NET.Client.Models.Internal.Base;
+using Reddit.NET.Client.Models.Public.Listings.Options;
 using Reddit.NET.Client.Models.Public.Read;
 using Reddit.NET.Client.UnitTests.Shared;
 
@@ -11,6 +13,7 @@ namespace Reddit.NET.Client.UnitTests
     public class CommentThreadNavigatorTests
     {
         private static readonly Random s_random = new Random();
+        private static readonly SubmissionsCommentSort s_defaultSort = SubmissionsCommentSort.Confidence;
 
         [Test]
         public void Parent_NavigatorWithNoParent_ReturnsNull()
@@ -24,7 +27,7 @@ namespace Reddit.NET.Client.UnitTests
                 new MoreComments()
             };
 
-            var navigator = new CommentThreadNavigator(submission, replies);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
 
             Assert.IsNull(navigator.Parent);
         }
@@ -42,7 +45,7 @@ namespace Reddit.NET.Client.UnitTests
             };
             var parent = RandomComment();
 
-            var navigator = new CommentThreadNavigator(submission, replies, parent);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort, parent);
 
             Assert.IsNotNull(navigator.Parent);
             Assert.AreEqual(parent.Data.Id, navigator.Parent.Details.Id);
@@ -61,7 +64,7 @@ namespace Reddit.NET.Client.UnitTests
                 new MoreComments()
             };
 
-            var navigator = new CommentThreadNavigator(submission, replies);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
 
             // 'more comments' aren't counted as comments
             Assert.AreEqual(3, navigator.Count);
@@ -82,7 +85,7 @@ namespace Reddit.NET.Client.UnitTests
             };
             var parent = new Comment();
 
-            var navigator = new CommentThreadNavigator(submission, replies, parent);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort, parent);
 
             // 'more comments' aren't counted as comments
             Assert.AreEqual(5, navigator.Count);
@@ -101,7 +104,7 @@ namespace Reddit.NET.Client.UnitTests
             };
             var secondComment = replies[1] as Comment;
 
-            var navigator = new CommentThreadNavigator(submission, replies);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
 
             var actualComment = navigator[1];
 
@@ -122,7 +125,7 @@ namespace Reddit.NET.Client.UnitTests
                 new MoreComments()
             };
 
-            var navigator = new CommentThreadNavigator(submission, replies);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
 
             Assert.Throws<ArgumentOutOfRangeException>(() =>
             {
@@ -142,7 +145,7 @@ namespace Reddit.NET.Client.UnitTests
                 new MoreComments()
             };
 
-            var navigator = new CommentThreadNavigator(submission, replies);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
 
             var count = 0;
 
@@ -171,7 +174,7 @@ namespace Reddit.NET.Client.UnitTests
                 new MoreComments()
             };
 
-            var navigator = new CommentThreadNavigator(submission, replies);
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
 
             var i = 0;
 
@@ -197,6 +200,35 @@ namespace Reddit.NET.Client.UnitTests
                 }
 
                 i++;
+            }
+        }
+
+        [Test]
+        public void Flatten_MultiLevelCommentThread_ShouldProduceCorrectOrder()
+        {
+            var submission = RandomSubmission();
+            var comment1 = RandomComment(generateRandomReplies: true);
+            var comment2 = RandomComment(generateRandomReplies: true);
+            var replies = new List<IThing<IHasParent>>()
+            {
+                comment1,
+                comment2,
+                new MoreComments()
+            };
+            var expectedFlattenedCommentIds = new List<string>();
+
+            expectedFlattenedCommentIds.Add(comment1.Data.Id);
+            expectedFlattenedCommentIds.AddRange(comment1.Data.Replies.Children.OfType<Comment>().Select(c => c.Data.Id));
+            expectedFlattenedCommentIds.Add(comment2.Data.Id);
+            expectedFlattenedCommentIds.AddRange(comment2.Data.Replies.Children.OfType<Comment>().Select(c => c.Data.Id));
+
+            var navigator = new CommentThreadNavigator(submission, replies, s_defaultSort);
+
+            var flattenedComments = navigator.Flatten();
+
+            foreach (var (comment, expectedCommentId) in flattenedComments.Zip(expectedFlattenedCommentIds))
+            {
+                Assert.AreEqual(expectedCommentId, comment.Details.Id);
             }
         }
 

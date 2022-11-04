@@ -85,11 +85,16 @@ namespace Reddit.NET.Client.Interactions
             SubmissionsCommentSort sort = null,
             CancellationToken cancellationToken = default)
         {
+            if (sort == null)
+            {
+                sort = SubmissionsCommentSort.Confidence;
+            }
+
             var commandParameters = new GetSubmissionDetailsWithCommentsCommand.Parameters()
             {
                 SubmissionId = Id,
                 Limit = limit,
-                Sort = sort?.Name ?? SubmissionsCommentSort.Confidence.Name
+                Sort = sort.Name
             };
 
             var getSubmissionDetailsWithCommentsCommand = new GetSubmissionDetailsWithCommentsCommand(commandParameters);
@@ -100,7 +105,8 @@ namespace Reddit.NET.Client.Interactions
 
             return new CommentThreadNavigator(
                 submission: submissionWithComments.Submission,
-                replies: submissionWithComments.Comments.Children);
+                replies: submissionWithComments.Comments.Children,
+                sort: sort);
         }
     }
 }

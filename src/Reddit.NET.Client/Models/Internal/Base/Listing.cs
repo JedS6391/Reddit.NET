@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Text.Json.Serialization;
 
 namespace Reddit.NET.Client.Models.Internal.Base
@@ -7,7 +8,7 @@ namespace Reddit.NET.Client.Models.Internal.Base
     /// Defines the attributes of a reddit API object that supports pagination.
     /// </summary>
     /// <remarks>
-    /// This class acts as a container for the properties of a listing, as a listing is 
+    /// This class acts as a container for the properties of a listing, as a listing is
     /// not a thing so the attributes cannot be shared.
     /// </remarks>
     /// <see href="https://github.com/reddit-archive/reddit/wiki/JSON#listing" />
@@ -19,14 +20,14 @@ namespace Reddit.NET.Client.Models.Internal.Base
         /// </summary>
         [JsonPropertyName("kind")]
         [JsonInclude]
-        public string Kind { get; private set; }
+        public string Kind { get; private set; } = "Listing";
 
         /// <summary>
         /// Gets the data of the listing.
         /// </summary>
         [JsonPropertyName("data")]
         [JsonInclude]
-        public ListingData<TData> Data { get; private set; }
+        public ListingData<TData> Data { get; private set; } = new ListingData<TData>();
 
         /// <summary>
         /// Gets the children of the listing.
@@ -69,6 +70,20 @@ namespace Reddit.NET.Client.Models.Internal.Base
         /// </summary>
         [JsonPropertyName("children")]
         [JsonInclude]
-        public IReadOnlyList<IThing<TData>> Children { get; private set; }
+        public IReadOnlyList<IThing<TData>> Children { get; private set; } = new List<IThing<TData>>();
+
+        /// <summary>
+        /// Adds the provided child to the listing entities.
+        /// </summary>
+        /// <param name="child">The child to add to the listing.</param>
+        internal void AddChild(IThing<TData> child)
+        {
+            var builder = new ReadOnlyCollectionBuilder<IThing<TData>>(Children)
+            {
+                child
+            };
+
+            Children = builder.ToReadOnlyCollection();
+        }
     }
 }

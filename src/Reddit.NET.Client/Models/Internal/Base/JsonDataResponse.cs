@@ -122,4 +122,14 @@ namespace Reddit.NET.Client.Models.Internal.Base
         [JsonInclude]
         public IReadOnlyList<IThing<IHasParent>> Things { get; private set; }
     }
+
+    internal class MoreCommentsDataNode
+    {
+        /// <summary>
+        /// Gets the <c>things</c>.
+        /// </summary>
+        [JsonPropertyName("things")]
+        [JsonInclude]
+        public IReadOnlyList<IThing<IHasParent>> Things { get; private set; }
+    }
 }
