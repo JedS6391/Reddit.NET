@@ -1,6 +1,7 @@
 using System;
 using System.Net.Http;
 using System.Threading;
+using System.Threading.RateLimiting;
 using System.Threading.Tasks;
 using Microsoft;
 using Microsoft.Extensions.Logging;
@@ -8,7 +9,6 @@ using Reddit.NET.Client.Authentication;
 using Reddit.NET.Client.Authentication.Abstract;
 using Reddit.NET.Client.Authentication.Storage;
 using Reddit.NET.Client.Command;
-using Reddit.NET.Client.Command.RateLimiting;
 using Reddit.NET.Client.Exceptions;
 
 namespace Reddit.NET.Client.Builder
@@ -110,8 +110,7 @@ namespace Reddit.NET.Client.Builder
 
             // TODO: Add the ability to configure the rate limiter.
             var rateLimiter = new TokenBucketRateLimiter(
-                _loggerFactory.CreateLogger<TokenBucketRateLimiter>(),
-                TokenBucketRateLimiterOptions.Default);
+                DefaultTokenBucketRateLimiterOptions.Instance);
 
             var commandExecutor = new CommandExecutor(
                 _loggerFactory.CreateLogger<CommandExecutor>(),

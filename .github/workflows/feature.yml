@@ -30,7 +30,7 @@ jobs:
     - name: Set up .NET
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: '6.0.402'
+        dotnet-version: '7.0.100'
 
     - name: Restore packages
       run: dotnet restore
@@ -42,6 +42,6 @@ jobs:
       run: dotnet test --verbosity normal --configuration Release /p:CollectCoverage=true /p:CoverletOutput='./' /p:CoverletOutputFormat=opencover      
 
     - name: Upload code coverage
-      uses: codecov/codecov-action@v3
+      uses: codecov/codecov-action@v3 
       with:
         token: ${{ secrets.CODECOV_TOKEN }} 
