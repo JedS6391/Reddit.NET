@@ -32,7 +32,7 @@ namespace Reddit.NET.Client.Command
     /// Requests that result in transient HTTP response status codes will be retried a number of times, with an exponential back-off sleep duration.
     /// </para>
     /// <para>
-    /// To remain within the reddit API rate limits, command execution will be managed to ensure that the number of requests being ,ade
+    /// To remain within the reddit API rate limits, command execution will be managed to ensure that the number of requests being made
     /// falls within the rate limits imposed.
     /// </para>
     /// </remarks>
