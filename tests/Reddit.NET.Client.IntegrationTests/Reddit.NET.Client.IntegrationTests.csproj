@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net10.0</TargetFramework>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
 
@@ -10,12 +10,11 @@
   </ItemGroup>
 
   <ItemGroup>  
-    <PackageReference Include="System.Linq.Async" Version="6.0.1" />  
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.4.0" />
-    <PackageReference Include="Microsoft.Extensions.Http" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="7.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.0-preview-25107-01" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="10.0.0-preview.3.25171.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging" Version="10.0.0-preview.3.25171.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.0-preview.3.25171.5" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="10.0.0-preview.3.25171.5" />
     <PackageReference Include="NUnit" Version="3.13.3" />
     <PackageReference Include="NUnit3TestAdapter" Version="4.3.0-rc.1" />
     <PackageReference Include="coverlet.msbuild" Version="3.1.2">

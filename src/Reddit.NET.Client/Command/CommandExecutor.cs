@@ -250,7 +250,7 @@ namespace Reddit.NET.Client.Command
             }
             catch (JsonException jsonException)
             {
-                _logger.LogError("Failed to read error details from response.", jsonException);
+                _logger.LogError(jsonException, "Failed to read error details from response.");
 
                 // Failed to read error details from response.
                 throw new RedditClientResponseException($"Request to '{response.RequestMessage.RequestUri}' endpoint failed.", response.StatusCode);
