@@ -52,7 +52,7 @@ Following the instructions below to get started with the project in a local deve
 
 ### Prerequisites
 
-- [.NET 6.0](https://dotnet.microsoft.com/download/dotnet/6.0)
+- [.NET 7.0](https://dotnet.microsoft.com/download/dotnet/7.0)
 
 ### Building
 

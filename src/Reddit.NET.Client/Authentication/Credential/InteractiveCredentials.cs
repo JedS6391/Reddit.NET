@@ -189,7 +189,7 @@ namespace Reddit.NET.Client.Authentication.Credential
 
                     default:
                         throw new InvalidOperationException("Builder must be authorized with a code or session ID before authentication can be performed.");
-                };
+                }
             }
 
             /// <summary>

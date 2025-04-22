@@ -1,3 +1,4 @@
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft;
@@ -94,6 +95,7 @@ namespace Reddit.NET.Client.Interactions.Abstract
         /// </remarks>
         /// <param name="cancellationToken">A <see cref="CancellationToken"/> that may be used to cancel the asynchronous operation.</param>
         /// <returns>A task representing the asynchronous operation.</returns>
+        [Obsolete("Reddit has removed the ability to award content from their API.")]
         public async Task AwardAsync(CancellationToken cancellationToken = default)
         {
             var awardContentCommand = new AwardContentCommand(new AwardContentCommand.Parameters()

@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Threading.Tasks;
 using NUnit.Framework;
@@ -169,19 +170,17 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsFalse(commentDetails.Saved);
         }
 
-        // Note we are only testing the failure scenario as otherwise it would
-        // require a testing account with a balance which means $$$.
+        // Note the ability to award via the API has been removed, so we're just testing it errors as expected.
         [Test]
-        public void AwardAsync_InsufficientCoins_ThrowsRedditClientApiException()
+        public void AwardAsync_AnyComment_ThrowsRedditClientResponseException()
         {
             // https://old.reddit.com/r/AskReddit/comments/9whgf4/stan_lee_has_passed_away_at_95_years_old/e9kveve/
             var comment = _client.Comment(submissionId: "9whgf4", commentId: "e9kveve");
 
-            var exception = Assert.ThrowsAsync<RedditClientApiException>(async () => await comment.AwardAsync());
+            var exception = Assert.ThrowsAsync<RedditClientResponseException>(async () => await comment.AwardAsync());
 
             Assert.IsNotNull(exception);
-            Assert.IsNotNull(exception.Details);
-            Assert.AreEqual("INSUFFICIENT_COINS", exception.Details.Type);
+            Assert.AreEqual(HttpStatusCode.NotFound, exception.StatusCode);
         }
 
         [Test]
@@ -212,6 +211,9 @@ namespace Reddit.NET.Client.IntegrationTests
             var updatedText = $"{commentDetails.Body} [edited {Guid.NewGuid()}]";
 
             await comment.EditAsync(updatedText);
+
+            // Small delay as sometimes the reload doesn't work immediately.
+            await Task.Delay(TimeSpan.FromSeconds(3));
 
             await commentDetails.ReloadAsync(_client);
 
