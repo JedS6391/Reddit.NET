@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using Reddit.NET.Client.Exceptions;
@@ -57,8 +58,8 @@ namespace Reddit.NET.Client.IntegrationTests
         [Test]
         public async Task GetDuplicatesAsync_ValidSubmission_ShouldGetDuplicates()
         {
-            // https://old.reddit.com/r/programming/comments/ybmnzb/tomorrow_is_unix_timestamp_1666666666_peak/
-            var submission = _client.Submission("ybmnzb");
+            // https://old.reddit.com/r/programming/comments/1jwmwdy/linus_torvalds_built_git_in_10_days_and_never/
+            var submission = _client.Submission("1jwmwdy");
 
             var submissionDetails = await submission.GetDetailsAsync();
 
@@ -221,10 +222,9 @@ namespace Reddit.NET.Client.IntegrationTests
             Assert.IsFalse(submissionDetails.Saved);
         }
 
-        // Note we are only testing the failure scenario as otherwise it would
-        // require a testing account with a balance which means $$$.
+        // Note the ability to award via the API has been removed, so we're just testing it errors as expected.
         [Test]
-        public async Task AwardAsync_InsufficientCoins_ThrowsRedditClientApiException()
+        public async Task AwardAsync_AnySubmission_ThrowsRedditClientResponseException()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
@@ -240,11 +240,10 @@ namespace Reddit.NET.Client.IntegrationTests
 
             var submission = submissionDetails.Interact(_client);
 
-            var exception = Assert.ThrowsAsync<RedditClientApiException>(async () => await submission.AwardAsync());
+            var exception = Assert.ThrowsAsync<RedditClientResponseException>(async () => await submission.AwardAsync());
 
             Assert.IsNotNull(exception);
-            Assert.IsNotNull(exception.Details);
-            Assert.AreEqual("INSUFFICIENT_COINS", exception.Details.Type);
+            Assert.AreEqual(HttpStatusCode.NotFound, exception.StatusCode);
         }
 
         [Test]

@@ -17,6 +17,12 @@ namespace Reddit.NET.Client.IntegrationTests
         [SetUp]
         public void Setup()
         {
+            Environment.SetEnvironmentVariable("TEST_REDDIT_USERNAME", "reddit-client-tests1");
+            Environment.SetEnvironmentVariable("TEST_REDDIT_PASSWORD", "nR6!WxETLVL:U$nW");
+            Environment.SetEnvironmentVariable("TEST_REDDIT_CLIENT_ID", "its0xF_8bLi8Hgp7qfhkQg");
+            Environment.SetEnvironmentVariable("TEST_REDDIT_CLIENT_SECRET", "kwoBYfI-HvxwNkwztyxzZ3iVW3EQcg");
+            Environment.SetEnvironmentVariable("TEST_SUBREDDIT_NAME", "redditclienttests1");
+
             _client = TestRedditClientProvider.GetScriptClient();
         }
 
@@ -196,38 +202,19 @@ namespace Reddit.NET.Client.IntegrationTests
         }
 
         [Test]
-        public async Task CreateSubmissionAsync_LinkSubmissionWithResubmit_ShouldCreateLinkSubmission()
+        public async Task CreateSubmissionAsync_LinkSubmission_ShouldCreateLinkSubmission()
         {
             var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
 
             var newSubmissionDetails = new LinkSubmissionCreationDetails(
                 title: $"Test submission {Guid.NewGuid()}",
-                uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
-                resubmit: true);
+                uri: new Uri("https://github.com/JedS6391/Reddit.NET"));
 
             var createdSubmission = await subreddit.CreateSubmissionAsync(newSubmissionDetails);
 
             Assert.IsNotNull(createdSubmission);
             Assert.IsTrue(createdSubmission.Title == newSubmissionDetails.Title);
             Assert.IsTrue(createdSubmission.Url == newSubmissionDetails.Uri.AbsoluteUri);
-        }
-
-        [Test]
-        public void CreateSubmissionAsync_LinkSubmissionWithoutResubmit_ThrowsRedditClientApiException()
-        {
-            var subreddit = _client.Subreddit(Environment.GetEnvironmentVariable("TEST_SUBREDDIT_NAME"));
-
-            var newSubmissionDetails = new LinkSubmissionCreationDetails(
-                title: $"Test submission {Guid.NewGuid()}",
-                uri: new Uri("https://github.com/JedS6391/Reddit.NET"),
-                resubmit: false);
-
-            var exception = Assert.ThrowsAsync<RedditClientApiException>(async () =>
-                await subreddit.CreateSubmissionAsync(newSubmissionDetails));
-
-            Assert.IsNotNull(exception);
-            Assert.IsNotNull(exception.Details);
-            Assert.AreEqual("ALREADY_SUB", exception.Details.Type);
         }
 
         [Test]

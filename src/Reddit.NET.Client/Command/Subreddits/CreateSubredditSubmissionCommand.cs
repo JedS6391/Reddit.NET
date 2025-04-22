@@ -110,6 +110,7 @@ namespace Reddit.NET.Client.Command.Subreddits
             /// <summary>
             /// Gets or sets a value indicating whether the submission should be resubmitted if it already exists.
             /// </summary>
+            [Obsolete("No longer supported by the Reddit API.")]
             public bool ForceResubmit { get; set; }
 
             /// <summary>
